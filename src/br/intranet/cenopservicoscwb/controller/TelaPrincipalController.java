@@ -9,6 +9,9 @@ import br.com.intranet.cenopservicoscwb.model.entidade.Calculo;
 import br.intranet.cenopservicoscwb.dao.CalculoDAO;
 import br.intranet.cenopservicoscwb.dao.PessoaDAO;
 import br.intranet.cenopservicoscwb.model.entidades.Pessoa;
+import com.jfoenix.controls.JFXButton;
+import com.jfoenix.controls.JFXCheckBox;
+import com.jfoenix.controls.JFXTextField;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
@@ -22,6 +25,8 @@ import javafx.scene.control.ComboBox;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.image.ImageView;
+import testejavafx.MainApp;
 
 /**
  * FXML Controller class
@@ -30,8 +35,11 @@ import javafx.scene.control.cell.PropertyValueFactory;
  */
 public class TelaPrincipalController implements Initializable {
 
-    @FXML
-    private ComboBox<String> cmbEscolha;
+    private MainApp mainApp;
+    
+    
+    
+   
     @FXML
     private TableView<Pessoa> tblPessoa;
     @FXML
@@ -54,11 +62,15 @@ public class TelaPrincipalController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle rb) {
       
-        calculoDAO = new CalculoDAO<>();
+       // setCalculoDAO(new CalculoDAO<>());
         
         
-        getCmbEscolha().getItems().addAll("M", "F");
+      //  getCmbEscolha().getItems().addAll("M", "F");
         // TODO
+    }
+    
+     public void setMainApp(MainApp mainApp) {
+        this.mainApp = mainApp;
     }
 
     @FXML
@@ -82,7 +94,6 @@ public class TelaPrincipalController implements Initializable {
     }
     
     
-    @FXML
     private void popularTabelaCalculo(ActionEvent event) {
         
         
@@ -93,19 +104,7 @@ public class TelaPrincipalController implements Initializable {
         
     }
 
-    /**
-     * @return the cmbEscolha
-     */
-    public ComboBox<String> getCmbEscolha() {
-        return cmbEscolha;
-    }
-
-    /**
-     * @param cmbEscolha the cmbEscolha to set
-     */
-    public void setCmbEscolha(ComboBox<String> cmbEscolha) {
-        this.cmbEscolha = cmbEscolha;
-    }
+   
 
     /**
      * @return the tblPessoa
@@ -205,4 +204,17 @@ public class TelaPrincipalController implements Initializable {
         this.calculoDAO = calculoDAO;
     }
 
+    /**
+     * @return the mainApp
+     */
+    public MainApp getMainApp() {
+        return mainApp;
+    }
+
+
+
+    /**
+     * @param mainApp the mainApp to set
+     */
+    
 }
