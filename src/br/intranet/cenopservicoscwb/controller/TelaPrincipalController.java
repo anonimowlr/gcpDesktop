@@ -9,9 +9,6 @@ import br.com.intranet.cenopservicoscwb.model.entidade.Calculo;
 import br.intranet.cenopservicoscwb.dao.CalculoDAO;
 import br.intranet.cenopservicoscwb.dao.PessoaDAO;
 import br.intranet.cenopservicoscwb.model.entidades.Pessoa;
-import com.jfoenix.controls.JFXButton;
-import com.jfoenix.controls.JFXCheckBox;
-import com.jfoenix.controls.JFXTextField;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
@@ -21,11 +18,10 @@ import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.ComboBox;
+import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.scene.image.ImageView;
 import testejavafx.MainApp;
 
 /**
@@ -40,11 +36,8 @@ public class TelaPrincipalController implements Initializable {
     
     
    
-    @FXML
     private TableView<Pessoa> tblPessoa;
-    @FXML
     private TableColumn<Pessoa, String> colNome;
-    @FXML
     private TableColumn<Pessoa, Integer> colIdade;
     @FXML
     private TableView<Calculo> tblCalculoPoupanca;
@@ -54,6 +47,8 @@ public class TelaPrincipalController implements Initializable {
     private TableColumn<Calculo, Long> colNpj;
     
     private CalculoDAO<Calculo, Object> calculoDAO;
+    @FXML
+    private Label lblMensagemNavegacao;
     
     
     /**
@@ -62,7 +57,7 @@ public class TelaPrincipalController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle rb) {
       
-       // setCalculoDAO(new CalculoDAO<>());
+        setCalculoDAO(new CalculoDAO<>());
         
         
       //  getCmbEscolha().getItems().addAll("M", "F");
@@ -73,7 +68,6 @@ public class TelaPrincipalController implements Initializable {
         this.mainApp = mainApp;
     }
 
-    @FXML
     private void popularTabela(ActionEvent event) {
         
         
@@ -88,16 +82,49 @@ public class TelaPrincipalController implements Initializable {
        
         observableListPessoa = FXCollections.observableList(listaPessoa);
         getTblPessoa().setItems(observableListPessoa);
+        lblMensagemNavegacao.setText("teste");
+        
+        
+        
         
         
         
     }
     
     
+    @FXML
     private void popularTabelaCalculo(ActionEvent event) {
         
         
-          List<Calculo> listaPessoa = new ArrayList<>();
+          List<Calculo> listaCalculo = new ArrayList<>();
+          
+        ObservableList<Calculo> observableListCalculo = FXCollections.observableArrayList();
+        listaCalculo = getCalculoDAO().getListaObjetos();
+
+        getColNpj().setCellValueFactory(new PropertyValueFactory<>("numeroConta"));// atributo da entidade
+        getColId().setCellValueFactory(new PropertyValueFactory<>("numeroAgencia")); // atributo da entidade
+       
+        observableListCalculo = FXCollections.observableList(listaCalculo);
+        getTblCalculoPoupanca().setItems(observableListCalculo);
+          
+        
+        
+        
+        
+    }
+    @FXML
+    private void limparListaCalculo(ActionEvent event) {
+        
+        
+          List<Calculo> listaCalculo = new ArrayList<>();
+          
+         listaCalculo.clear();
+         getTblCalculoPoupanca().disableProperty();
+         getTblCalculoPoupanca().refresh();
+         getTblCalculoPoupanca().setCache(false);
+       
+        
+          
         
         
         

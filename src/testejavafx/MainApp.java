@@ -50,7 +50,7 @@ public class MainApp extends Application {
     public void start(Stage primaryStage) {
         this.primaryStage = primaryStage;
         this.primaryStage.setTitle("Gestão e Cálculo de Planos Econômicos");
-        primaryStage.resizableProperty().setValue(Boolean.FALSE);
+        //primaryStage.resizableProperty().setValue(Boolean.FALSE);
         
         ConsultaSQL sql = new ConsultaSQL();
         
