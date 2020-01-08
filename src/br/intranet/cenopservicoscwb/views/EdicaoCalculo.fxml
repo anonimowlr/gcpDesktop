@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.text.*?>
+<?import com.jfoenix.controls.*?>
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<AnchorPane prefHeight="919.0" prefWidth="404.0" style="-fx-background-color: #99ccff;" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="br.intranet.cenopservicoscwb.controller.EdicaoCalculoController">
+   <children>
+      <GridPane layoutX="14.0" layoutY="-7.0" prefHeight="823.0" prefWidth="395.0" AnchorPane.bottomAnchor="103.0" AnchorPane.leftAnchor="14.0" AnchorPane.rightAnchor="14.0" AnchorPane.topAnchor="-7.0">
+         <children>
+            <Label text="Metodologia:" />
+            <JFXComboBox fx:id="cmbMetodologia" prefHeight="25.0" prefWidth="291.0" GridPane.columnIndex="1" />
+            <Label text="CPF/CNPJ:" GridPane.rowIndex="1" />
+            <Label text="Nome:" GridPane.rowIndex="2" />
+            <Label text="Banco:" GridPane.rowIndex="3" />
+            <Label text="Agência:" GridPane.rowIndex="4" />
+            <Label text="Conta:" GridPane.rowIndex="5" />
+            <Label text="Plano Econômico:" GridPane.rowIndex="6" />
+            <Label text="Saldo Base:" GridPane.rowIndex="7" />
+            <Label text="Dia Base:" GridPane.rowIndex="8" />
+            <Label text="Período/indice" GridPane.rowIndex="9" />
+            <TableView prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="9">
+               <columns>
+                  <TableColumn prefWidth="75.0" text="Índice" />
+                  <TableColumn prefWidth="75.0" text="Inicio Correção" />
+                  <TableColumn prefWidth="75.0" text="Fim Correção" />
+               </columns>
+            </TableView>
+            <Label text="Juros Mora:" GridPane.rowIndex="10" />
+            <Label text="Início jur. Rem." GridPane.rowIndex="11" />
+            <Label text="Fim Jur. Rem." GridPane.rowIndex="12" />
+            <Label text="Expurgo:" GridPane.rowIndex="13" />
+            <Label text="Valor Final:" GridPane.rowIndex="14" />
+            <Label text="PCOND:" GridPane.rowIndex="15" />
+            <JFXTextField prefHeight="25.0" prefWidth="207.0" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+            <JFXTextField GridPane.columnIndex="1" GridPane.rowIndex="2" />
+            <JFXTextField fx:id="txtConta" GridPane.columnIndex="1" GridPane.rowIndex="5" />
+            <JFXComboBox fx:id="cmbPlanoEconomico" prefHeight="25.0" prefWidth="297.0" GridPane.columnIndex="1" GridPane.rowIndex="6" />
+            <JFXComboBox fx:id="cmbBanco" prefHeight="25.0" prefWidth="241.0" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+            <JFXTextField fx:id="txtAgencia" GridPane.columnIndex="1" GridPane.rowIndex="4" />
+            <JFXTextField fx:id="txtSaldoBase" GridPane.columnIndex="1" GridPane.rowIndex="7" />
+            <JFXTextField GridPane.columnIndex="1" GridPane.rowIndex="8" />
+            <JFXTextField GridPane.columnIndex="1" GridPane.rowIndex="10" />
+            <JFXTextField GridPane.columnIndex="1" GridPane.rowIndex="11" />
+            <JFXTextField GridPane.columnIndex="1" GridPane.rowIndex="12" />
+            <JFXComboBox GridPane.columnIndex="1" GridPane.rowIndex="13" />
+            <Label prefHeight="30.0" prefWidth="164.0" text="Label" GridPane.columnIndex="1" GridPane.rowIndex="14" />
+            <JFXCheckBox text="SIM" GridPane.columnIndex="1" GridPane.rowIndex="15" />
+         </children>
+         <columnConstraints>
+            <ColumnConstraints hgrow="SOMETIMES" maxWidth="196.0" minWidth="10.0" prefWidth="142.0" />
+            <ColumnConstraints hgrow="SOMETIMES" maxWidth="307.0" minWidth="10.0" prefWidth="248.0" />
+         </columnConstraints>
+         <rowConstraints>
+            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+         </rowConstraints>
+      </GridPane>
+      <JFXButton fx:id="btn_buscarTable" buttonType="RAISED" layoutX="253.0" layoutY="867.0" prefHeight="30.0" prefWidth="136.0" style="-fx-background-color: #fff646;" text="Salvar" textFill="LIGHTSLATEGRAY" AnchorPane.bottomAnchor="22.0" AnchorPane.rightAnchor="15.0">
+         <font>
+            <Font name="Open Sans Bold" size="14.0" />
+         </font>
+      </JFXButton>
+      <JFXButton fx:id="btn_buscarTable1" buttonType="RAISED" layoutX="28.0" layoutY="867.0" prefHeight="30.0" prefWidth="136.0" style="-fx-background-color: #fff646;" text="Limpar " textFill="LIGHTSLATEGRAY" AnchorPane.bottomAnchor="22.0" AnchorPane.leftAnchor="15.0">
+         <font>
+            <Font name="Open Sans Bold" size="14.0" />
+         </font>
+      </JFXButton>
+   </children>
+</AnchorPane>
