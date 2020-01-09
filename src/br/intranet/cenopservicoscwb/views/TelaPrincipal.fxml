@@ -21,9 +21,15 @@
                           <items>
                             <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="0.0" minWidth="0.0" prefHeight="200.0" prefWidth="1373.0" snapToPixel="false" style="-fx-background-color: #f9dd16; -fx-background-color: ;">
                                  <children>
-                                    <JFXTextField id="txtNpj" layoutX="54.0" layoutY="49.0" promptText="Digite O NPJ" />
-                                    <JFXTextField id="txtGSV" layoutX="214.0" layoutY="49.0" promptText="Digite  o GSV" />
-                                    <Button fx:id="btnConsultar" layoutX="365.0" layoutY="55.0" mnemonicParsing="false" onAction="#chamaFxml" text="Consultar" />
+                                    <JFXTextField id="txtNpj" fx:id="txtNPJ" labelFloat="true" layoutX="54.0" layoutY="49.0" promptText="Digite O NPJ" />
+                                    <JFXTextField id="txtGSV" fx:id="txtGSV" labelFloat="true" layoutX="214.0" layoutY="49.0" promptText="Digite  o GSV" />
+                                    <Button fx:id="btnConsultar" layoutX="365.0" layoutY="55.0" mnemonicParsing="false" onAction="#chamaFxml" text="Teste Chamada" />
+                                    <Button fx:id="btnConsultaGsv" layoutX="511.0" layoutY="55.0" mnemonicParsing="false" onAction="#consultaGsv" text="Consulta GSV" />
+                                    <JFXButton fx:id="btnEditarSelecionado" buttonType="RAISED" layoutX="645.0" layoutY="53.0" onAction="#editarSelecionado" prefHeight="30.0" prefWidth="157.0" style="-fx-background-color: #99ccff;" text="Editar Selecionado" textFill="LIGHTSLATEGRAY">
+                                       <font>
+                                          <Font name="Open Sans Bold" size="14.0" />
+                                       </font>
+                                    </JFXButton>
                                  </children>
                               </AnchorPane>
                             <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="607.0" prefWidth="1259.0">
@@ -41,7 +47,11 @@
                                           </AnchorPane>
                                         <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0">
                                              <children>
-                                                <TableView id="tbEfetuarCalculo" layoutX="180.0" layoutY="167.0" prefHeight="601.0" prefWidth="879.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                                                <TableView fx:id="tvTabelaCalculoEdicao" editable="true" layoutX="116.0" layoutY="81.0" prefHeight="591.0" prefWidth="958.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                                   <columnResizePolicy>
+                                                      <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
+                                                   </columnResizePolicy>
+                                                </TableView>
                                              </children>
                                           </AnchorPane>
                                       </items>

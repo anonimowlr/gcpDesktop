@@ -6,14 +6,18 @@
 package br.intranet.cenopservicoscwb.controller;
 
 import br.com.intranet.cenopservicoscwb.model.entidade.Calculo;
+import br.com.intranet.cenopservicoscwb.model.entidade.Npj;
+import br.com.intranet.cenopservicoscwb.model.entidade.ProtocoloGsv;
 import br.intranet.cenopservicoscwb.dao.CalculoDAO;
-import br.intranet.cenopservicoscwb.dao.PessoaDAO;
-import br.intranet.cenopservicoscwb.model.entidades.Pessoa;
+import br.intranet.cenopservicoscwb.dao.NpjDAO;
+import br.intranet.cenopservicoscwb.dao.ProtocoloGsvDAO;
+import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXTextField;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
+import javafx.beans.property.SimpleIntegerProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -38,14 +42,20 @@ public class TelaPrincipalController implements Initializable {
     
     
      private List<Calculo> listaCalculo = new ArrayList<>();
+     private Calculo calculo;
+     private Npj npj;
+     private ProtocoloGsv protocoloGSV;
+     private ProtocoloGsvDAO<ProtocoloGsv, Object> protocoloGsvDAO;
+     private NpjDAO<Npj, Object> npjDAO;
+     //private ObservableList<Calculo> observableListCalculoEdicao;
+     
+     
+     
+     
    
-    private TableView<Pessoa> tblPessoa;
-    private TableColumn<Pessoa, String> colNome;
-    private TableColumn<Pessoa, Integer> colIdade;
     @FXML
     private TableView<Calculo> tblCalculoPoupanca;
-    @FXML
-    private TableColumn<Calculo, Integer> colId;
+  
     @FXML
     private TableColumn<Calculo, Long> colNpj;
     
@@ -59,6 +69,28 @@ public class TelaPrincipalController implements Initializable {
     private AnchorPane anchorCalcEdit;
     @FXML
     private Button btnConsultar;
+    @FXML
+    private JFXTextField txtNPJ;
+    @FXML
+    private JFXTextField txtGSV;
+    @FXML
+    private  TableView<Calculo> tvTabelaCalculoEdicao;
+    @FXML
+    private Button btnConsultaGsv;
+    @FXML
+    private JFXButton btnEditarSelecionado;
+    @FXML
+    private TableColumn<Calculo, Integer> colId;
+
+    public TelaPrincipalController() {
+        
+        
+    }
+    
+    
+    
+    
+    
     
     
     /**
@@ -67,13 +99,16 @@ public class TelaPrincipalController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle rb) {
       
+        setCalculo(new Calculo());
+        setProtocoloGsvDAO(new ProtocoloGsvDAO<>());
+        setNpjDAO(new NpjDAO<>());
         
         getTblCalculoPoupanca().refresh();
         
         setCalculoDAO(new CalculoDAO<>());
         
         
-        txtFiltroQuantidadeReg.setText(getCalculoDAO().getMaximoObjeto().toString());
+        getTxtFiltroQuantidadeReg().setText(getCalculoDAO().getMaximoObjeto().toString());
         
         
       //  getCmbEscolha().getItems().addAll("M", "F");
@@ -84,28 +119,7 @@ public class TelaPrincipalController implements Initializable {
         this.mainApp = mainApp;
     }
 
-    private void popularTabela(ActionEvent event) {
-        
-        
-          List<Pessoa> listaPessoa = new ArrayList<>();
-        
-        PessoaDAO pessoaDao = new PessoaDAO();
-        ObservableList<Pessoa> observableListPessoa = FXCollections.observableArrayList();
-        
-
-        getColNome().setCellValueFactory(new PropertyValueFactory<>("nome"));// atributo da entidade
-        getColIdade().setCellValueFactory(new PropertyValueFactory<>("idade")); // atributo da entidade
-       
-        observableListPessoa = FXCollections.observableList(listaPessoa);
-        getTblPessoa().setItems(observableListPessoa);
-        getLbMensagemNavegacao().setText(getCalculoDAO().mensagemNavegacao());
-        
-        
-        
-        
-        
-        
-    }
+   
     
     
     @FXML
@@ -146,48 +160,6 @@ public class TelaPrincipalController implements Initializable {
     }
 
    
-
-    /**
-     * @return the tblPessoa
-     */
-    public TableView<Pessoa> getTblPessoa() {
-        return tblPessoa;
-    }
-
-    /**
-     * @param tblPessoa the tblPessoa to set
-     */
-    public void setTblPessoa(TableView<Pessoa> tblPessoa) {
-        this.tblPessoa = tblPessoa;
-    }
-
-    /**
-     * @return the colNome
-     */
-    public TableColumn<Pessoa, String> getColNome() {
-        return colNome;
-    }
-
-    /**
-     * @param colNome the colNome to set
-     */
-    public void setColNome(TableColumn<Pessoa, String> colNome) {
-        this.colNome = colNome;
-    }
-
-    /**
-     * @return the colIdade
-     */
-    public TableColumn<Pessoa, Integer> getColIdade() {
-        return colIdade;
-    }
-
-    /**
-     * @param colIdade the colIdade to set
-     */
-    public void setColIdade(TableColumn<Pessoa, Integer> colIdade) {
-        this.colIdade = colIdade;
-    }
 
     /**
      * @return the tblCalculoPoupanca
@@ -300,10 +272,263 @@ public class TelaPrincipalController implements Initializable {
         String path = "/br/intranet/cenopservicoscwb/views/EdicaoCalculo.fxml";
         
         EdicaoCalculoController adicaoCalculoController = new EdicaoCalculoController();
-        adicaoCalculoController = (EdicaoCalculoController) mainApp.showCenterAnchorPaneWithReturn(path, adicaoCalculoController, anchorCalcEdit);
+        adicaoCalculoController = (EdicaoCalculoController) getMainApp().showCenterAnchorPaneWithReturn(path, adicaoCalculoController, getAnchorCalcEdit());
         
         
     }
+
+    /**
+     * @return the anchorCalcEdit
+     */
+    public AnchorPane getAnchorCalcEdit() {
+        return anchorCalcEdit;
+    }
+
+    /**
+     * @param anchorCalcEdit the anchorCalcEdit to set
+     */
+    public void setAnchorCalcEdit(AnchorPane anchorCalcEdit) {
+        this.anchorCalcEdit = anchorCalcEdit;
+    }
+
+    /**
+     * @return the btnConsultar
+     */
+    public Button getBtnConsultar() {
+        return btnConsultar;
+    }
+
+    /**
+     * @param btnConsultar the btnConsultar to set
+     */
+    public void setBtnConsultar(Button btnConsultar) {
+        this.btnConsultar = btnConsultar;
+    }
+
+    /**
+     * @return the txtNPJ
+     */
+    public JFXTextField getTxtNPJ() {
+        return txtNPJ;
+    }
+
+    /**
+     * @param txtNPJ the txtNPJ to set
+     */
+    public void setTxtNPJ(JFXTextField txtNPJ) {
+        this.txtNPJ = txtNPJ;
+    }
+
+    /**
+     * @return the txtGSV
+     */
+    public JFXTextField getTxtGSV() {
+        return txtGSV;
+    }
+
+    /**
+     * @param txtGSV the txtGSV to set
+     */
+    public void setTxtGSV(JFXTextField txtGSV) {
+        this.txtGSV = txtGSV;
+    }
+
+    /**
+     * @return the tvTabelaCalculoEdicao
+     */
+    public TableView<Calculo> getTvTabelaCalculoEdicao() {
+        return tvTabelaCalculoEdicao;
+    }
+
+    /**
+     * @param tvTabelaCalculoEdicao the tvTabelaCalculoEdicao to set
+     */
+    public void setTvTabelaCalculoEdicao(TableView<Calculo> tvTabelaCalculoEdicao) {
+        this.tvTabelaCalculoEdicao = tvTabelaCalculoEdicao;
+    }
+
+    /**
+     * @return the calculo
+     */
+    public Calculo getCalculo() {
+        return calculo;
+    }
+
+    /**
+     * @param calculo the calculo to set
+     */
+    public void setCalculo(Calculo calculo) {
+        this.calculo = calculo;
+    }
+
+    /**
+     * @return the npj
+     */
+    public Npj getNpj() {
+        return npj;
+    }
+
+    /**
+     * @param npj the npj to set
+     */
+    public void setNpj(Npj npj) {
+        this.npj = npj;
+    }
+
+    /**
+     * @return the protocoloGSV
+     */
+    public ProtocoloGsv getProtocoloGSV() {
+        return protocoloGSV;
+    }
+
+    /**
+     * @param protocoloGSV the protocoloGSV to set
+     */
+    public void setProtocoloGSV(ProtocoloGsv protocoloGSV) {
+        this.protocoloGSV = protocoloGSV;
+    }
+
+    @FXML
+    private void consultaGsv(ActionEvent event) {
+        getTvTabelaCalculoEdicao().refresh();
+        setNpj(new Npj());
+        setProtocoloGSV(new ProtocoloGsv());
+        
+       
+        
+        
+        
+        
+        getNpj().setNrPrc(new Long(getTxtNPJ().getText()));
+        getProtocoloGSV().setCdPrc(Integer.parseInt(getTxtGSV().getText()));
+        
+        ProtocoloGsv protocoloGsv = getProtocoloGsvDAO().localizar(getProtocoloGSV().getCdPrc());
+        Npj npj = getNpjDAO().localizar(getNpj().getNrPrc());
+         
+         
+        
+         if(npj != null){
+             setNpj(npj);
+         }
+         
+         
+         if(protocoloGsv != null){
+             setProtocoloGSV(protocoloGsv);
+             
+         }
+        
+         getNpj().adicionarProtocolo(protocoloGsv);
+         
+        
+         popularTabelacalculoEdicao();
+         
+         
+       
+         
+        System.out.println(getProtocoloGSV().getCdPrc().toString());
+        System.out.println(getNpj().getNrPrc().toString());
+        
+        System.out.println(getNpj().getListaProtocoloGsv().get(0).getCdPrc().toString());
+        
+        
+        
+    }
+    
+    
+    public final void popularTabelacalculoEdicao(){
+         ObservableList<Calculo> observableListCalculoEdicao;
+        
+         observableListCalculoEdicao = FXCollections.observableList(getProtocoloGSV().getListaCalculo());
+       
+      if(getTvTabelaCalculoEdicao().getItems().size()>0){
+          setTvTabelaCalculoEdicao(new TableView<>(observableListCalculoEdicao));
+         
+          
+      }
+         
+         
+         
+        
+         TableColumn<Calculo,Integer> colId = new TableColumn("id");
+         colId.setCellValueFactory(data -> new  SimpleIntegerProperty(data.getValue().getId()).asObject());
+         tvTabelaCalculoEdicao.getColumns().addAll(colId);
+         tvTabelaCalculoEdicao.setItems(observableListCalculoEdicao);
+         
+          
+    }
+
+    /**
+     * @return the protocoloGsvDAO
+     */
+    public ProtocoloGsvDAO<ProtocoloGsv, Object> getProtocoloGsvDAO() {
+        return protocoloGsvDAO;
+    }
+
+    /**
+     * @param protocoloGsvDAO the protocoloGsvDAO to set
+     */
+    public void setProtocoloGsvDAO(ProtocoloGsvDAO<ProtocoloGsv, Object> protocoloGsvDAO) {
+        this.protocoloGsvDAO = protocoloGsvDAO;
+    }
+
+    /**
+     * @return the npjDAO
+     */
+    public NpjDAO<Npj, Object> getNpjDAO() {
+        return npjDAO;
+    }
+
+    /**
+     * @param npjDAO the npjDAO to set
+     */
+    public void setNpjDAO(NpjDAO<Npj, Object> npjDAO) {
+        this.npjDAO = npjDAO;
+    }
+
+    /**
+     * @return the btnConsultaGsv
+     */
+    public Button getBtnConsultaGsv() {
+        return btnConsultaGsv;
+    }
+
+    /**
+     * @param btnConsultaGsv the btnConsultaGsv to set
+     */
+    public void setBtnConsultaGsv(Button btnConsultaGsv) {
+        this.btnConsultaGsv = btnConsultaGsv;
+    }
+
+    @FXML
+    private void editarSelecionado(ActionEvent event) {
+        
+        
+       
+        
+        Calculo calculo = getTvTabelaCalculoEdicao().getSelectionModel().getSelectedItem();
+        
+        System.out.println(calculo);
+        
+        
+    }
+
+    /**
+     * @return the observableListCalculoEdicao
+     */
+//    public ObservableList<Calculo> getObservableListCalculoEdicao() {
+//        return observableListCalculoEdicao;
+//    }
+//
+//    /**
+//     * @param observableListCalculoEdicao the observableListCalculoEdicao to set
+//     */
+//    public void setObservableListCalculoEdicao(ObservableList<Calculo> observableListCalculoEdicao) {
+//        this.observableListCalculoEdicao = observableListCalculoEdicao;
+//    }
+
+
+    
 
 
 

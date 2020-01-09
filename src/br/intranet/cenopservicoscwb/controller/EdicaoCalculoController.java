@@ -5,8 +5,10 @@
  */
 package br.intranet.cenopservicoscwb.controller;
 
+import br.com.intranet.cenopservicoscwb.model.entidade.Expurgo;
 import br.com.intranet.cenopservicoscwb.model.entidade.Metodologia;
 import br.com.intranet.cenopservicoscwb.model.entidade.PlanoEconomico;
+import br.intranet.cenopservicoscwb.dao.ExpurgoDAO;
 import br.intranet.cenopservicoscwb.dao.MetodologiaDAO;
 import br.intranet.cenopservicoscwb.dao.PlanoEconomicoDAO;
 import com.jfoenix.controls.JFXButton;
@@ -16,8 +18,10 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.layout.GridPane;
 
 /**
  * FXML Controller class
@@ -27,7 +31,9 @@ import javafx.fxml.Initializable;
 public class EdicaoCalculoController extends  AbstractController implements Initializable {
     
     private Metodologia metodologia;
+    private Expurgo expurgo;
     private MetodologiaDAO<Metodologia, Object> metodologiaDAO;
+    private ExpurgoDAO<Expurgo, Object> expurgoDAO;
     private PlanoEconomico planoEconomico;
     private PlanoEconomicoDAO<PlanoEconomico, Object> planoEconomicoDAO;
     
@@ -53,6 +59,10 @@ public class EdicaoCalculoController extends  AbstractController implements Init
     private JFXTextField txtConta;
     @FXML
     private JFXTextField txtSaldoBase;
+    @FXML
+    private JFXComboBox<Expurgo> cmbExpurgo;
+    @FXML
+    private GridPane txtNome;
 
     /**
      * Initializes the controller class.
@@ -64,6 +74,7 @@ public class EdicaoCalculoController extends  AbstractController implements Init
         
        
          setPlanoEconomicoDAO(new PlanoEconomicoDAO<>());
+         setExpurgoDAO(new ExpurgoDAO<>());
         
          setMetodologiaDAO(new MetodologiaDAO<>());
          setMetodologia(getCmbMetodologia().getValue());
@@ -72,7 +83,7 @@ public class EdicaoCalculoController extends  AbstractController implements Init
          listaMetodologia = getMetodologiaDAO().getListaTodos();
          
         
-        
+        getCmbExpurgo().getItems().addAll(getExpurgoDAO().getListaTodos());
         getCmbMetodologia().getItems().addAll(listaMetodologia);
         getCmbPlanoEconomico().getItems().addAll(getPlanoEconomicoDAO().getListaTodos());
         getCmbBanco().getItems().addAll("BB","BESC","BNC");
@@ -246,5 +257,60 @@ public class EdicaoCalculoController extends  AbstractController implements Init
     public void setTxtSaldoBase(JFXTextField txtSaldoBase) {
         this.txtSaldoBase = txtSaldoBase;
     }
+
+    @FXML
+    private void btnMostrarTeste(ActionEvent event) {// Metodo de teste 
+        
+        
+        System.out.println(getCmbMetodologia().getSelectionModel().getSelectedItem().getId());
+       
+        
+        
+        
+        
+    }
+
+    /**
+     * @return the expurgo
+     */
+    public Expurgo getExpurgo() {
+        return expurgo;
+    }
+
+    /**
+     * @param expurgo the expurgo to set
+     */
+    public void setExpurgo(Expurgo expurgo) {
+        this.expurgo = expurgo;
+    }
+
+    /**
+     * @return the expurgoDAO
+     */
+    public ExpurgoDAO<Expurgo, Object> getExpurgoDAO() {
+        return expurgoDAO;
+    }
+
+    /**
+     * @param expurgoDAO the expurgoDAO to set
+     */
+    public void setExpurgoDAO(ExpurgoDAO<Expurgo, Object> expurgoDAO) {
+        this.expurgoDAO = expurgoDAO;
+    }
+
+    /**
+     * @return the cmbExpurgo
+     */
+    public JFXComboBox<Expurgo> getCmbExpurgo() {
+        return cmbExpurgo;
+    }
+
+    /**
+     * @param cmbExpurgo the cmbExpurgo to set
+     */
+    public void setCmbExpurgo(JFXComboBox<Expurgo> cmbExpurgo) {
+        this.cmbExpurgo = cmbExpurgo;
+    }
+
     
 }

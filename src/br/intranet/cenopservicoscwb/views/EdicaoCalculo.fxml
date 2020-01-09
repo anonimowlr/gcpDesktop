@@ -10,13 +10,13 @@
 
 <AnchorPane prefHeight="919.0" prefWidth="404.0" style="-fx-background-color: #99ccff;" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="br.intranet.cenopservicoscwb.controller.EdicaoCalculoController">
    <children>
-      <GridPane layoutX="14.0" layoutY="-7.0" prefHeight="823.0" prefWidth="395.0" AnchorPane.bottomAnchor="103.0" AnchorPane.leftAnchor="14.0" AnchorPane.rightAnchor="14.0" AnchorPane.topAnchor="-7.0">
+      <GridPane fx:id="txtNome" layoutX="14.0" layoutY="-7.0" prefHeight="823.0" prefWidth="395.0" AnchorPane.bottomAnchor="103.0" AnchorPane.leftAnchor="14.0" AnchorPane.rightAnchor="14.0" AnchorPane.topAnchor="-7.0">
          <children>
             <Label text="Metodologia:" />
-            <JFXComboBox fx:id="cmbMetodologia" prefHeight="25.0" prefWidth="291.0" GridPane.columnIndex="1" />
-            <Label text="CPF/CNPJ:" GridPane.rowIndex="1" />
-            <Label text="Nome:" GridPane.rowIndex="2" />
-            <Label text="Banco:" GridPane.rowIndex="3" />
+            <JFXComboBox fx:id="cmbMetodologia" focusTraversable="false" prefHeight="25.0" prefWidth="291.0" GridPane.columnIndex="1" />
+            <Label focusTraversable="false" text="CPF/CNPJ:" GridPane.rowIndex="1" />
+            <Label focusTraversable="false" text="Nome:" GridPane.rowIndex="2" />
+            <Label focusTraversable="false" text="Banco:" GridPane.rowIndex="3" />
             <Label text="Agência:" GridPane.rowIndex="4" />
             <Label text="Conta:" GridPane.rowIndex="5" />
             <Label text="Plano Econômico:" GridPane.rowIndex="6" />
@@ -38,16 +38,16 @@
             <Label text="PCOND:" GridPane.rowIndex="15" />
             <JFXTextField prefHeight="25.0" prefWidth="207.0" GridPane.columnIndex="1" GridPane.rowIndex="1" />
             <JFXTextField GridPane.columnIndex="1" GridPane.rowIndex="2" />
-            <JFXTextField fx:id="txtConta" GridPane.columnIndex="1" GridPane.rowIndex="5" />
-            <JFXComboBox fx:id="cmbPlanoEconomico" prefHeight="25.0" prefWidth="297.0" GridPane.columnIndex="1" GridPane.rowIndex="6" />
-            <JFXComboBox fx:id="cmbBanco" prefHeight="25.0" prefWidth="241.0" GridPane.columnIndex="1" GridPane.rowIndex="3" />
-            <JFXTextField fx:id="txtAgencia" GridPane.columnIndex="1" GridPane.rowIndex="4" />
+            <JFXTextField fx:id="txtConta" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+            <JFXComboBox fx:id="cmbPlanoEconomico" prefHeight="25.0" prefWidth="297.0" GridPane.columnIndex="1" GridPane.rowIndex="4" />
+            <JFXComboBox fx:id="cmbBanco" prefHeight="25.0" prefWidth="241.0" GridPane.columnIndex="1" GridPane.rowIndex="5" />
+            <JFXTextField fx:id="txtAgencia" GridPane.columnIndex="1" GridPane.rowIndex="6" />
             <JFXTextField fx:id="txtSaldoBase" GridPane.columnIndex="1" GridPane.rowIndex="7" />
             <JFXTextField GridPane.columnIndex="1" GridPane.rowIndex="8" />
+            <JFXTextField GridPane.columnIndex="1" GridPane.rowIndex="9" />
             <JFXTextField GridPane.columnIndex="1" GridPane.rowIndex="10" />
             <JFXTextField GridPane.columnIndex="1" GridPane.rowIndex="11" />
-            <JFXTextField GridPane.columnIndex="1" GridPane.rowIndex="12" />
-            <JFXComboBox GridPane.columnIndex="1" GridPane.rowIndex="13" />
+            <JFXComboBox fx:id="cmbExpurgo" GridPane.columnIndex="1" GridPane.rowIndex="13" />
             <Label prefHeight="30.0" prefWidth="164.0" text="Label" GridPane.columnIndex="1" GridPane.rowIndex="14" />
             <JFXCheckBox text="SIM" GridPane.columnIndex="1" GridPane.rowIndex="15" />
          </children>
@@ -74,7 +74,7 @@
             <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
          </rowConstraints>
       </GridPane>
-      <JFXButton fx:id="btn_buscarTable" buttonType="RAISED" layoutX="253.0" layoutY="867.0" prefHeight="30.0" prefWidth="136.0" style="-fx-background-color: #fff646;" text="Salvar" textFill="LIGHTSLATEGRAY" AnchorPane.bottomAnchor="22.0" AnchorPane.rightAnchor="15.0">
+      <JFXButton fx:id="btn_buscarTable" buttonType="RAISED" layoutX="253.0" layoutY="867.0" onAction="#btnMostrarTeste" prefHeight="30.0" prefWidth="136.0" style="-fx-background-color: #fff646;" text="Salvar" textFill="LIGHTSLATEGRAY" AnchorPane.bottomAnchor="22.0" AnchorPane.rightAnchor="15.0">
          <font>
             <Font name="Open Sans Bold" size="14.0" />
          </font>
