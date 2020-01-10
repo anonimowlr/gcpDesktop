@@ -5,6 +5,7 @@
  */
 package br.intranet.cenopservicoscwb.controller;
 
+import CurrencyField.CurrencyField;
 import br.com.intranet.cenopservicoscwb.model.entidade.Calculo;
 import br.com.intranet.cenopservicoscwb.model.entidade.Npj;
 import br.com.intranet.cenopservicoscwb.model.entidade.ProtocoloGsv;
@@ -17,7 +18,8 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
-import javafx.beans.property.SimpleIntegerProperty;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -39,28 +41,22 @@ import testejavafx.MainApp;
 public class TelaPrincipalController implements Initializable {
 
     private MainApp mainApp;
-    
-    
-     private List<Calculo> listaCalculo = new ArrayList<>();
-     private Calculo calculo;
-     private Npj npj;
-     private ProtocoloGsv protocoloGSV;
-     private ProtocoloGsvDAO<ProtocoloGsv, Object> protocoloGsvDAO;
-     private NpjDAO<Npj, Object> npjDAO;
-     //private ObservableList<Calculo> observableListCalculoEdicao;
-     
-     
-     
-     
-   
+
+    private List<Calculo> listaCalculo = new ArrayList<>();
+    private Calculo calculo;
+    private Npj npj;
+    private ProtocoloGsv protocoloGSV;
+    private ProtocoloGsvDAO<ProtocoloGsv, Object> protocoloGsvDAO;
+    private NpjDAO<Npj, Object> npjDAO;
+
     @FXML
     private TableView<Calculo> tblCalculoPoupanca;
-  
+
     @FXML
     private TableColumn<Calculo, Long> colNpj;
-    
+
     private CalculoDAO<Calculo, Object> calculoDAO;
-   
+
     @FXML
     private Label lbMensagemNavegacao;
     @FXML
@@ -74,92 +70,81 @@ public class TelaPrincipalController implements Initializable {
     @FXML
     private JFXTextField txtGSV;
     @FXML
-    private  TableView<Calculo> tvTabelaCalculoEdicao;
+    private TableView<Calculo> tvTabelaCalculoEdicao;
     @FXML
     private Button btnConsultaGsv;
-    @FXML
     private JFXButton btnEditarSelecionado;
     @FXML
     private TableColumn<Calculo, Integer> colId;
+    @FXML
+    private TableColumn<Calculo, Integer> colIdTbEdicao;
 
     public TelaPrincipalController() {
-        
-        
+
     }
-    
-    
-    
-    
-    
-    
-    
+
     /**
      * Initializes the controller class.
      */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-      
+
+        CurrencyField cur = new CurrencyField();
+        cur.amountProperty().addListener(new ChangeListener<Number>() {
+
+           
+
+            @Override
+            public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
+                  System.out.println(newValue.doubleValue());
+            }
+        });
+
+        getTvTabelaCalculoEdicao().getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> editaLinha(newValue));
+
         setCalculo(new Calculo());
         setProtocoloGsvDAO(new ProtocoloGsvDAO<>());
         setNpjDAO(new NpjDAO<>());
-        
+
         getTblCalculoPoupanca().refresh();
-        
+
         setCalculoDAO(new CalculoDAO<>());
-        
-        
+
         getTxtFiltroQuantidadeReg().setText(getCalculoDAO().getMaximoObjeto().toString());
-        
-        
-      //  getCmbEscolha().getItems().addAll("M", "F");
+
+        //  getCmbEscolha().getItems().addAll("M", "F");
         // TODO
     }
-    
-     public void setMainApp(MainApp mainApp) {
+
+    public void setMainApp(MainApp mainApp) {
         this.mainApp = mainApp;
     }
 
-   
-    
-    
     @FXML
     private void popularTabelaCalculo(ActionEvent event) {
-        
-        
-         
-          
-          
-         getCalculoDAO().setMaximoObjeto(Integer.parseInt(getTxtFiltroQuantidadeReg().getText()));
-          
+
+        getCalculoDAO().setMaximoObjeto(Integer.parseInt(getTxtFiltroQuantidadeReg().getText()));
+
         ObservableList<Calculo> observableListCalculo = FXCollections.observableArrayList();
         setListaCalculo(getCalculoDAO().getListaObjetos());
 
         getColNpj().setCellValueFactory(new PropertyValueFactory<>("numeroConta"));// atributo da entidade
         getColId().setCellValueFactory(new PropertyValueFactory<>("numeroAgencia")); // atributo da entidade
-       
+
         observableListCalculo = FXCollections.observableList(getListaCalculo());
         getTblCalculoPoupanca().setItems(observableListCalculo);
-          
+
         getLbMensagemNavegacao().setText(getCalculoDAO().mensagemNavegacao());
-        
-        
-        
-    }
-    @FXML
-    private void limparListaCalculo(ActionEvent event) {
-        
-        
-   getListaCalculo().clear();
-   getTblCalculoPoupanca().refresh();
-        
-          
-        
-        
-        
-        
+
     }
 
-   
+    @FXML
+    private void limparListaCalculo(ActionEvent event) {
+
+        getListaCalculo().clear();
+        getTblCalculoPoupanca().refresh();
+
+    }
 
     /**
      * @return the tblCalculoPoupanca
@@ -268,13 +253,12 @@ public class TelaPrincipalController implements Initializable {
 
     @FXML
     private void chamaFxml(ActionEvent event) {
-        
+
         String path = "/br/intranet/cenopservicoscwb/views/EdicaoCalculo.fxml";
-        
+
         EdicaoCalculoController adicaoCalculoController = new EdicaoCalculoController();
         adicaoCalculoController = (EdicaoCalculoController) getMainApp().showCenterAnchorPaneWithReturn(path, adicaoCalculoController, getAnchorCalcEdit());
-        
-        
+
     }
 
     /**
@@ -394,68 +378,49 @@ public class TelaPrincipalController implements Initializable {
         getTvTabelaCalculoEdicao().refresh();
         setNpj(new Npj());
         setProtocoloGSV(new ProtocoloGsv());
-        
-       
-        
-        
-        
-        
+
         getNpj().setNrPrc(new Long(getTxtNPJ().getText()));
         getProtocoloGSV().setCdPrc(Integer.parseInt(getTxtGSV().getText()));
-        
+
         ProtocoloGsv protocoloGsv = getProtocoloGsvDAO().localizar(getProtocoloGSV().getCdPrc());
         Npj npj = getNpjDAO().localizar(getNpj().getNrPrc());
-         
-         
-        
-         if(npj != null){
-             setNpj(npj);
-         }
-         
-         
-         if(protocoloGsv != null){
-             setProtocoloGSV(protocoloGsv);
-             
-         }
-        
-         getNpj().adicionarProtocolo(protocoloGsv);
-         
-        
-         popularTabelacalculoEdicao();
-         
-         
-       
-         
+
+        if (npj != null) {
+            setNpj(npj);
+        }
+
+        if (protocoloGsv != null) {
+            setProtocoloGSV(protocoloGsv);
+
+        }
+
+        getNpj().adicionarProtocolo(protocoloGsv);
+
+        popularTabelacalculoEdicao();
+
         System.out.println(getProtocoloGSV().getCdPrc().toString());
         System.out.println(getNpj().getNrPrc().toString());
-        
+
         System.out.println(getNpj().getListaProtocoloGsv().get(0).getCdPrc().toString());
-        
-        
-        
+
     }
-    
-    
-    public final void popularTabelacalculoEdicao(){
-         ObservableList<Calculo> observableListCalculoEdicao;
-        
-         observableListCalculoEdicao = FXCollections.observableList(getProtocoloGSV().getListaCalculo());
-       
-      if(getTvTabelaCalculoEdicao().getItems().size()>0){
-          setTvTabelaCalculoEdicao(new TableView<>(observableListCalculoEdicao));
-         
-          
-      }
-         
-         
-         
-        
-         TableColumn<Calculo,Integer> colId = new TableColumn("id");
-         colId.setCellValueFactory(data -> new  SimpleIntegerProperty(data.getValue().getId()).asObject());
-         tvTabelaCalculoEdicao.getColumns().addAll(colId);
-         tvTabelaCalculoEdicao.setItems(observableListCalculoEdicao);
-         
-          
+
+    public final void popularTabelacalculoEdicao() {
+
+        this.getListaCalculo().clear();
+
+        this.setListaCalculo(getProtocoloGSV().getListaCalculo());
+
+        getCalculoDAO().setMaximoObjeto(Integer.parseInt(getTxtFiltroQuantidadeReg().getText()));
+
+        ObservableList<Calculo> observableListCalculo = FXCollections.observableArrayList();
+
+        getColIdTbEdicao().setCellValueFactory(new PropertyValueFactory<>("numeroAgencia")); // atributo da entidade
+
+        observableListCalculo = FXCollections.observableList(getListaCalculo());
+        getTvTabelaCalculoEdicao().setItems(observableListCalculo);
+
+        //getLbMensagemNavegacao().setText(getCalculoDAO().mensagemNavegacao());
     }
 
     /**
@@ -500,17 +465,56 @@ public class TelaPrincipalController implements Initializable {
         this.btnConsultaGsv = btnConsultaGsv;
     }
 
-    @FXML
     private void editarSelecionado(ActionEvent event) {
-        
-        
-       
-        
+
         Calculo calculo = getTvTabelaCalculoEdicao().getSelectionModel().getSelectedItem();
-        
+
         System.out.println(calculo);
-        
-        
+
+    }
+
+    /**
+     * @return the btnEditarSelecionado
+     */
+    public JFXButton getBtnEditarSelecionado() {
+        return btnEditarSelecionado;
+    }
+
+    /**
+     * @param btnEditarSelecionado the btnEditarSelecionado to set
+     */
+    public void setBtnEditarSelecionado(JFXButton btnEditarSelecionado) {
+        this.btnEditarSelecionado = btnEditarSelecionado;
+    }
+
+    /**
+     * @return the colIdTbEdicao
+     */
+    public TableColumn<Calculo, Integer> getColIdTbEdicao() {
+        return colIdTbEdicao;
+    }
+
+    /**
+     * @param colIdTbEdicao the colIdTbEdicao to set
+     */
+    public void setColIdTbEdicao(TableColumn<Calculo, Integer> colIdTbEdicao) {
+        this.colIdTbEdicao = colIdTbEdicao;
+    }
+
+    private void editaLinha(Calculo c) {
+
+        String path = "/br/intranet/cenopservicoscwb/views/EdicaoCalculo.fxml";
+
+        EdicaoCalculoController edicaoCalculoController = new EdicaoCalculoController();
+        edicaoCalculoController = (EdicaoCalculoController) getMainApp().showCenterAnchorPaneWithReturn(path, edicaoCalculoController, getAnchorCalcEdit());
+
+        Calculo calculo = getTvTabelaCalculoEdicao().getSelectionModel().getSelectedItem();
+        setCalculo(calculo);
+
+        edicaoCalculoController.passarCalculo(this, getCalculo());
+
+        System.out.println(getTvTabelaCalculoEdicao().getSelectionModel().getSelectedItem().getValorFinal());
+
     }
 
     /**
@@ -526,14 +530,7 @@ public class TelaPrincipalController implements Initializable {
 //    public void setObservableListCalculoEdicao(ObservableList<Calculo> observableListCalculoEdicao) {
 //        this.observableListCalculoEdicao = observableListCalculoEdicao;
 //    }
-
-
-    
-
-
-
     /**
      * @param mainApp the mainApp to set
      */
-    
 }
