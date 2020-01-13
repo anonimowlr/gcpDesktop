@@ -6,6 +6,7 @@
 package br.intranet.cenopservicoscwb.dao;
 
 import br.com.intranet.cenopservicoscwb.model.entidade.Indice;
+import br.com.intranet.cenopservicoscwb.model.entidade.ValorIndice;
 import java.util.List;
 
 /**
@@ -34,6 +35,8 @@ public class IndiceDAO<T, E> extends DAOGenerico<Indice, Object>{
     }
     
     
+     
+ 
     
         
 }

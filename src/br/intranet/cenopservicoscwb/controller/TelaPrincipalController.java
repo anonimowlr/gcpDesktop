@@ -511,6 +511,7 @@ public class TelaPrincipalController implements Initializable {
         Calculo calculo = getTvTabelaCalculoEdicao().getSelectionModel().getSelectedItem();
         setCalculo(calculo);
 
+       
         edicaoCalculoController.passarCalculo(this, getCalculo());
 
         System.out.println(getTvTabelaCalculoEdicao().getSelectionModel().getSelectedItem().getValorFinal());

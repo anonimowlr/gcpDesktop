@@ -21,7 +21,6 @@ import br.com.intranet.cenopservicoscwb.model.entidade.Npj;
 import br.com.intranet.cenopservicoscwb.model.entidade.PeriodoCalculo;
 import br.com.intranet.cenopservicoscwb.model.entidade.PlanoEconomico;
 import br.com.intranet.cenopservicoscwb.model.entidade.ProtocoloGsv;
-import br.com.intranet.cenopservicoscwb.model.pdf.GerarPdf;
 import br.intranet.cenopservicoscwb.dao.CalculoDAO;
 import br.intranet.cenopservicoscwb.dao.CalculoPcondDAO;
 import br.intranet.cenopservicoscwb.dao.ClienteDAO;
@@ -136,16 +135,9 @@ public class EdicaoCalculoController extends  AbstractController implements Init
        
         
         
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
+         setNpjDAO(new NpjDAO<>());
+         setClienteDAO(new ClienteDAO());
+         setCalculoDAO(new CalculoDAO<>());
         
         
        
@@ -337,7 +329,7 @@ public class EdicaoCalculoController extends  AbstractController implements Init
     @FXML
     private void btnMostrarTeste(ActionEvent event) throws Exception {// Metodo de teste 
         
-        setNpjDAO(new NpjDAO<>());
+       
         
          setCalculo(getCalculo());
 
@@ -352,7 +344,7 @@ public class EdicaoCalculoController extends  AbstractController implements Init
 
         //GerarPdf gerarPdf = new GerarPdf();
 
-        if (!calculo.getProtocoloGsv().getNpj().equals(getNpjDAO().localizar(getNpj().getNrPrc()))) {
+        if (!calculo.getProtocoloGsv().getNpj().equals(getNpjDAO().localizar(calculo.getProtocoloGsv().getNpj().getNrPrc()))) {
            // Util.mensagemErro("O protocolo " + getCalculo().getProtocoloGsv().getCdPrc().toString() + " " + "já está associado a outro NPJ:  " + getProtocoloGsvDAO().localizar(getProtocoloGsv().getCdPrc()).getNpj().getNrPrc().toString());
             return;
         }
