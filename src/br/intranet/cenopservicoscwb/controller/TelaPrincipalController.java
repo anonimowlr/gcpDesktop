@@ -7,13 +7,16 @@ package br.intranet.cenopservicoscwb.controller;
 
 import CurrencyField.CurrencyField;
 import br.com.intranet.cenopservicoscwb.model.entidade.Calculo;
+import br.com.intranet.cenopservicoscwb.model.entidade.Metodologia;
 import br.com.intranet.cenopservicoscwb.model.entidade.Npj;
 import br.com.intranet.cenopservicoscwb.model.entidade.ProtocoloGsv;
+import br.com.intranet.cenopservicoscwb.model.util.Utils;
 import br.intranet.cenopservicoscwb.dao.CalculoDAO;
 import br.intranet.cenopservicoscwb.dao.NpjDAO;
 import br.intranet.cenopservicoscwb.dao.ProtocoloGsvDAO;
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXTextField;
+import java.math.BigDecimal;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
@@ -79,6 +82,10 @@ public class TelaPrincipalController implements Initializable {
     private TableColumn<Calculo, Integer> colIdTbEdicao;
     @FXML
     private Label lblChaveFunci;
+    @FXML
+    private TableColumn<Calculo, Metodologia> colMetodologia;
+    @FXML
+    private TableColumn<Calculo, String> colValorFinal;
 
     public TelaPrincipalController() {
 
@@ -397,7 +404,7 @@ public class TelaPrincipalController implements Initializable {
 
         }
 
-        getNpj().adicionarProtocolo(protocoloGsv);
+        getNpj().adicionarProtocolo(getProtocoloGSV());
 
         popularTabelacalculoEdicao();
 
@@ -406,6 +413,21 @@ public class TelaPrincipalController implements Initializable {
        
 
     }
+    
+    
+     public void salvar() {
+
+        if (getNpjDAO().atualizar(getNpj())) {
+            //Util.mensagemInformacao(getNpjDAO().getMensagem());
+
+        } else {
+
+           // Util.mensagemErro(getNpjDAO().getMensagem());
+        }
+
+    }
+    
+    
 
     public final void popularTabelacalculoEdicao() {
 
@@ -417,8 +439,10 @@ public class TelaPrincipalController implements Initializable {
 
         ObservableList<Calculo> observableListCalculo = FXCollections.observableArrayList();
 
-        getColIdTbEdicao().setCellValueFactory(new PropertyValueFactory<>("numeroAgencia")); // atributo da entidade
-
+        getColIdTbEdicao().setCellValueFactory(new PropertyValueFactory<>("id")); // atributo da entidade
+        getColMetodologia().setCellValueFactory(new PropertyValueFactory<>("metodologia")); // atributo da entidade
+        getColValorFinal().setCellValueFactory((new PropertyValueFactory<>("valorFinal"))); // atributo da entidade
+        
         observableListCalculo = FXCollections.observableList(getListaCalculo());
         getTvTabelaCalculoEdicao().setItems(observableListCalculo);
 
@@ -546,6 +570,35 @@ public class TelaPrincipalController implements Initializable {
         this.lblChaveFunci = lblChaveFunci;
     }
 
+    /**
+     * @return the colMetodologia
+     */
+    public TableColumn<Calculo, Metodologia> getColMetodologia() {
+        return colMetodologia;
+    }
+
+    /**
+     * @param colMetodologia the colMetodologia to set
+     */
+    public void setColMetodologia(TableColumn<Calculo, Metodologia> colMetodologia) {
+        this.colMetodologia = colMetodologia;
+    }
+
+    /**
+     * @return the colValorFinal
+     */
+    public TableColumn<Calculo, String> getColValorFinal() {
+        return colValorFinal;
+    }
+
+    /**
+     * @param colValorFinal the colValorFinal to set
+     */
+    public void setColValorFinal(TableColumn<Calculo, String> colValorFinal) {
+        this.colValorFinal = colValorFinal;
+    }
+
+
   
     
     
@@ -553,20 +606,4 @@ public class TelaPrincipalController implements Initializable {
     
     
 
-    /**
-     * @return the observableListCalculoEdicao
-     */
-//    public ObservableList<Calculo> getObservableListCalculoEdicao() {
-//        return observableListCalculoEdicao;
-//    }
-//
-//    /**
-//     * @param observableListCalculoEdicao the observableListCalculoEdicao to set
-//     */
-//    public void setObservableListCalculoEdicao(ObservableList<Calculo> observableListCalculoEdicao) {
-//        this.observableListCalculoEdicao = observableListCalculoEdicao;
-//    }
-    /**
-     * @param mainApp the mainApp to set
-     */
 }
