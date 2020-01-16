@@ -24,8 +24,7 @@
                                  <children>
                                     <JFXTextField id="txtNpj" fx:id="txtNPJ" labelFloat="true" layoutX="54.0" layoutY="49.0" promptText="Digite O NPJ" />
                                     <JFXTextField id="txtGSV" fx:id="txtGSV" labelFloat="true" layoutX="214.0" layoutY="49.0" promptText="Digite  o GSV" />
-                                    <Button fx:id="btnConsultar" layoutX="365.0" layoutY="55.0" mnemonicParsing="false" onAction="#chamaFxml" text="Teste Chamada" />
-                                    <Button fx:id="btnConsultaGsv" layoutX="511.0" layoutY="55.0" mnemonicParsing="false" onAction="#consultaGsv" text="Consulta GSV" />
+                                    <Button fx:id="btnConsultaGsv" layoutX="356.0" layoutY="49.0" mnemonicParsing="false" onAction="#consultaGsv" text="Ok" />
                                  </children>
                               </AnchorPane>
                             <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="607.0" prefWidth="1259.0">
@@ -36,7 +35,10 @@
                                              <children>
                                                 <ScrollPane layoutX="48.0" layoutY="163.0" prefHeight="591.0" prefWidth="405.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                                    <content>
-                                                      <AnchorPane fx:id="anchorCalcEdit" prefHeight="919.0" prefWidth="404.0" />
+                                                      <AnchorPane fx:id="anchorCalcEdit" prefHeight="919.0" prefWidth="404.0">
+                                                         <children>
+                                                            <Label fx:id="lblChaveFunci" layoutX="23.0" layoutY="598.0" prefHeight="27.0" prefWidth="128.0" text="Label" />
+                                                         </children></AnchorPane>
                                                    </content>
                                                 </ScrollPane>
                                              </children>

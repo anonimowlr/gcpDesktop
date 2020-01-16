@@ -3,15 +3,20 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package testejavafx;
+package main;
 
 
+import br.com.intranet.cenopservicoscwb.model.entidade.Funcionario;
 import br.intranet.cenopservicoscwb.controller.AbstractController;
 import br.intranet.cenopservicoscwb.controller.TelaPrincipalController;
 import br.intranet.cenopservicoscwb.dao.ConsultaSQL;
 import br.intranet.cenopservicoscwb.controller.RootLayoutController;
+import br.intranet.cenopservicoscwb.dao.FuncionarioDAO;
+import br.intranet.cenopservicoscwb.dao.UsuarioDAO;
+import br.intranet.cenopservicoscwb.util.Utils;
 import java.io.File;
 import java.io.IOException;
+import java.sql.SQLException;
 import java.util.prefs.Preferences;
 import javafx.application.Application;
 import static javafx.application.Application.launch;
@@ -35,8 +40,11 @@ public class MainApp extends Application {
     
     private Stage primaryStage;
     private BorderPane rootLayout;
-    public int codigoFerramenta = 1;
-    public String versao = "1.4.6";
+    private int codigoFerramenta = 57;
+    private String versao = "1.0";
+    private static Funcionario funci;
+    private FuncionarioDAO<Funcionario, Object> funcionarioDAO;
+    private UsuarioDAO usuarioDAO;
 
     /**
      *
@@ -47,27 +55,30 @@ public class MainApp extends Application {
     }
     
     @Override
-    public void start(Stage primaryStage) {
-        this.primaryStage = primaryStage;
-        this.primaryStage.setTitle("Gestão e Cálculo de Planos Econômicos");
+    public void start(Stage primaryStage) throws ClassNotFoundException, SQLException {
+        this.setPrimaryStage(primaryStage);
+        this.getPrimaryStage().setTitle("Gestão e Cálculo de Planos Econômicos");
         //primaryStage.resizableProperty().setValue(Boolean.FALSE);
         
         ConsultaSQL sql = new ConsultaSQL();
-        
+        usuarioDAO = new UsuarioDAO();
+        //funci = usuarioDAO.getFuncionario(System.getProperty("user.name"));
+        funci = usuarioDAO.getFuncionario("f5078775");
+         
         try {
-          //  if (sql.confirmaVersao(codigoFerramenta, versao)) {
+            if (sql.confirmaVersao(codigoFerramenta, versao)) {
                 
                 initRootLayout();
                 showMenuOpcoesAnchorPane();
                 
-         //   }else{
+            }else{
                 
-                ///utils util = new utils();
+              
                 
-               //util.alertaGeral("ATENÇÃO", "Sua versão da ferramenta de Subsídio Proativo - CARTÃO não é a mais atual.", "Gentileza acessar pela versão disponibilizada na pasta: M:\\Interna\\Ferramenta Subsídio Proativo - CARTÃO\\dist");
+               Utils.alertaGeral("ATENÇÃO", "Sua versão da ferramenta Cálculo de Poupança não é a mais atual.", "Gentileza acessar pela versão disponibilizada na pasta: M:\\Interna\\gcpDesktop\\dist");
                             
                 
-         //   }
+            }
         } catch (Throwable ex) {
             Logger.getLogger(MainApp.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -85,17 +96,17 @@ public class MainApp extends Application {
                 //Carrega o root layout do arquivo fxml
                 FXMLLoader loader = new FXMLLoader();
                 loader.setLocation(MainApp.class.getResource("/br/intranet/cenopservicoscwb/views/RootLayout.fxml"));
-                rootLayout = (BorderPane) loader.load();
+                setRootLayout((BorderPane) loader.load());
 
                 //Mostra a scene (cena) contendo o root layout.
-                Scene scene = new Scene(rootLayout);
-                primaryStage.setScene(scene);
+                Scene scene = new Scene(getRootLayout());
+                getPrimaryStage().setScene(scene);
 
                 // Dá ao controller o acesso ao main app.
                 RootLayoutController controller = loader.getController();
                 controller.setMainApp(this);
                 
-                primaryStage.show();
+                getPrimaryStage().show();
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -117,7 +128,7 @@ public class MainApp extends Application {
                 AnchorPane menuOpcoes = (AnchorPane) loader.load();
 
                 //Define o menu de opções na esquerda
-                rootLayout.setLeft(menuOpcoes);
+                getRootLayout().setLeft(menuOpcoes);
 
                 //Dá ao controlador acesso à main app.
                 TelaPrincipalController controller = loader.getController();
@@ -250,13 +261,104 @@ public class MainApp extends Application {
             prefs.put("filePath", file.getPath());
 
             // Update the stage title.
-            primaryStage.setTitle("AddressApp - " + file.getName());
+            getPrimaryStage().setTitle("AddressApp - " + file.getName());
         } else {
             prefs.remove("filePath");
 
             // Update the stage title.
-            primaryStage.setTitle("AddressApp");
+            getPrimaryStage().setTitle("AddressApp");
         }
+    }
+
+    /**
+     * @param primaryStage the primaryStage to set
+     */
+    public void setPrimaryStage(Stage primaryStage) {
+        this.primaryStage = primaryStage;
+    }
+
+    /**
+     * @return the rootLayout
+     */
+    public BorderPane getRootLayout() {
+        return rootLayout;
+    }
+
+    /**
+     * @param rootLayout the rootLayout to set
+     */
+    public void setRootLayout(BorderPane rootLayout) {
+        this.rootLayout = rootLayout;
+    }
+
+    /**
+     * @return the codigoFerramenta
+     */
+    public int getCodigoFerramenta() {
+        return codigoFerramenta;
+    }
+
+    /**
+     * @param codigoFerramenta the codigoFerramenta to set
+     */
+    public void setCodigoFerramenta(int codigoFerramenta) {
+        this.codigoFerramenta = codigoFerramenta;
+    }
+
+    /**
+     * @return the versao
+     */
+    public String getVersao() {
+        return versao;
+    }
+
+    /**
+     * @param versao the versao to set
+     */
+    public void setVersao(String versao) {
+        this.versao = versao;
+    }
+
+    /**
+     * @return the funci
+     */
+    public static Funcionario getFunci() {
+        return funci;
+    }
+
+    /**
+     * @param aFunci the funci to set
+     */
+    public static void setFunci(Funcionario aFunci) {
+        funci = aFunci;
+    }
+
+    /**
+     * @return the funcionarioDAO
+     */
+    public FuncionarioDAO<Funcionario, Object> getFuncionarioDAO() {
+        return funcionarioDAO;
+    }
+
+    /**
+     * @param funcionarioDAO the funcionarioDAO to set
+     */
+    public void setFuncionarioDAO(FuncionarioDAO<Funcionario, Object> funcionarioDAO) {
+        this.funcionarioDAO = funcionarioDAO;
+    }
+
+    /**
+     * @return the usuarioDAO
+     */
+    public UsuarioDAO getUsuarioDAO() {
+        return usuarioDAO;
+    }
+
+    /**
+     * @param usuarioDAO the usuarioDAO to set
+     */
+    public void setUsuarioDAO(UsuarioDAO usuarioDAO) {
+        this.usuarioDAO = usuarioDAO;
     }
     
 }

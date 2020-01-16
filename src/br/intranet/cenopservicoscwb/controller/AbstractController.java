@@ -5,7 +5,7 @@
  */
 package br.intranet.cenopservicoscwb.controller;
 
-import testejavafx.MainApp;
+import main.MainApp;
 
 
 

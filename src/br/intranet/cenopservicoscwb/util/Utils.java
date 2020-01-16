@@ -26,6 +26,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
+import javafx.scene.control.Alert;
 
 public class Utils {
  List<String> filesListInDir = new ArrayList<String>();
@@ -896,6 +897,29 @@ public class Utils {
         }
         
     }
+    
+    
+    
+    public static void alertaGeral(String a, String b, String c) {
+
+        Alert alert = new Alert(Alert.AlertType.ERROR);
+        alert.setTitle(a);
+        alert.setHeaderText(b);
+        alert.setContentText(c);
+        alert.show();
+
+    }
+     
+      public static void alertaGeralInformacao(String a, String b, String c) {
+
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle(a);
+        alert.setHeaderText(b);
+        alert.setContentText(c);
+        alert.show();
+
+    }
+    
     
     
 }

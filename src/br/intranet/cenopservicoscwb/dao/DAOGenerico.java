@@ -6,6 +6,7 @@
 package br.intranet.cenopservicoscwb.dao;
 
 
+import br.intranet.cenopservicoscwb.util.Utils;
 import java.io.Serializable;
 import java.util.List;
 import javax.persistence.EntityManager;
@@ -120,7 +121,8 @@ public class DAOGenerico<T, D> implements Serializable {
         } catch (Exception e) {
             rollback();
            
-            mensagem ="Erro ao salvar - ";
+            mensagem ="Erro ao salvar - " + e;
+            Utils.alertaGeral(null, null, getMensagem());
             return false;
         }
 

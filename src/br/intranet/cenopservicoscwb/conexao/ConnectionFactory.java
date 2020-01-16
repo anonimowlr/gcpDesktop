@@ -14,14 +14,14 @@ public class ConnectionFactory {
    
     private static final String DB_DRIVER ="com.mysql.jdbc.Driver";
         
-    private static final String DB_USER ="conciliacaodjo";
+    private static final String DB_USER ="calculopoupanca";
   
-    private static final String DB_PASSWORD ="conciliacaodjo";
+    private static final String DB_PASSWORD ="calculopoupanca";
 
     
     public static Connection conectar(String banco) {
 
-        String DB_CONEXAO = "jdbc:mysql://10.105.87.250/" + banco;
+        String DB_CONEXAO = "jdbc:mysql://172.20.0.33/" + banco;
 
 //        String DB_CONEXAO = "jdbc:mysql://10.105.87.250/" + banco;
 

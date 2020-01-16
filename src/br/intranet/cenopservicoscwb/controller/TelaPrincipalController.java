@@ -31,7 +31,7 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.AnchorPane;
-import testejavafx.MainApp;
+import main.MainApp;
 
 /**
  * FXML Controller class
@@ -63,7 +63,6 @@ public class TelaPrincipalController implements Initializable {
     private JFXTextField txtFiltroQuantidadeReg;
     @FXML
     private AnchorPane anchorCalcEdit;
-    @FXML
     private Button btnConsultar;
     @FXML
     private JFXTextField txtNPJ;
@@ -78,6 +77,8 @@ public class TelaPrincipalController implements Initializable {
     private TableColumn<Calculo, Integer> colId;
     @FXML
     private TableColumn<Calculo, Integer> colIdTbEdicao;
+    @FXML
+    private Label lblChaveFunci;
 
     public TelaPrincipalController() {
 
@@ -89,6 +90,7 @@ public class TelaPrincipalController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle rb) {
 
+        
         CurrencyField cur = new CurrencyField();
         cur.amountProperty().addListener(new ChangeListener<Number>() {
 
@@ -111,9 +113,10 @@ public class TelaPrincipalController implements Initializable {
         setCalculoDAO(new CalculoDAO<>());
 
         getTxtFiltroQuantidadeReg().setText(getCalculoDAO().getMaximoObjeto().toString());
-
-        //  getCmbEscolha().getItems().addAll("M", "F");
-        // TODO
+       
+        
+       
+        
     }
 
     public void setMainApp(MainApp mainApp) {
@@ -251,15 +254,15 @@ public class TelaPrincipalController implements Initializable {
         this.txtFiltroQuantidadeReg = txtFiltroQuantidadeReg;
     }
 
-    @FXML
-    private void chamaFxml(ActionEvent event) {
-
-        String path = "/br/intranet/cenopservicoscwb/views/EdicaoCalculo.fxml";
-
-        EdicaoCalculoController adicaoCalculoController = new EdicaoCalculoController();
-        adicaoCalculoController = (EdicaoCalculoController) getMainApp().showCenterAnchorPaneWithReturn(path, adicaoCalculoController, getAnchorCalcEdit());
-
-    }
+//    
+//    private void chamaFxml(ActionEvent event) {
+//
+//        String path = "/br/intranet/cenopservicoscwb/views/EdicaoCalculo.fxml";
+//
+//        EdicaoCalculoController adicaoCalculoController = new EdicaoCalculoController();
+//        adicaoCalculoController = (EdicaoCalculoController) getMainApp().showCenterAnchorPaneWithReturn(path, adicaoCalculoController, getAnchorCalcEdit());
+//
+//    }
 
     /**
      * @return the anchorCalcEdit
@@ -398,10 +401,9 @@ public class TelaPrincipalController implements Initializable {
 
         popularTabelacalculoEdicao();
 
-        System.out.println(getProtocoloGSV().getCdPrc().toString());
-        System.out.println(getNpj().getNrPrc().toString());
-
-        System.out.println(getNpj().getListaProtocoloGsv().get(0).getCdPrc().toString());
+        chamaFormEdicao();
+        
+       
 
     }
 
@@ -517,6 +519,39 @@ public class TelaPrincipalController implements Initializable {
         System.out.println(getTvTabelaCalculoEdicao().getSelectionModel().getSelectedItem().getValorFinal());
 
     }
+    
+    
+    
+    
+    public void  chamaFormEdicao(){
+        String path = "/br/intranet/cenopservicoscwb/views/EdicaoCalculo.fxml";
+
+        EdicaoCalculoController edicaoCalculoController = new EdicaoCalculoController();
+        edicaoCalculoController = (EdicaoCalculoController) getMainApp().showCenterAnchorPaneWithReturn(path, edicaoCalculoController, getAnchorCalcEdit());
+        
+        edicaoCalculoController.passarNpjProtocolo(this, getNpj(),getProtocoloGSV());
+    }
+
+    /**
+     * @return the lblChaveFunci
+     */
+    public Label getLblChaveFunci() {
+        return lblChaveFunci;
+    }
+
+    /**
+     * @param lblChaveFunci the lblChaveFunci to set
+     */
+    public void setLblChaveFunci(Label lblChaveFunci) {
+        this.lblChaveFunci = lblChaveFunci;
+    }
+
+  
+    
+    
+    
+    
+    
 
     /**
      * @return the observableListCalculoEdicao
