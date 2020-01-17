@@ -1087,7 +1087,7 @@ public class EdicaoCalculoController extends  AbstractController implements Init
         
         
         
-         setCalculo(getCalculo());
+         //setCalculo(getCalculo());
 
         if (getCalculo().getMetodologia().getId() == 2) {
             getCalculo().setDiaBase(br.com.intranet.cenopservicoscwb.model.util.Utils.getDia(getCalculo().getListaPeriodoCalculo().get(0).getDataInicioCalculo()));
