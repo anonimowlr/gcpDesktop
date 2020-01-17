@@ -47,6 +47,7 @@ import java.util.ResourceBundle;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.layout.GridPane;
 import main.MainApp;
@@ -131,6 +132,12 @@ public class EdicaoCalculoController extends  AbstractController implements Init
     private JFXTextField txtNome;
     @FXML
     private JFXButton btCalcular;
+    @FXML
+    private ComboBox<Indice> cmbIndice;
+    @FXML
+    private JFXTextField txtDataInicioCorrecao;
+    @FXML
+    private JFXTextField txtDataFinalCorrecao;
 
     /**
      * Initializes the controller class.
@@ -164,6 +171,7 @@ public class EdicaoCalculoController extends  AbstractController implements Init
         getCmbMetodologia().getItems().addAll(listaMetodologia);
         getCmbPlanoEconomico().getItems().addAll(getPlanoEconomicoDAO().getListaTodos());
         getCmbBanco().getItems().addAll("BB","BESC","BNC");
+        getCmbIndice().getItems().addAll(getIndiceDAO().getListaTodos());
         
     }    
 
@@ -552,6 +560,9 @@ public class EdicaoCalculoController extends  AbstractController implements Init
         getTxtInitJurRem().setText(Utils.converteData(getCalculo().getJuroRemuneratorio().getDataInicio()));
         getTxtFimJurRem().setText(Utils.converteData(getCalculo().getJuroRemuneratorio().getDataFinal()));
         getCmbExpurgo().setValue(getCalculo().getExpurgo());
+        getCmbIndice().setValue(getCalculo().getListaPeriodoCalculo().get(0).getIndice());
+        getTxtDataInicioCorrecao().setText(Utils.formatDataTexto(getCalculo().getListaPeriodoCalculo().get(0).getDataInicioCalculo().toString()));
+        getTxtDataFinalCorrecao().setText(Utils.formatDataTexto(getCalculo().getListaPeriodoCalculo().get(0).getDataFinalCalculo().toString()));
         getLblValorFinal().setText(Utils.converterToMoneySaldoBase(getCalculo().getValorFinal().toString()));
         getCkbPcond().setSelected(getCalculo().isPcond());
         
@@ -869,7 +880,9 @@ public class EdicaoCalculoController extends  AbstractController implements Init
      
       public void novo() {
           
-            Calculo calculoUltimaLinha = getProtocoloGsv().getListaCalculo().get(getProtocoloGsv().getListaCalculo().size() - 1);
+            
+          if(getProtocoloGsv().getListaCalculo().size()>0){
+              Calculo calculoUltimaLinha = getProtocoloGsv().getListaCalculo().get(getProtocoloGsv().getListaCalculo().size() - 1);
             Calculo calculo = new Calculo();
             setCalculo(calculo);
 
@@ -899,6 +912,53 @@ public class EdicaoCalculoController extends  AbstractController implements Init
 
             getProtocoloGsv().adicionarCalculo(calculo);
           
+            atualizaFormularioCalculo();
+            
+            return;
+              
+          } 
+          
+          
+           if (getProtocoloGsv() != null && getProtocoloGsv().getListaCalculo().size() >= 1) {
+                setNpj(getProtocoloGsv().getNpj());
+                setProtocoloGsv(getProtocoloGsv());
+                getNpj().adicionarProtocolo(getProtocoloGsv());
+                if (getProtocoloGsv().getMulta() != null) {
+
+                    setMulta(getProtocoloGsv().getMulta());
+                    getProtocoloGsv().setMulta(getMulta());
+                    setHonorario(getProtocoloGsv().getHonorario());
+                    getProtocoloGsv().setHonorario(getProtocoloGsv().getHonorario());
+                } else {
+                    getProtocoloGsv().setMulta(getMulta());
+                    getProtocoloGsv().setHonorario(getHonorario());
+                }
+
+                return;
+
+            } else {
+
+              
+                
+
+                //salvar();
+                setCalculo(new Calculo());
+                getCalculo().setCliente(new Cliente());
+                // getCliente().adicionarCalculo(getCalculo());
+                getCalculo().setMora(new Mora());
+                getCalculo().setJuroRemuneratorio(new JuroRemuneratorio());
+                getCalculo().setArquivo(new Arquivo());
+                getProtocoloGsv().adicionarCalculo(getCalculo());
+                getProtocoloGsv().setNpj(getNpj());
+                getCalculo().setPlanoEconomico(new PlanoEconomico());
+            }
+
+            setPeriodoCalculo(new PeriodoCalculo());
+            getCalculo().adicionarPeriodoCalculo(getPeriodoCalculo());
+          
+          
+            
+          
 
     
 
@@ -906,17 +966,17 @@ public class EdicaoCalculoController extends  AbstractController implements Init
       
       
       
-      public void salvar() {
-
-        if (getNpjDAO().atualizar(getNpj())) {
-          //  Util.mensagemInformacao(getNpjDAO().getMensagem());
-
-        } else {
-
-           // Util.mensagemErro(getNpjDAO().getMensagem());
-        }
-
-    }
+//      public void salvar() {
+//
+//        if (getNpjDAO().atualizar(getNpj())) {
+//          //  Util.mensagemInformacao(getNpjDAO().getMensagem());
+//
+//        } else {
+//
+//           // Util.mensagemErro(getNpjDAO().getMensagem());
+//        }
+//
+//    }
 
     /**
      * @return the multa
@@ -1018,6 +1078,10 @@ public class EdicaoCalculoController extends  AbstractController implements Init
         getCalculo().getJuroRemuneratorio().setDataFinal(Utils.formataData(getTxtFimJurRem().getText()));
         getCalculo().setExpurgo(getCmbExpurgo().getValue());
         getCalculo().setPcond(getCkbPcond().isSelected());
+        getCalculo().getListaPeriodoCalculo().get(0).setDataInicioCalculo(Utils.formataData(getTxtDataInicioCorrecao().getText()));
+        getCalculo().getListaPeriodoCalculo().get(0).setDataFinalCalculo(Utils.formataData(getTxtDataFinalCorrecao().getText()));
+        getCalculo().getListaPeriodoCalculo().get(0).setIndice(getCmbIndice().getValue());
+        getCalculo().setPlanoEconomico(getCmbPlanoEconomico().getValue());
         
         
         
@@ -1030,14 +1094,14 @@ public class EdicaoCalculoController extends  AbstractController implements Init
         }
 
         if (getCalculo().getMora().getDataInicio().after(getCalculo().getListaPeriodoCalculo().get(getCalculo().getListaPeriodoCalculo().size() - 1).getDataFinalCalculo())) {
-            //Util.mensagemErro("Data de mora não pode ser superior à data de atualização do cálculo.");
+            Utils.alertaGeralInformacao(null,null,"Data de mora não pode ser superior à data de atualização do cálculo.");
             return;
         }
 
         //GerarPdf gerarPdf = new GerarPdf();
 
         if (!calculo.getProtocoloGsv().getNpj().equals(getNpjDAO().localizar(calculo.getProtocoloGsv().getNpj().getNrPrc()))) {
-           // Util.mensagemErro("O protocolo " + getCalculo().getProtocoloGsv().getCdPrc().toString() + " " + "já está associado a outro NPJ:  " + getProtocoloGsvDAO().localizar(getProtocoloGsv().getCdPrc()).getNpj().getNrPrc().toString());
+            Utils.alertaGeralInformacao(null,null,"O protocolo " + getCalculo().getProtocoloGsv().getCdPrc().toString() + " " + "já está associado a outro NPJ:  " + getProtocoloGsvDAO().localizar(getProtocoloGsv().getCdPrc()).getNpj().getNrPrc().toString());
             return;
         }
 
@@ -1173,6 +1237,11 @@ public class EdicaoCalculoController extends  AbstractController implements Init
     
     
     public void atualizaFormularioCalculo(){
+        
+        if(getCalculo().getId()== null){
+          return;
+        }
+        
         getCmbMetodologia().setValue(getCalculo().getMetodologia());
         getTxtCpjCnpj().setText(getCalculo().getCliente().getCpf());
         getTxtNome().setText(getCalculo().getCliente().getNomeCliente());
@@ -1186,6 +1255,9 @@ public class EdicaoCalculoController extends  AbstractController implements Init
         getTxtInitJurRem().setText(Utils.converteData(getCalculo().getJuroRemuneratorio().getDataInicio()));
         getTxtFimJurRem().setText(Utils.converteData(getCalculo().getJuroRemuneratorio().getDataFinal()));
         getCmbExpurgo().setValue(getCalculo().getExpurgo());
+        getCmbIndice().setValue(getCalculo().getListaPeriodoCalculo().get(0).getIndice());
+        getTxtDataInicioCorrecao().setText(Utils.formatDataTexto(getCalculo().getListaPeriodoCalculo().get(0).getDataInicioCalculo().toString()));
+        getTxtDataFinalCorrecao().setText(Utils.formatDataTexto(getCalculo().getListaPeriodoCalculo().get(0).getDataFinalCalculo().toString()));
         getLblValorFinal().setText(Utils.converterToMoneySaldoBase(getCalculo().getValorFinal().toString()));
         getCkbPcond().setSelected(getCalculo().isPcond());
     }
@@ -1240,6 +1312,49 @@ public class EdicaoCalculoController extends  AbstractController implements Init
      */
     public void setBtCalcular(JFXButton btCalcular) {
         this.btCalcular = btCalcular;
+    }
+
+    
+    /**
+     * @return the txtDataInicioCorrecao
+     */
+    public JFXTextField getTxtDataInicioCorrecao() {
+        return txtDataInicioCorrecao;
+    }
+
+    /**
+     * @param txtDataInicioCorrecao the txtDataInicioCorrecao to set
+     */
+    public void setTxtDataInicioCorrecao(JFXTextField txtDataInicioCorrecao) {
+        this.txtDataInicioCorrecao = txtDataInicioCorrecao;
+    }
+
+    /**
+     * @return the txtDataFinalCorrecao
+     */
+    public JFXTextField getTxtDataFinalCorrecao() {
+        return txtDataFinalCorrecao;
+    }
+
+    /**
+     * @param txtDataFinalCorrecao the txtDataFinalCorrecao to set
+     */
+    public void setTxtDataFinalCorrecao(JFXTextField txtDataFinalCorrecao) {
+        this.txtDataFinalCorrecao = txtDataFinalCorrecao;
+    }
+
+    /**
+     * @return the cmbIndice
+     */
+    public ComboBox<Indice> getCmbIndice() {
+        return cmbIndice;
+    }
+
+    /**
+     * @param cmbIndice the cmbIndice to set
+     */
+    public void setCmbIndice(ComboBox<Indice> cmbIndice) {
+        this.cmbIndice = cmbIndice;
     }
     
     

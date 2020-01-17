@@ -22,20 +22,13 @@
             <Label text="Plano Econômico:" GridPane.rowIndex="6" />
             <Label text="Saldo Base:" GridPane.rowIndex="7" />
             <Label text="Dia Base:" GridPane.rowIndex="8" />
-            <Label text="Período/indice" GridPane.rowIndex="9" />
-            <TableView prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="9">
-               <columns>
-                  <TableColumn prefWidth="75.0" text="Índice" />
-                  <TableColumn prefWidth="75.0" text="Inicio Correção" />
-                  <TableColumn prefWidth="75.0" text="Fim Correção" />
-               </columns>
-            </TableView>
-            <Label text="Juros Mora:" GridPane.rowIndex="10" />
-            <Label text="Início jur. Rem." GridPane.rowIndex="11" />
-            <Label text="Fim Jur. Rem." GridPane.rowIndex="12" />
-            <Label text="Expurgo:" GridPane.rowIndex="13" />
-            <Label text="Valor Final:" GridPane.rowIndex="14" />
-            <Label text="PCOND:" GridPane.rowIndex="15" />
+            <Label text="Índice" GridPane.rowIndex="9" />
+            <Label text="Juros Mora:" GridPane.rowIndex="12" />
+            <Label text="Início jur. Rem." GridPane.rowIndex="13" />
+            <Label text="Fim Jur. Rem." GridPane.rowIndex="14" />
+            <Label text="Expurgo:" GridPane.rowIndex="15" />
+            <Label text="Valor Final:" GridPane.rowIndex="16" />
+            <Label text="PCOND:" GridPane.rowIndex="17" />
             <JFXTextField fx:id="txtCpjCnpj" prefHeight="25.0" prefWidth="207.0" GridPane.columnIndex="1" GridPane.rowIndex="1" />
             <JFXTextField fx:id="txtNome" GridPane.columnIndex="1" GridPane.rowIndex="2" />
             <JFXTextField fx:id="txtAgencia" GridPane.columnIndex="1" GridPane.rowIndex="4" />
@@ -43,20 +36,26 @@
             <JFXComboBox fx:id="cmbBanco" prefHeight="25.0" prefWidth="241.0" GridPane.columnIndex="1" GridPane.rowIndex="3" />
             <JFXTextField fx:id="txtSaldoBase" GridPane.columnIndex="1" GridPane.rowIndex="7" />
             <JFXTextField fx:id="txtDiaBase" GridPane.columnIndex="1" GridPane.rowIndex="8" />
-            <JFXTextField GridPane.columnIndex="1" GridPane.rowIndex="9" />
-            <JFXTextField fx:id="txtJurMora" GridPane.columnIndex="1" GridPane.rowIndex="10" />
-            <JFXTextField fx:id="txtInitJurRem" GridPane.columnIndex="1" GridPane.rowIndex="11" />
-            <JFXComboBox fx:id="cmbExpurgo" GridPane.columnIndex="1" GridPane.rowIndex="13" />
-            <Label fx:id="lblValorFinal" prefHeight="30.0" prefWidth="164.0" text="Label" GridPane.columnIndex="1" GridPane.rowIndex="14" />
-            <JFXCheckBox fx:id="ckbPcond" text="SIM" GridPane.columnIndex="1" GridPane.rowIndex="15" />
+            <JFXTextField fx:id="txtJurMora" GridPane.columnIndex="1" GridPane.rowIndex="12" />
+            <JFXTextField fx:id="txtInitJurRem" GridPane.columnIndex="1" GridPane.rowIndex="13" />
+            <JFXComboBox fx:id="cmbExpurgo" GridPane.columnIndex="1" GridPane.rowIndex="15" />
+            <Label fx:id="lblValorFinal" prefHeight="30.0" prefWidth="164.0" text="Label" GridPane.columnIndex="1" GridPane.rowIndex="16" />
+            <JFXCheckBox fx:id="ckbPcond" text="SIM" GridPane.columnIndex="1" GridPane.rowIndex="17" />
             <JFXTextField fx:id="txtConta" GridPane.columnIndex="1" GridPane.rowIndex="5" />
-            <JFXTextField fx:id="txtFimJurRem" GridPane.columnIndex="1" GridPane.rowIndex="12" />
+            <JFXTextField fx:id="txtFimJurRem" GridPane.columnIndex="1" GridPane.rowIndex="14" />
+            <Label text="Data início correção" GridPane.rowIndex="10" />
+            <Label text="Data final correção" GridPane.rowIndex="11" />
+            <JFXTextField fx:id="txtDataInicioCorrecao" GridPane.columnIndex="1" GridPane.rowIndex="10" />
+            <JFXTextField fx:id="txtDataFinalCorrecao" GridPane.columnIndex="1" GridPane.rowIndex="11" />
+            <JFXComboBox fx:id="cmbIndice" prefHeight="25.0" prefWidth="245.0" GridPane.columnIndex="1" GridPane.rowIndex="9" />
          </children>
          <columnConstraints>
             <ColumnConstraints hgrow="SOMETIMES" maxWidth="196.0" minWidth="10.0" prefWidth="142.0" />
             <ColumnConstraints hgrow="SOMETIMES" maxWidth="307.0" minWidth="10.0" prefWidth="248.0" />
          </columnConstraints>
          <rowConstraints>
+            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
             <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
             <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
             <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />

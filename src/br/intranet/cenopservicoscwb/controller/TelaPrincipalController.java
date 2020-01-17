@@ -7,16 +7,16 @@ package br.intranet.cenopservicoscwb.controller;
 
 import CurrencyField.CurrencyField;
 import br.com.intranet.cenopservicoscwb.model.entidade.Calculo;
+import br.com.intranet.cenopservicoscwb.model.entidade.Honorario;
 import br.com.intranet.cenopservicoscwb.model.entidade.Metodologia;
+import br.com.intranet.cenopservicoscwb.model.entidade.Multa;
 import br.com.intranet.cenopservicoscwb.model.entidade.Npj;
 import br.com.intranet.cenopservicoscwb.model.entidade.ProtocoloGsv;
-import br.com.intranet.cenopservicoscwb.model.util.Utils;
 import br.intranet.cenopservicoscwb.dao.CalculoDAO;
 import br.intranet.cenopservicoscwb.dao.NpjDAO;
 import br.intranet.cenopservicoscwb.dao.ProtocoloGsvDAO;
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXTextField;
-import java.math.BigDecimal;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
@@ -51,6 +51,9 @@ public class TelaPrincipalController implements Initializable {
     private ProtocoloGsv protocoloGSV;
     private ProtocoloGsvDAO<ProtocoloGsv, Object> protocoloGsvDAO;
     private NpjDAO<Npj, Object> npjDAO;
+    
+    private Multa multa;
+    private Honorario honorario;
 
     @FXML
     private TableView<Calculo> tblCalculoPoupanca;
@@ -97,15 +100,12 @@ public class TelaPrincipalController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle rb) {
 
-        
         CurrencyField cur = new CurrencyField();
         cur.amountProperty().addListener(new ChangeListener<Number>() {
 
-           
-
             @Override
             public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
-                  System.out.println(newValue.doubleValue());
+                System.out.println(newValue.doubleValue());
             }
         });
 
@@ -120,10 +120,7 @@ public class TelaPrincipalController implements Initializable {
         setCalculoDAO(new CalculoDAO<>());
 
         getTxtFiltroQuantidadeReg().setText(getCalculoDAO().getMaximoObjeto().toString());
-       
-        
-       
-        
+
     }
 
     public void setMainApp(MainApp mainApp) {
@@ -270,7 +267,6 @@ public class TelaPrincipalController implements Initializable {
 //        adicaoCalculoController = (EdicaoCalculoController) getMainApp().showCenterAnchorPaneWithReturn(path, adicaoCalculoController, getAnchorCalcEdit());
 //
 //    }
-
     /**
      * @return the anchorCalcEdit
      */
@@ -406,28 +402,41 @@ public class TelaPrincipalController implements Initializable {
 
         getNpj().adicionarProtocolo(getProtocoloGSV());
 
-        popularTabelacalculoEdicao();
+        if (protocoloGsv != null && protocoloGsv.getMulta() != null) {
 
-        chamaFormEdicao();
+            setMulta(protocoloGsv.getMulta());
+            getProtocoloGSV().setMulta(getMulta());
+            setHonorario(protocoloGsv.getHonorario());
+            getProtocoloGSV().setHonorario(getHonorario());
+
+        }
+
+        getProtocoloGSV().setHonorario(new Honorario());
+        getProtocoloGSV().setMulta(new Multa());
         
-       
+        if (getProtocoloGSV().getListaCalculo().size() > 0) {
+            popularTabelacalculoEdicao();
+
+            chamaFormEdicao();
+        } else {
+
+            salvar();
+            chamaFormEdicao();
+        }
 
     }
-    
-    
-     public void salvar() {
+
+    public void salvar() {
 
         if (getNpjDAO().atualizar(getNpj())) {
             //Util.mensagemInformacao(getNpjDAO().getMensagem());
 
         } else {
 
-           // Util.mensagemErro(getNpjDAO().getMensagem());
+            // Util.mensagemErro(getNpjDAO().getMensagem());
         }
 
     }
-    
-    
 
     public final void popularTabelacalculoEdicao() {
 
@@ -442,7 +451,7 @@ public class TelaPrincipalController implements Initializable {
         getColIdTbEdicao().setCellValueFactory(new PropertyValueFactory<>("id")); // atributo da entidade
         getColMetodologia().setCellValueFactory(new PropertyValueFactory<>("metodologia")); // atributo da entidade
         getColValorFinal().setCellValueFactory((new PropertyValueFactory<>("valorFinal"))); // atributo da entidade
-        
+
         observableListCalculo = FXCollections.observableList(getListaCalculo());
         getTvTabelaCalculoEdicao().setItems(observableListCalculo);
 
@@ -537,23 +546,19 @@ public class TelaPrincipalController implements Initializable {
         Calculo calculo = getTvTabelaCalculoEdicao().getSelectionModel().getSelectedItem();
         setCalculo(calculo);
 
-       
         edicaoCalculoController.passarCalculo(this, getCalculo());
 
         System.out.println(getTvTabelaCalculoEdicao().getSelectionModel().getSelectedItem().getValorFinal());
 
     }
-    
-    
-    
-    
-    public void  chamaFormEdicao(){
+
+    public void chamaFormEdicao() {
         String path = "/br/intranet/cenopservicoscwb/views/EdicaoCalculo.fxml";
 
         EdicaoCalculoController edicaoCalculoController = new EdicaoCalculoController();
         edicaoCalculoController = (EdicaoCalculoController) getMainApp().showCenterAnchorPaneWithReturn(path, edicaoCalculoController, getAnchorCalcEdit());
-        
-        edicaoCalculoController.passarNpjProtocolo(this, getNpj(),getProtocoloGSV());
+
+        edicaoCalculoController.passarNpjProtocolo(this, getNpj(), getProtocoloGSV());
     }
 
     /**
@@ -598,12 +603,32 @@ public class TelaPrincipalController implements Initializable {
         this.colValorFinal = colValorFinal;
     }
 
+    /**
+     * @return the multa
+     */
+    public Multa getMulta() {
+        return multa;
+    }
 
-  
-    
-    
-    
-    
-    
+    /**
+     * @param multa the multa to set
+     */
+    public void setMulta(Multa multa) {
+        this.multa = multa;
+    }
+
+    /**
+     * @return the honorario
+     */
+    public Honorario getHonorario() {
+        return honorario;
+    }
+
+    /**
+     * @param honorario the honorario to set
+     */
+    public void setHonorario(Honorario honorario) {
+        this.honorario = honorario;
+    }
 
 }
