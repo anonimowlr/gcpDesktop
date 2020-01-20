@@ -74,7 +74,12 @@
             <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
          </rowConstraints>
       </GridPane>
-      <JFXButton fx:id="btCalcular" buttonType="RAISED" layoutX="253.0" layoutY="867.0" onAction="#avaliarParaSalvar" prefHeight="30.0" prefWidth="136.0" style="-fx-background-color: #fff646;" text="Calcular" textFill="LIGHTSLATEGRAY" AnchorPane.bottomAnchor="22.0" AnchorPane.rightAnchor="15.0">
+      <JFXButton fx:id="btCalcular" buttonType="RAISED" layoutX="253.0" layoutY="867.0" onAction="#avaliarParaSalvar" prefHeight="30.0" prefWidth="136.0" style="-fx-background-color: #fff646;" text="Salvar" textFill="LIGHTSLATEGRAY" AnchorPane.bottomAnchor="22.0" AnchorPane.rightAnchor="15.0">
+         <font>
+            <Font name="Open Sans Bold" size="14.0" />
+         </font>
+      </JFXButton>
+      <JFXButton fx:id="btNovo" buttonType="RAISED" layoutX="32.0" layoutY="867.0" onAction="#novo" prefHeight="30.0" prefWidth="136.0" style="-fx-background-color: #fff646;" text="Novo " textFill="LIGHTSLATEGRAY">
          <font>
             <Font name="Open Sans Bold" size="14.0" />
          </font>

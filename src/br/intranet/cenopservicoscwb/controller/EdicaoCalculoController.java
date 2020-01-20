@@ -782,7 +782,8 @@ public class EdicaoCalculoController extends  AbstractController implements Init
            
             
         } else {
-           // Util.mensagemErro(getCalculoDAO().getMensagem());
+            Utils.alertaGeral(null, null,getCalculoDAO().getMensagem());
+           
 
         }
 

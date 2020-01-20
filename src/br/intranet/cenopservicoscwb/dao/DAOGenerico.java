@@ -138,7 +138,7 @@ public class DAOGenerico<T, D> implements Serializable {
 
         } catch (Exception e) {
             rollback();
-            mensagem = "Erro ao atualizar - ";
+            mensagem = "Erro ao atualizar - " + e;
             return false;
         }
 
