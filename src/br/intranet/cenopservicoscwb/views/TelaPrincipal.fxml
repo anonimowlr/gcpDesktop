@@ -50,7 +50,6 @@
                                                       <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
                                                    </columnResizePolicy>
                                                    <columns>
-                                                      <TableColumn fx:id="colIdTbEdicao" prefWidth="751.0" text="ID" />
                                                       <TableColumn fx:id="colMetodologia" prefWidth="75.0" text="Metodologia" />
                                                       <TableColumn fx:id="colValorFinal" prefWidth="75.0" text="Valor Final" />
                                                    </columns>

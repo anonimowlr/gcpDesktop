@@ -15,6 +15,7 @@ import br.com.intranet.cenopservicoscwb.model.entidade.ProtocoloGsv;
 import br.intranet.cenopservicoscwb.dao.CalculoDAO;
 import br.intranet.cenopservicoscwb.dao.NpjDAO;
 import br.intranet.cenopservicoscwb.dao.ProtocoloGsvDAO;
+import br.intranet.cenopservicoscwb.util.Utils;
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXTextField;
 import java.net.URL;
@@ -51,7 +52,7 @@ public class TelaPrincipalController implements Initializable {
     private ProtocoloGsv protocoloGSV;
     private ProtocoloGsvDAO<ProtocoloGsv, Object> protocoloGsvDAO;
     private NpjDAO<Npj, Object> npjDAO;
-    
+
     private Multa multa;
     private Honorario honorario;
 
@@ -81,7 +82,6 @@ public class TelaPrincipalController implements Initializable {
     private JFXButton btnEditarSelecionado;
     @FXML
     private TableColumn<Calculo, Integer> colId;
-    @FXML
     private TableColumn<Calculo, Integer> colIdTbEdicao;
     @FXML
     private Label lblChaveFunci;
@@ -409,11 +409,11 @@ public class TelaPrincipalController implements Initializable {
             setHonorario(protocoloGsv.getHonorario());
             getProtocoloGSV().setHonorario(getHonorario());
 
+        } else {
+            getProtocoloGSV().setHonorario(new Honorario());
+            getProtocoloGSV().setMulta(new Multa());
         }
 
-        getProtocoloGSV().setHonorario(new Honorario());
-        getProtocoloGSV().setMulta(new Multa());
-        
         if (getProtocoloGSV().getListaCalculo().size() > 0) {
             popularTabelacalculoEdicao();
 
@@ -421,8 +421,10 @@ public class TelaPrincipalController implements Initializable {
         } else {
 
             salvar();
+            popularTabelacalculoEdicao();
             chamaFormEdicao();
         }
+        getTvTabelaCalculoEdicao().refresh();
 
     }
 
@@ -433,13 +435,14 @@ public class TelaPrincipalController implements Initializable {
 
         } else {
 
-            // Util.mensagemErro(getNpjDAO().getMensagem());
+            Utils.alertaGeral(null, null,getNpjDAO().getMensagem());
         }
 
     }
 
     public final void popularTabelacalculoEdicao() {
 
+        getTvTabelaCalculoEdicao().getItems().clear();
         this.getListaCalculo().clear();
 
         this.setListaCalculo(getProtocoloGSV().getListaCalculo());
@@ -448,7 +451,7 @@ public class TelaPrincipalController implements Initializable {
 
         ObservableList<Calculo> observableListCalculo = FXCollections.observableArrayList();
 
-        getColIdTbEdicao().setCellValueFactory(new PropertyValueFactory<>("id")); // atributo da entidade
+        //getColIdTbEdicao().setCellValueFactory(new PropertyValueFactory<>("id")); // atributo da entidade
         getColMetodologia().setCellValueFactory(new PropertyValueFactory<>("metodologia")); // atributo da entidade
         getColValorFinal().setCellValueFactory((new PropertyValueFactory<>("valorFinal"))); // atributo da entidade
 
