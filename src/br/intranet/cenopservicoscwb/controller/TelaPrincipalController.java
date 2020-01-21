@@ -42,7 +42,7 @@ import main.MainApp;
  *
  * @author f5078775
  */
-public class TelaPrincipalController implements Initializable {
+public class TelaPrincipalController extends AbstractController implements Initializable {
 
     private MainApp mainApp;
 
@@ -89,6 +89,8 @@ public class TelaPrincipalController implements Initializable {
     private TableColumn<Calculo, Metodologia> colMetodologia;
     @FXML
     private TableColumn<Calculo, String> colValorFinal;
+    
+     
 
     public TelaPrincipalController() {
 
@@ -380,7 +382,7 @@ public class TelaPrincipalController implements Initializable {
     }
 
     @FXML
-    private void consultaGsv(ActionEvent event) {
+    public void consultaGsv(ActionEvent event) {
         getTvTabelaCalculoEdicao().refresh();
         setNpj(new Npj());
         setProtocoloGSV(new ProtocoloGsv());
@@ -435,21 +437,24 @@ public class TelaPrincipalController implements Initializable {
 
         } else {
 
-            Utils.alertaGeral(null, null,getNpjDAO().getMensagem());
+            Utils.alertaGeral(null, null, getNpjDAO().getMensagem());
         }
 
     }
 
     public final void popularTabelacalculoEdicao() {
 
+        setProtocoloGSV(getProtocoloGsvDAO().localizar(getProtocoloGSV().getCdPrc()));
+        
         getTvTabelaCalculoEdicao().getItems().clear();
-        this.getListaCalculo().clear();
+        getListaCalculo().clear();
 
-        this.setListaCalculo(getProtocoloGSV().getListaCalculo());
+        setListaCalculo(getProtocoloGSV().getListaCalculo());
 
         getCalculoDAO().setMaximoObjeto(Integer.parseInt(getTxtFiltroQuantidadeReg().getText()));
-
         ObservableList<Calculo> observableListCalculo = FXCollections.observableArrayList();
+
+        observableListCalculo = FXCollections.observableArrayList();
 
         //getColIdTbEdicao().setCellValueFactory(new PropertyValueFactory<>("id")); // atributo da entidade
         getColMetodologia().setCellValueFactory(new PropertyValueFactory<>("metodologia")); // atributo da entidade
@@ -460,6 +465,9 @@ public class TelaPrincipalController implements Initializable {
 
         //getLbMensagemNavegacao().setText(getCalculoDAO().mensagemNavegacao());
     }
+    
+    
+   
 
     /**
      * @return the protocoloGsvDAO
