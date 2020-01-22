@@ -5,6 +5,7 @@
  */
 package br.intranet.cenopservicoscwb.controller;
 
+import CurrencyField.TextFieldFormatter;
 import br.com.intranet.cenopservicoscwb.model.calculo.MotorCalculoPoupanca;
 import br.com.intranet.cenopservicoscwb.model.entidade.Arquivo;
 import br.com.intranet.cenopservicoscwb.model.entidade.Atualizacao;
@@ -46,6 +47,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 import java.util.ResourceBundle;
 import javafx.event.ActionEvent;
 import javafx.event.Event;
@@ -53,6 +55,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.GridPane;
 import main.MainApp;
 
@@ -89,6 +92,13 @@ public class EdicaoCalculoController extends AbstractController implements Initi
     private PeriodoCalculo periodoCalculo;
     private Funcionario funcionario;
     private FuncionarioDAO<Funcionario, Object> funcionarioDAO;
+    private Map<String, BigDecimal> valorIndiceMap;
+    
+    static private Map<String, BigDecimal> valorIndiceUmMap;
+    static  private Map<String, BigDecimal> valorIndiceDoisMap;
+    static private Map<String, BigDecimal> valorIndiceTresMap;
+    static private Map<String, BigDecimal> valorIndiceQuatroMap;
+    static private Map<String, BigDecimal> valorIndiceCincoMap;
 
     private JFXButton btn_buscarTable;
     private JFXButton btn_buscarTable1;
@@ -107,7 +117,6 @@ public class EdicaoCalculoController extends AbstractController implements Initi
     @FXML
     private JFXComboBox<Expurgo> cmbExpurgo;
 
-    @FXML
     private JFXTextField txtCpjCnpj;
     @FXML
     private JFXTextField txtDiaBase;
@@ -135,6 +144,8 @@ public class EdicaoCalculoController extends AbstractController implements Initi
     private JFXTextField txtDataFinalCorrecao;
 
     private TelaPrincipalController tp;
+    @FXML
+    private JFXTextField txtCpfCnpj;
 
     /**
      * Initializes the controller class.
@@ -381,19 +392,7 @@ public class EdicaoCalculoController extends AbstractController implements Initi
         this.cmbExpurgo = cmbExpurgo;
     }
 
-    /**
-     * @return the txtCpjCnpj
-     */
-    public JFXTextField getTxtCpjCnpj() {
-        return txtCpjCnpj;
-    }
-
-    /**
-     * @param txtCpjCnpj the txtCpjCnpj to set
-     */
-    public void setTxtCpjCnpj(JFXTextField txtCpjCnpj) {
-        this.txtCpjCnpj = txtCpjCnpj;
-    }
+    
 
     /**
      * @return the txtDiaBase
@@ -523,7 +522,7 @@ public class EdicaoCalculoController extends AbstractController implements Initi
 
     public void passarCalculo(TelaPrincipalController tp, Calculo calculo) {
 
-        this.tp = tp;
+        this.setTp(tp);
 
         if(calculo==null){
             return;
@@ -534,7 +533,7 @@ public class EdicaoCalculoController extends AbstractController implements Initi
         setProtocoloGsv(calculo.getProtocoloGsv());
 
         getCmbMetodologia().setValue(getCalculo().getMetodologia());
-        getTxtCpjCnpj().setText(getCalculo().getCliente().getCpf());
+        getTxtCpfCnpj().setText(getCalculo().getCliente().getCpf());
         getTxtNome().setText(getCalculo().getCliente().getNomeCliente());
         getCmbBanco().setValue(getCalculo().getNomeBanco());
         getTxtAgencia().setText(getCalculo().getNumeroAgencia().toString());
@@ -589,6 +588,31 @@ public class EdicaoCalculoController extends AbstractController implements Initi
         //Funcionario usuario = (Funcionario) session.getAttribute("usuarioLogado");
         try {
 
+            
+             switch (calculo.getListaPeriodoCalculo().get(0).getIndice().getId()) {
+
+                case 1:
+                    setValorIndiceMap(getValorIndiceUmMap());
+                    break;
+                case 2:
+                    setValorIndiceMap(getValorIndiceDoisMap());
+                    break;
+                case 3:
+                    setValorIndiceMap(getValorIndiceTresMap());
+                    break;
+                case 4:
+                    setValorIndiceMap(getValorIndiceQuatroMap());
+                    break;
+                case 5:
+                    setValorIndiceMap(getValorIndiceCincoMap());
+                    break;
+            }
+            
+            
+            
+            
+            
+            
             if (calculo.getMetodologia().getId() == 3) {
                 calculo.getMora().setDataInicio(new Date("07/01/1994"));
                 calculo.setPcond(false);
@@ -743,7 +767,7 @@ public class EdicaoCalculoController extends AbstractController implements Initi
 
         if (getCalculoDAO().atualizar(calculo)) {
 
-            //Util.mensagemInformacao(getCalculoDAO().getMensagem());
+            Utils.alertaGeralInformacao(null,null,getCalculoDAO().getMensagem());
         } else {
             Utils.alertaGeral(null, null, getCalculoDAO().getMensagem());
 
@@ -836,10 +860,10 @@ public class EdicaoCalculoController extends AbstractController implements Initi
 
     public void novo() {
 
-        if (getCalculo() != null && getCalculo().getId() != null) {
-            atualizaFormularioCalculo();
-            return;
-        }
+//        if (getCalculo() != null && getCalculo().getId() != null) {
+//            atualizaFormularioCalculo();
+//            return;
+//        }
 
         if (getProtocoloGsv().getListaCalculo().size() > 0) {
             Calculo calculoUltimaLinha = getProtocoloGsv().getListaCalculo().get(getProtocoloGsv().getListaCalculo().size() - 1);
@@ -912,10 +936,12 @@ public class EdicaoCalculoController extends AbstractController implements Initi
             getCalculo().setPlanoEconomico(getPlanoEconomicoDAO().getEm().find(PlanoEconomico.class, 1));
             setPeriodoCalculo(new PeriodoCalculo());
             getPeriodoCalculo().setIndice(getIndiceDAO().getEm().find(Indice.class, 1));
+            
+            
         }
 
         getCalculo().adicionarPeriodoCalculo(getPeriodoCalculo());
-
+        atualizaFormularioCalculo();
     }
 
 //      public void salvar() {
@@ -1017,7 +1043,7 @@ public class EdicaoCalculoController extends AbstractController implements Initi
     private void avaliarParaSalvar(ActionEvent event) throws Exception {
 
         getCalculo().setMetodologia(getCmbMetodologia().getValue());
-        getCalculo().getCliente().setCpf(getTxtCpjCnpj().getText());
+        getCalculo().getCliente().setCpf(getTxtCpfCnpj().getText());
         getCalculo().getCliente().setNomeCliente(getTxtNome().getText());
         getCalculo().setNomeBanco(getCmbBanco().getValue());
         getCalculo().setNumeroConta(getTxtConta().getText());
@@ -1055,25 +1081,26 @@ public class EdicaoCalculoController extends AbstractController implements Initi
             complementarDadosCalculo(getCalculo());
             MotorCalculoPoupanca motorCalculoPoupanca = new MotorCalculoPoupanca();
 
-            switch (getCalculo().getMetodologia().getId()) {
+             switch (getCalculo().getMetodologia().getId()) {
                 case 1:
-                    motorCalculoPoupanca.calcular(getCalculo());
+                    motorCalculoPoupanca.calcular(getCalculo(), getValorIndiceMap(), getValorIndiceUmMap(), getValorIndiceQuatroMap());
                     break;
                 case 2:
-                    motorCalculoPoupanca.calcularPj(getCalculo());
+                    motorCalculoPoupanca.calcularPj(getCalculo(), getValorIndiceMap());
                     break;
                 case 3:
-                    motorCalculoPoupanca.calcularDiferencaApadecoCumprimentoSentenca(getCalculo());
+                    motorCalculoPoupanca.calcularDiferencaApadecoCumprimentoSentenca(getCalculo(), getValorIndiceMap());
                     break;
                 case 4:
-                    motorCalculoPoupanca.calcular(getCalculo());
+                    motorCalculoPoupanca.calcular(getCalculo(), getValorIndiceMap(), getValorIndiceUmMap(), getValorIndiceQuatroMap());
                     break;
+                
                 default:
                     Utils.alertaGeralInformacao(null, null, getCalculo().getMetodologia().getNomeMetodologia() + "não é uma metodologia válida");
                     return;
             }
 
-            //gerarPdf.gerarDocumentoResumo(getCalculo().getProtocoloGsv());
+            gerarPdf.gerarDocumentoResumo(getCalculo().getProtocoloGsv());
             if (getCalculo().isPcond() == true) {
 
                 CalculoPcond calculoPcond = new CalculoPcond();
@@ -1097,19 +1124,21 @@ public class EdicaoCalculoController extends AbstractController implements Initi
                 calculoPcond.setExpurgo(getExpurgoDAO().localizar(2));
                 calculoPcond.setProtocoloGsv(getCalculo().getProtocoloGsv());
                 alterarParametrosParaPcond(calculoPcond);
-                motorCalculoPoupanca.calcularPcond(calculoPcond);
+                motorCalculoPoupanca.calcularPcond(calculoPcond, getValorIndiceUmMap());
                 //salvarCalculoPcond(calculoPcond);
                 getCalculo().setCalculoPcond(calculoPcond);
                 atualizarCalculo(getCalculo());
                 gerarPdf.gerarDocumentoResumoPcond(getCalculoPcondDAO().localizarCalculoPcondPorProtocolo(getProtocoloGsv().getCdPrc()));
                 atualizaTabelaPrincipal();
                 novo();
+                atualizaFormularioCalculo();
                
 
             } else {
                 salvarCalculo(getCalculo());
                 atualizaTabelaPrincipal();
                 novo();
+                atualizaFormularioCalculo();
                 
             }
 
@@ -1121,18 +1150,18 @@ public class EdicaoCalculoController extends AbstractController implements Initi
 
             MotorCalculoPoupanca motorCalculoPoupanca = new MotorCalculoPoupanca();
 
-            switch (getCalculo().getMetodologia().getId()) {
+             switch (getCalculo().getMetodologia().getId()) {
                 case 1:
-                    motorCalculoPoupanca.calcular(getCalculo());
+                    motorCalculoPoupanca.calcular(getCalculo(), getValorIndiceMap(), getValorIndiceUmMap(), getValorIndiceQuatroMap());
                     break;
                 case 2:
-                    motorCalculoPoupanca.calcularPj(getCalculo());
+                    motorCalculoPoupanca.calcularPj(getCalculo(), getValorIndiceMap());
                     break;
                 case 3:
-                    motorCalculoPoupanca.calcularDiferencaApadecoCumprimentoSentenca(getCalculo());
+                    motorCalculoPoupanca.calcularDiferencaApadecoCumprimentoSentenca(getCalculo(), getValorIndiceMap());
                     break;
                 case 4:
-                    motorCalculoPoupanca.calcular(getCalculo());
+                    motorCalculoPoupanca.calcular(getCalculo(), getValorIndiceMap(), getValorIndiceUmMap(), getValorIndiceQuatroMap());
                     break;
                 default:
                     Utils.alertaGeralInformacao(null, null, getCalculo().getMetodologia().getNomeMetodologia() + "não é uma metodologia válida");
@@ -1165,7 +1194,7 @@ public class EdicaoCalculoController extends AbstractController implements Initi
                 calculoPcond.setProtocoloGsv(getCalculo().getProtocoloGsv());
                 alterarParametrosParaPcond(calculoPcond);
 
-                motorCalculoPoupanca.calcularPcond(calculoPcond);
+                motorCalculoPoupanca.calcularPcond(calculoPcond, getValorIndiceUmMap());
                 // salvarCalculoPcond(calculoPcond);
                 getCalculo().setCalculoPcond(calculoPcond);
                 atualizarCalculo(getCalculo());
@@ -1174,13 +1203,16 @@ public class EdicaoCalculoController extends AbstractController implements Initi
                 atualizaTabelaPrincipal();
 
                 novo();
+                atualizaFormularioCalculo();
               
 
             } else {
 
                 atualizarCalculo(getCalculo());
+                gerarPdf.gerarDocumentoResumoPcond(getCalculoPcondDAO().localizarCalculoPcondPorProtocolo(getProtocoloGsv().getCdPrc()));
                 atualizaTabelaPrincipal();
                 novo();
+                atualizaFormularioCalculo();
                
             }
         }
@@ -1215,7 +1247,7 @@ public class EdicaoCalculoController extends AbstractController implements Initi
 
     public void atualizaTabelaPrincipal() {
         //  TelaPrincipalController telaPrincipalController = new TelaPrincipalController();
-        this.tp.popularTabelacalculoEdicao();
+        this.getTp().popularTabelacalculoEdicao();
     }
 
     
@@ -1231,7 +1263,7 @@ public class EdicaoCalculoController extends AbstractController implements Initi
         }
            
         if(getCalculo().getCliente()!=null){
-             getTxtCpjCnpj().setText(getCalculo().getCliente().getCpf());
+             getTxtCpfCnpj().setText(getCalculo().getCliente().getCpf());
         }
         
         if(getCalculo().getCliente()!=null){
@@ -1302,9 +1334,19 @@ public class EdicaoCalculoController extends AbstractController implements Initi
 
     }
 
-    void passarNpjProtocolo(TelaPrincipalController telaPrincipalController, Npj npj, ProtocoloGsv protocoloGSV) {
+    void passarNpjProtocolo(TelaPrincipalController telaPrincipalController, Npj npj, ProtocoloGsv protocoloGSV, Map<String,BigDecimal> valorIndiceUmMap,Map<String, BigDecimal> valorIndiceDoisMap,Map<String, BigDecimal> valorIndiceTresMap, Map<String, BigDecimal> valorIndiceQuatroMap, Map<String, BigDecimal> valorIndiceCincoMap) {
 
-        this.tp = telaPrincipalController;
+        
+        setValorIndiceUmMap(valorIndiceUmMap);
+        setValorIndiceDoisMap(valorIndiceDoisMap);
+        setValorIndiceTresMap(valorIndiceTresMap);
+        setValorIndiceQuatroMap(valorIndiceQuatroMap);
+        setValorIndiceCincoMap(valorIndiceCincoMap);
+        
+        
+        
+        
+        this.setTp(telaPrincipalController);
         setProtocoloGsv(protocoloGSV);
         setNpj(npj);
         getNpj().adicionarProtocolo(getProtocoloGsv());
@@ -1396,4 +1438,140 @@ public class EdicaoCalculoController extends AbstractController implements Initi
         this.cmbIndice = cmbIndice;
     }
 
+    /**
+     * @return the valorIndiceMap
+     */
+    public Map<String, BigDecimal> getValorIndiceMap() {
+        return valorIndiceMap;
+    }
+
+    /**
+     * @param valorIndiceMap the valorIndiceMap to set
+     */
+    public void setValorIndiceMap(Map<String, BigDecimal> valorIndiceMap) {
+        this.valorIndiceMap = valorIndiceMap;
+    }
+
+    /**
+     * @return the tp
+     */
+    public TelaPrincipalController getTp() {
+        return tp;
+    }
+
+    /**
+     * @param tp the tp to set
+     */
+    public void setTp(TelaPrincipalController tp) {
+        this.tp = tp;
+    }
+
+    /**
+     * @return the valorIndiceUmMap
+     */
+    public Map<String, BigDecimal> getValorIndiceUmMap() {
+        return valorIndiceUmMap;
+    }
+
+    /**
+     * @param valorIndiceUmMap the valorIndiceUmMap to set
+     */
+    public void setValorIndiceUmMap(Map<String, BigDecimal> valorIndiceUmMap) {
+        this.valorIndiceUmMap = valorIndiceUmMap;
+    }
+
+    /**
+     * @return the valorIndiceDoisMap
+     */
+    public Map<String, BigDecimal> getValorIndiceDoisMap() {
+        return valorIndiceDoisMap;
+    }
+
+    /**
+     * @param valorIndiceDoisMap the valorIndiceDoisMap to set
+     */
+    public void setValorIndiceDoisMap(Map<String, BigDecimal> valorIndiceDoisMap) {
+        this.valorIndiceDoisMap = valorIndiceDoisMap;
+    }
+
+    /**
+     * @return the valorIndiceTresMap
+     */
+    public Map<String, BigDecimal> getValorIndiceTresMap() {
+        return valorIndiceTresMap;
+    }
+
+    /**
+     * @param valorIndiceTresMap the valorIndiceTresMap to set
+     */
+    public void setValorIndiceTresMap(Map<String, BigDecimal> valorIndiceTresMap) {
+        this.valorIndiceTresMap = valorIndiceTresMap;
+    }
+
+    /**
+     * @return the valorIndiceQuatroMap
+     */
+    public Map<String, BigDecimal> getValorIndiceQuatroMap() {
+        return valorIndiceQuatroMap;
+    }
+
+    /**
+     * @param valorIndiceQuatroMap the valorIndiceQuatroMap to set
+     */
+    public void setValorIndiceQuatroMap(Map<String, BigDecimal> valorIndiceQuatroMap) {
+        this.valorIndiceQuatroMap = valorIndiceQuatroMap;
+    }
+
+    /**
+     * @return the valorIndiceCincoMap
+     */
+    public Map<String, BigDecimal> getValorIndiceCincoMap() {
+        return valorIndiceCincoMap;
+    }
+
+    /**
+     * @param valorIndiceCincoMap the valorIndiceCincoMap to set
+     */
+    public void setValorIndiceCincoMap(Map<String, BigDecimal> valorIndiceCincoMap) {
+        this.valorIndiceCincoMap = valorIndiceCincoMap;
+    }
+
+    
+    
+    public void inputDataKeyTypedCPF(KeyEvent event) {
+
+        TextFieldFormatter tff = new TextFieldFormatter();
+        tff.setMask("###.###.###-##");
+
+        tff.setCaracteresValidos("0123456789");
+        tff.setTf(getTxtCpfCnpj());
+        tff.formatter();
+
+    }
+    
+//     @FXML
+//    public void inputDataKeyTypedNPJ(KeyEvent event) {
+//
+//        TextFieldFormatter tff = new TextFieldFormatter();
+//        tff.setMask("####/#######-##");
+//
+//        tff.setCaracteresValidos("0123456789");
+//        tff.setTf(txtNPJ);
+//        tff.formatter();
+//
+//    }
+
+    /**
+     * @return the txtCpfCnpj
+     */
+    public JFXTextField getTxtCpfCnpj() {
+        return txtCpfCnpj;
+    }
+
+    /**
+     * @param txtCpfCnpj the txtCpfCnpj to set
+     */
+    public void setTxtCpfCnpj(JFXTextField txtCpfCnpj) {
+        this.txtCpfCnpj = txtCpfCnpj;
+    }
 }

@@ -6,7 +6,10 @@
 package br.intranet.cenopservicoscwb.controller;
 
 import CurrencyField.CurrencyField;
+import CurrencyField.TextFieldFormatter;
+import br.com.intranet.cenopservicoscwb.model.dao.Dao;
 import br.com.intranet.cenopservicoscwb.model.entidade.Calculo;
+import br.com.intranet.cenopservicoscwb.model.entidade.Cliente;
 import br.com.intranet.cenopservicoscwb.model.entidade.Honorario;
 import br.com.intranet.cenopservicoscwb.model.entidade.Metodologia;
 import br.com.intranet.cenopservicoscwb.model.entidade.Multa;
@@ -18,9 +21,12 @@ import br.intranet.cenopservicoscwb.dao.ProtocoloGsvDAO;
 import br.intranet.cenopservicoscwb.util.Utils;
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXTextField;
+import java.math.BigDecimal;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.ResourceBundle;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -34,6 +40,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.AnchorPane;
 import main.MainApp;
 
@@ -52,9 +59,15 @@ public class TelaPrincipalController extends AbstractController implements Initi
     private ProtocoloGsv protocoloGSV;
     private ProtocoloGsvDAO<ProtocoloGsv, Object> protocoloGsvDAO;
     private NpjDAO<Npj, Object> npjDAO;
-
     private Multa multa;
     private Honorario honorario;
+
+    private Map<String, BigDecimal> valorIndiceUmMap;
+    private Map<String, BigDecimal> valorIndiceDoisMap;
+    private Map<String, BigDecimal> valorIndiceTresMap;
+    private Map<String, BigDecimal> valorIndiceQuatroMap;
+    private Map<String, BigDecimal> valorIndiceCincoMap;
+    private Dao dao;
 
     @FXML
     private TableView<Calculo> tblCalculoPoupanca;
@@ -89,12 +102,15 @@ public class TelaPrincipalController extends AbstractController implements Initi
     private TableColumn<Calculo, Metodologia> colMetodologia;
     @FXML
     private TableColumn<Calculo, String> colValorFinal;
-    
-     
+    @FXML
+    private TableColumn<Calculo, Cliente> colCpfCnpj;
+    @FXML
+    private Label lblChave;
 
     public TelaPrincipalController() {
 
     }
+    private Thread t1;
 
     /**
      * Initializes the controller class.
@@ -114,12 +130,21 @@ public class TelaPrincipalController extends AbstractController implements Initi
         getTvTabelaCalculoEdicao().getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> editaLinha(newValue));
 
         //setCalculo(new Calculo());
+        setDao(new Dao());
+        setValorIndiceUmMap((Map<String, BigDecimal>) new HashMap());
+        setValorIndiceDoisMap((Map<String, BigDecimal>) new HashMap());
+        setValorIndiceTresMap((Map<String, BigDecimal>) new HashMap());
+        setValorIndiceQuatroMap((Map<String, BigDecimal>) new HashMap());
+        setValorIndiceCincoMap((Map<String, BigDecimal>) new HashMap());
+        carregarMapsIndices();
+
         setProtocoloGsvDAO(new ProtocoloGsvDAO<>());
         setNpjDAO(new NpjDAO<>());
 
         getTblCalculoPoupanca().refresh();
 
         setCalculoDAO(new CalculoDAO<>());
+        getLblChave().setText(MainApp.getFunci().getChaveFunci());
 
         getTxtFiltroQuantidadeReg().setText(getCalculoDAO().getMaximoObjeto().toString());
 
@@ -383,51 +408,56 @@ public class TelaPrincipalController extends AbstractController implements Initi
 
     @FXML
     public void consultaGsv(ActionEvent event) {
-        getTvTabelaCalculoEdicao().refresh();
-        setNpj(new Npj());
-        setProtocoloGSV(new ProtocoloGsv());
 
-        getNpj().setNrPrc(new Long(getTxtNPJ().getText()));
-        getProtocoloGSV().setCdPrc(Integer.parseInt(getTxtGSV().getText()));
+       // t1 = new Thread(() -> {
 
-        ProtocoloGsv protocoloGsv = getProtocoloGsvDAO().localizar(getProtocoloGSV().getCdPrc());
-        Npj npj = getNpjDAO().localizar(getNpj().getNrPrc());
+            getTvTabelaCalculoEdicao().refresh();
+            setNpj(new Npj());
+            setProtocoloGSV(new ProtocoloGsv());
 
-        if (npj != null) {
-            setNpj(npj);
-        }
+            getNpj().setNrPrc(new Long(getTxtNPJ().getText().replace("/", "").replace("-", "")));
+            getProtocoloGSV().setCdPrc(Integer.parseInt(getTxtGSV().getText()));
 
-        if (protocoloGsv != null) {
-            setProtocoloGSV(protocoloGsv);
+            ProtocoloGsv protocoloGsv = getProtocoloGsvDAO().localizar(getProtocoloGSV().getCdPrc());
+            Npj npj = getNpjDAO().localizar(getNpj().getNrPrc());
 
-        }
+            if (npj != null) {
+                setNpj(npj);
+            }
 
-        getNpj().adicionarProtocolo(getProtocoloGSV());
+            if (protocoloGsv != null) {
+                setProtocoloGSV(protocoloGsv);
 
-        if (protocoloGsv != null && protocoloGsv.getMulta() != null) {
+            }
 
-            setMulta(protocoloGsv.getMulta());
-            getProtocoloGSV().setMulta(getMulta());
-            setHonorario(protocoloGsv.getHonorario());
-            getProtocoloGSV().setHonorario(getHonorario());
+            getNpj().adicionarProtocolo(getProtocoloGSV());
 
-        } else {
-            getProtocoloGSV().setHonorario(new Honorario());
-            getProtocoloGSV().setMulta(new Multa());
-        }
+            if (protocoloGsv != null && protocoloGsv.getMulta() != null) {
 
-        if (getProtocoloGSV().getListaCalculo().size() > 0) {
-            popularTabelacalculoEdicao();
+                setMulta(protocoloGsv.getMulta());
+                getProtocoloGSV().setMulta(getMulta());
+                setHonorario(protocoloGsv.getHonorario());
+                getProtocoloGSV().setHonorario(getHonorario());
 
-            chamaFormEdicao();
-        } else {
+            } else {
+                getProtocoloGSV().setHonorario(new Honorario());
+                getProtocoloGSV().setMulta(new Multa());
+            }
 
-            salvar();
-            popularTabelacalculoEdicao();
-            chamaFormEdicao();
-        }
-        getTvTabelaCalculoEdicao().refresh();
+            if (getProtocoloGSV().getListaCalculo().size() > 0) {
+                popularTabelacalculoEdicao();
 
+                chamaFormEdicao();
+            } else {
+
+                salvar();
+                popularTabelacalculoEdicao();
+                chamaFormEdicao();
+            }
+            getTvTabelaCalculoEdicao().refresh();
+       // });
+
+      //  t1.start();
     }
 
     public void salvar() {
@@ -442,10 +472,18 @@ public class TelaPrincipalController extends AbstractController implements Initi
 
     }
 
+    private void carregarMapsIndices() {
+        setValorIndiceUmMap(getDao().carregaIndiceMap(1));
+        setValorIndiceDoisMap(getDao().carregaIndiceMap(2));
+        setValorIndiceTresMap(getDao().carregaIndiceMap(3));
+        setValorIndiceQuatroMap(getDao().carregaIndiceMap(4));
+        setValorIndiceCincoMap(getDao().carregaIndiceMap(5));
+    }
+
     public final void popularTabelacalculoEdicao() {
 
         setProtocoloGSV(getProtocoloGsvDAO().localizar(getProtocoloGSV().getCdPrc()));
-        
+
         getTvTabelaCalculoEdicao().getItems().clear();
         getListaCalculo().clear();
 
@@ -459,15 +497,13 @@ public class TelaPrincipalController extends AbstractController implements Initi
         //getColIdTbEdicao().setCellValueFactory(new PropertyValueFactory<>("id")); // atributo da entidade
         getColMetodologia().setCellValueFactory(new PropertyValueFactory<>("metodologia")); // atributo da entidade
         getColValorFinal().setCellValueFactory((new PropertyValueFactory<>("valorFinal"))); // atributo da entidade
+        getColCpfCnpj().setCellValueFactory((new PropertyValueFactory<>("cliente"))); // atributo da entidade
 
         observableListCalculo = FXCollections.observableList(getListaCalculo());
         getTvTabelaCalculoEdicao().setItems(observableListCalculo);
 
         //getLbMensagemNavegacao().setText(getCalculoDAO().mensagemNavegacao());
     }
-    
-    
-   
 
     /**
      * @return the protocoloGsvDAO
@@ -560,7 +596,6 @@ public class TelaPrincipalController extends AbstractController implements Initi
         edicaoCalculoController.passarCalculo(this, getCalculo());
 
         //System.out.println(getTvTabelaCalculoEdicao().getSelectionModel().getSelectedItem().getValorFinal());
-
     }
 
     public void chamaFormEdicao() {
@@ -569,7 +604,7 @@ public class TelaPrincipalController extends AbstractController implements Initi
         EdicaoCalculoController edicaoCalculoController = new EdicaoCalculoController();
         edicaoCalculoController = (EdicaoCalculoController) getMainApp().showCenterAnchorPaneWithReturn(path, edicaoCalculoController, getAnchorCalcEdit());
 
-        edicaoCalculoController.passarNpjProtocolo(this, getNpj(), getProtocoloGSV());
+        edicaoCalculoController.passarNpjProtocolo(this, getNpj(), getProtocoloGSV(), getValorIndiceUmMap(), getValorIndiceDoisMap(), getValorIndiceTresMap(), getValorIndiceQuatroMap(), getValorIndiceCincoMap());
     }
 
     /**
@@ -641,5 +676,146 @@ public class TelaPrincipalController extends AbstractController implements Initi
     public void setHonorario(Honorario honorario) {
         this.honorario = honorario;
     }
+
+    /**
+     * @return the valorIndiceUmMap
+     */
+    public Map<String, BigDecimal> getValorIndiceUmMap() {
+        return valorIndiceUmMap;
+    }
+
+    /**
+     * @param valorIndiceUmMap the valorIndiceUmMap to set
+     */
+    public void setValorIndiceUmMap(Map<String, BigDecimal> valorIndiceUmMap) {
+        this.valorIndiceUmMap = valorIndiceUmMap;
+    }
+
+    /**
+     * @return the valorIndiceDoisMap
+     */
+    public Map<String, BigDecimal> getValorIndiceDoisMap() {
+        return valorIndiceDoisMap;
+    }
+
+    /**
+     * @param valorIndiceDoisMap the valorIndiceDoisMap to set
+     */
+    public void setValorIndiceDoisMap(Map<String, BigDecimal> valorIndiceDoisMap) {
+        this.valorIndiceDoisMap = valorIndiceDoisMap;
+    }
+
+    /**
+     * @return the valorIndiceTresMap
+     */
+    public Map<String, BigDecimal> getValorIndiceTresMap() {
+        return valorIndiceTresMap;
+    }
+
+    /**
+     * @param valorIndiceTresMap the valorIndiceTresMap to set
+     */
+    public void setValorIndiceTresMap(Map<String, BigDecimal> valorIndiceTresMap) {
+        this.valorIndiceTresMap = valorIndiceTresMap;
+    }
+
+    /**
+     * @return the valorIndiceQuatroMap
+     */
+    public Map<String, BigDecimal> getValorIndiceQuatroMap() {
+        return valorIndiceQuatroMap;
+    }
+
+    /**
+     * @param valorIndiceQuatroMap the valorIndiceQuatroMap to set
+     */
+    public void setValorIndiceQuatroMap(Map<String, BigDecimal> valorIndiceQuatroMap) {
+        this.valorIndiceQuatroMap = valorIndiceQuatroMap;
+    }
+
+    /**
+     * @return the valorIndiceCincoMap
+     */
+    public Map<String, BigDecimal> getValorIndiceCincoMap() {
+        return valorIndiceCincoMap;
+    }
+
+    /**
+     * @param valorIndiceCincoMap the valorIndiceCincoMap to set
+     */
+    public void setValorIndiceCincoMap(Map<String, BigDecimal> valorIndiceCincoMap) {
+        this.valorIndiceCincoMap = valorIndiceCincoMap;
+    }
+
+    /**
+     * @return the dao
+     */
+    public Dao getDao() {
+        return dao;
+    }
+
+    /**
+     * @param dao the dao to set
+     */
+    public void setDao(Dao dao) {
+        this.dao = dao;
+    }
+
+    @FXML
+    public void inputDataKeyTypedNPJ(KeyEvent event) {
+
+        TextFieldFormatter tff = new TextFieldFormatter();
+        tff.setMask("####/#######-##");
+
+        tff.setCaracteresValidos("0123456789");
+        tff.setTf(getTxtNPJ());
+        tff.formatter();
+
+    }
+
+    
+    /**
+     * @return the t1
+     */
+    public Thread getT1() {
+        return t1;
+    }
+
+    /**
+     * @param t1 the t1 to set
+     */
+    public void setT1(Thread t1) {
+        this.t1 = t1;
+    }
+
+    /**
+     * @return the colCpfCnpj
+     */
+    public TableColumn<Calculo, Cliente> getColCpfCnpj() {
+        return colCpfCnpj;
+    }
+
+    /**
+     * @param colCpfCnpj the colCpfCnpj to set
+     */
+    public void setColCpfCnpj(TableColumn<Calculo, Cliente> colCpfCnpj) {
+        this.colCpfCnpj = colCpfCnpj;
+    }
+
+    /**
+     * @return the lblChave
+     */
+    public Label getLblChave() {
+        return lblChave;
+    }
+
+    /**
+     * @param lblChave the lblChave to set
+     */
+    public void setLblChave(Label lblChave) {
+        this.lblChave = lblChave;
+    }
+
+
 
 }

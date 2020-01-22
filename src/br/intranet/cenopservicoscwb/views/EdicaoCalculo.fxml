@@ -13,7 +13,6 @@
       <GridPane fx:id="grdEdicao" layoutX="14.0" layoutY="-7.0" prefHeight="823.0" prefWidth="395.0" AnchorPane.bottomAnchor="103.0" AnchorPane.leftAnchor="14.0" AnchorPane.rightAnchor="14.0" AnchorPane.topAnchor="-7.0">
          <children>
             <Label text="Metodologia:" />
-            <JFXComboBox fx:id="cmbMetodologia" focusTraversable="false" prefHeight="25.0" prefWidth="291.0" GridPane.columnIndex="1" />
             <Label focusTraversable="false" text="CPF/CNPJ:" GridPane.rowIndex="1" />
             <Label focusTraversable="false" text="Nome:" GridPane.rowIndex="2" />
             <Label focusTraversable="false" text="Banco:" GridPane.rowIndex="3" />
@@ -29,25 +28,26 @@
             <Label text="Expurgo:" GridPane.rowIndex="15" />
             <Label text="Valor Final:" GridPane.rowIndex="16" />
             <Label text="PCOND:" GridPane.rowIndex="17" />
-            <JFXTextField fx:id="txtCpjCnpj" prefHeight="25.0" prefWidth="207.0" GridPane.columnIndex="1" GridPane.rowIndex="1" />
-            <JFXTextField fx:id="txtNome" GridPane.columnIndex="1" GridPane.rowIndex="2" />
-            <JFXTextField fx:id="txtAgencia" GridPane.columnIndex="1" GridPane.rowIndex="4" />
-            <JFXComboBox fx:id="cmbPlanoEconomico" prefHeight="25.0" prefWidth="297.0" GridPane.columnIndex="1" GridPane.rowIndex="6" />
-            <JFXComboBox fx:id="cmbBanco" prefHeight="25.0" prefWidth="241.0" GridPane.columnIndex="1" GridPane.rowIndex="3" />
-            <JFXTextField fx:id="txtSaldoBase" GridPane.columnIndex="1" GridPane.rowIndex="7" />
-            <JFXTextField fx:id="txtDiaBase" GridPane.columnIndex="1" GridPane.rowIndex="8" />
-            <JFXTextField fx:id="txtJurMora" GridPane.columnIndex="1" GridPane.rowIndex="12" />
-            <JFXTextField fx:id="txtInitJurRem" GridPane.columnIndex="1" GridPane.rowIndex="13" />
-            <JFXComboBox fx:id="cmbExpurgo" GridPane.columnIndex="1" GridPane.rowIndex="15" />
             <Label fx:id="lblValorFinal" prefHeight="30.0" prefWidth="164.0" text="Label" GridPane.columnIndex="1" GridPane.rowIndex="16" />
-            <JFXCheckBox fx:id="ckbPcond" text="SIM" GridPane.columnIndex="1" GridPane.rowIndex="17" />
-            <JFXTextField fx:id="txtConta" GridPane.columnIndex="1" GridPane.rowIndex="5" />
-            <JFXTextField fx:id="txtFimJurRem" GridPane.columnIndex="1" GridPane.rowIndex="14" />
             <Label text="Data início correção" GridPane.rowIndex="10" />
             <Label text="Data final correção" GridPane.rowIndex="11" />
+            <JFXComboBox fx:id="cmbMetodologia" prefHeight="25.0" prefWidth="242.0" GridPane.columnIndex="1" />
+            <JFXTextField fx:id="txtCpfCnpj" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+            <JFXTextField fx:id="txtNome" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+            <JFXComboBox fx:id="cmbBanco" prefHeight="25.0" prefWidth="242.0" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+            <JFXTextField fx:id="txtAgencia" GridPane.columnIndex="1" GridPane.rowIndex="4" />
+            <JFXTextField fx:id="txtConta" GridPane.columnIndex="1" GridPane.rowIndex="5" />
+            <JFXComboBox fx:id="cmbPlanoEconomico" prefHeight="25.0" prefWidth="243.0" GridPane.columnIndex="1" GridPane.rowIndex="6" />
+            <JFXTextField fx:id="txtSaldoBase" GridPane.columnIndex="1" GridPane.rowIndex="7" />
+            <JFXTextField fx:id="txtDiaBase" GridPane.columnIndex="1" GridPane.rowIndex="8" />
+            <JFXComboBox fx:id="cmbIndice" prefHeight="25.0" prefWidth="247.0" GridPane.columnIndex="1" GridPane.rowIndex="9" />
             <JFXTextField fx:id="txtDataInicioCorrecao" GridPane.columnIndex="1" GridPane.rowIndex="10" />
             <JFXTextField fx:id="txtDataFinalCorrecao" GridPane.columnIndex="1" GridPane.rowIndex="11" />
-            <JFXComboBox fx:id="cmbIndice" prefHeight="25.0" prefWidth="245.0" GridPane.columnIndex="1" GridPane.rowIndex="9" />
+            <JFXTextField fx:id="txtJurMora" GridPane.columnIndex="1" GridPane.rowIndex="12" />
+            <JFXTextField fx:id="txtInitJurRem" GridPane.columnIndex="1" GridPane.rowIndex="13" />
+            <JFXTextField fx:id="txtFimJurRem" GridPane.columnIndex="1" GridPane.rowIndex="14" />
+            <JFXComboBox fx:id="cmbExpurgo" GridPane.columnIndex="1" GridPane.rowIndex="15" />
+            <JFXCheckBox fx:id="ckbPcond" text="SIM" GridPane.columnIndex="1" GridPane.rowIndex="17" />
          </children>
          <columnConstraints>
             <ColumnConstraints hgrow="SOMETIMES" maxWidth="196.0" minWidth="10.0" prefWidth="142.0" />

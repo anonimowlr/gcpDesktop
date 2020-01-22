@@ -22,9 +22,14 @@
                           <items>
                             <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="0.0" minWidth="0.0" prefHeight="200.0" prefWidth="1373.0" snapToPixel="false" style="-fx-background-color: #f9dd16; -fx-background-color: ;">
                                  <children>
-                                    <JFXTextField id="txtNpj" fx:id="txtNPJ" labelFloat="true" layoutX="54.0" layoutY="49.0" promptText="Digite O NPJ" />
+                                    <JFXTextField id="txtNpj" fx:id="txtNPJ" labelFloat="true" layoutX="54.0" layoutY="49.0" onKeyTyped="#inputDataKeyTypedNPJ" promptText="Digite O NPJ" />
                                     <JFXTextField id="txtGSV" fx:id="txtGSV" labelFloat="true" layoutX="214.0" layoutY="49.0" promptText="Digite  o GSV" />
-                                    <Button fx:id="btnConsultaGsv" layoutX="356.0" layoutY="49.0" mnemonicParsing="false" onAction="#consultaGsv" text="Ok" />
+                                    <JFXButton fx:id="btnConsultaGsv" buttonType="RAISED" layoutX="403.0" layoutY="47.0" onAction="#consultaGsv" prefHeight="30.0" prefWidth="136.0" style="-fx-background-color: #0f56ff;" text="Ok" textFill="#fff200">
+                                       <font>
+                                          <Font name="Open Sans Bold" size="14.0" />
+                                       </font>
+                                    </JFXButton>
+                                    <Label fx:id="lblChave" layoutX="1288.0" layoutY="14.0" prefHeight="17.0" prefWidth="69.0" text="Label" />
                                  </children>
                               </AnchorPane>
                             <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="607.0" prefWidth="1259.0">
@@ -51,6 +56,7 @@
                                                    </columnResizePolicy>
                                                    <columns>
                                                       <TableColumn fx:id="colMetodologia" prefWidth="75.0" text="Metodologia" />
+                                                      <TableColumn fx:id="colCpfCnpj" prefWidth="75.0" text="CPF/CNPJ" />
                                                       <TableColumn fx:id="colValorFinal" prefWidth="75.0" text="Valor Final" />
                                                    </columns>
                                                 </TableView>

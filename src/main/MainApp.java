@@ -62,26 +62,26 @@ public class MainApp extends Application {
         
         ConsultaSQL sql = new ConsultaSQL();
         usuarioDAO = new UsuarioDAO();
-        //funci = usuarioDAO.getFuncionario(System.getProperty("user.name"));
-        funci = usuarioDAO.getFuncionario("f5078775");
+        funci = usuarioDAO.getFuncionario(System.getProperty("user.name"));
+        //funci = usuarioDAO.getFuncionario("f5078775");
          
-//        try {
-//            if (sql.confirmaVersao(codigoFerramenta, versao)) {
+        try {
+            if (sql.confirmaVersao(codigoFerramenta, versao)) {
                 
                 initRootLayout();
                 showMenuOpcoesAnchorPane();
                 
-//            }else{
-//                
-//              
-//                
-//               Utils.alertaGeral("ATENÇÃO", "Sua versão da ferramenta Cálculo de Poupança não é a mais atual.", "Gentileza acessar pela versão disponibilizada na pasta: M:\\Interna\\gcpDesktop\\dist");
-//                            
-//                
-//            }
-//        } catch (Throwable ex) {
-//            Logger.getLogger(MainApp.class.getName()).log(Level.SEVERE, null, ex);
-//        }
+            }else{
+                
+              
+                
+               Utils.alertaGeral("ATENÇÃO", "Sua versão da ferramenta Cálculo de Poupança não é a mais atual.", "Gentileza acessar pela versão disponibilizada na pasta: M:\\Interna\\gcpDesktop\\dist");
+                            
+                
+            }
+        } catch (Throwable ex) {
+            Logger.getLogger(MainApp.class.getName()).log(Level.SEVERE, null, ex);
+        }
         
     }
 
