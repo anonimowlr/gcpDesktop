@@ -7,6 +7,7 @@ package br.intranet.cenopservicoscwb.controller;
 
 import br.com.intranet.cenopservicoscwb.model.calculo.MotorCalculoPoupanca;
 import br.com.intranet.cenopservicoscwb.model.entidade.Arquivo;
+import br.com.intranet.cenopservicoscwb.model.entidade.Atualizacao;
 import br.com.intranet.cenopservicoscwb.model.entidade.Calculo;
 import br.com.intranet.cenopservicoscwb.model.entidade.CalculoPcond;
 import br.com.intranet.cenopservicoscwb.model.entidade.Cliente;
@@ -524,7 +525,11 @@ public class EdicaoCalculoController extends AbstractController implements Initi
 
         this.tp = tp;
 
+        if(calculo==null){
+            return;
+        }
         setCalculo(calculo);
+        getCalculo().setListaAtualizacao(new ArrayList<>());
         setNpj(calculo.getProtocoloGsv().getNpj());
         setProtocoloGsv(calculo.getProtocoloGsv());
 
@@ -831,7 +836,7 @@ public class EdicaoCalculoController extends AbstractController implements Initi
 
     public void novo() {
 
-        if (getCalculo() != null && getCalculo().getId() == null) {
+        if (getCalculo() != null && getCalculo().getId() != null) {
             atualizaFormularioCalculo();
             return;
         }
@@ -868,7 +873,7 @@ public class EdicaoCalculoController extends AbstractController implements Initi
 
             calculo.setExpurgo(calculoUltimaLinha.getExpurgo());
 
-            //getProtocoloGsv().adicionarCalculo(calculo);
+            getProtocoloGsv().adicionarCalculo(calculo);
             atualizaFormularioCalculo();
 
             return;
@@ -896,6 +901,7 @@ public class EdicaoCalculoController extends AbstractController implements Initi
 
             //salvar();
             setCalculo(new Calculo());
+           getCalculo().setListaAtualizacao(new ArrayList<Atualizacao>());
             getCalculo().setCliente(new Cliente());
             // getCliente().adicionarCalculo(getCalculo());
             getCalculo().setMora(new Mora());
@@ -903,8 +909,9 @@ public class EdicaoCalculoController extends AbstractController implements Initi
             getCalculo().setArquivo(new Arquivo());
             getProtocoloGsv().adicionarCalculo(getCalculo());
             getProtocoloGsv().setNpj(getNpj());
-            getCalculo().setPlanoEconomico(new PlanoEconomico());
+            getCalculo().setPlanoEconomico(getPlanoEconomicoDAO().getEm().find(PlanoEconomico.class, 1));
             setPeriodoCalculo(new PeriodoCalculo());
+            getPeriodoCalculo().setIndice(getIndiceDAO().getEm().find(Indice.class, 1));
         }
 
         getCalculo().adicionarPeriodoCalculo(getPeriodoCalculo());
@@ -1097,13 +1104,13 @@ public class EdicaoCalculoController extends AbstractController implements Initi
                 gerarPdf.gerarDocumentoResumoPcond(getCalculoPcondDAO().localizarCalculoPcondPorProtocolo(getProtocoloGsv().getCdPrc()));
                 atualizaTabelaPrincipal();
                 novo();
-                atualizaFormularioCalculo();
+               
 
             } else {
                 salvarCalculo(getCalculo());
                 atualizaTabelaPrincipal();
                 novo();
-                atualizaFormularioCalculo();
+                
             }
 
         } else {
@@ -1167,18 +1174,18 @@ public class EdicaoCalculoController extends AbstractController implements Initi
                 atualizaTabelaPrincipal();
 
                 novo();
-                atualizaFormularioCalculo();
+              
 
             } else {
 
                 atualizarCalculo(getCalculo());
                 atualizaTabelaPrincipal();
                 novo();
-                atualizaFormularioCalculo();
+               
             }
         }
 
-        atualizaFormularioCalculo();
+     
 
     }
 
@@ -1217,50 +1224,82 @@ public class EdicaoCalculoController extends AbstractController implements Initi
     
     public void atualizaFormularioCalculo() {
 
-        if (getCalculo().getId() != null) {
+       
 
-            getCmbMetodologia().setValue(getCalculo().getMetodologia());
-            getTxtCpjCnpj().setText(getCalculo().getCliente().getCpf());
-            getTxtNome().setText(getCalculo().getCliente().getNomeCliente());
-            getCmbBanco().setValue(getCalculo().getNomeBanco());
-            getTxtAgencia().setText(getCalculo().getNumeroAgencia().toString());
-            getTxtConta().setText(getCalculo().getNumeroConta());
-            getCmbPlanoEconomico().setValue(getCalculo().getPlanoEconomico());
-            getTxtSaldoBase().setText(Utils.converterToMoneySaldoBase(getCalculo().getSaldoBase().toString()));
-            //getTxtDiaBase().setText(getCalculo().getDiaBase().toString());
-            getTxtJurMora().setText(Utils.converteData(getCalculo().getMora().getDataInicio()));
-            getTxtInitJurRem().setText(Utils.converteData(getCalculo().getJuroRemuneratorio().getDataInicio()));
-            getTxtFimJurRem().setText(Utils.converteData(getCalculo().getJuroRemuneratorio().getDataFinal()));
-            getCmbExpurgo().setValue(getCalculo().getExpurgo());
-            getCmbIndice().setValue(getCalculo().getListaPeriodoCalculo().get(0).getIndice());
-            getTxtDataInicioCorrecao().setText(Utils.formatDataTexto(getCalculo().getListaPeriodoCalculo().get(0).getDataInicioCalculo().toString()));
-            getTxtDataFinalCorrecao().setText(Utils.formatDataTexto(getCalculo().getListaPeriodoCalculo().get(0).getDataFinalCalculo().toString()));
-//        getLblValorFinal().setText(Utils.converterToMoneySaldoBase(getCalculo().getValorFinal().toString()));
-            getCkbPcond().setSelected(getCalculo().isPcond());
-
-        } else {
-            
-            
-            getCmbMetodologia().setValue(getCalculo().getMetodologia());
-            //getTxtCpjCnpj().setText(getCalculo().getCliente().getCpf());
-            //getTxtNome().setText(getCalculo().getCliente().getNomeCliente());
-            getCmbBanco().setValue(getCalculo().getNomeBanco());
-            //getTxtAgencia().setText(getCalculo().getNumeroAgencia().toString());
-           // getTxtConta().setText(getCalculo().getNumeroConta());
-            getCmbPlanoEconomico().setValue(getCalculo().getPlanoEconomico());
-//            getTxtSaldoBase().setText(Utils.converterToMoneySaldoBase(getCalculo().getSaldoBase().toString()));
-            //getTxtDiaBase().setText(getCalculo().getDiaBase().toString());
-            getTxtJurMora().setText(Utils.converteData(getCalculo().getMora().getDataInicio()));
-            getTxtInitJurRem().setText(Utils.converteData(getCalculo().getJuroRemuneratorio().getDataInicio()));
-            getTxtFimJurRem().setText(Utils.converteData(getCalculo().getJuroRemuneratorio().getDataFinal()));
-            getCmbExpurgo().setValue(getCalculo().getExpurgo());
-            getCmbIndice().setValue(getCalculo().getListaPeriodoCalculo().get(0).getIndice());
-            getTxtDataInicioCorrecao().setText(Utils.formatDataTexto(getCalculo().getListaPeriodoCalculo().get(0).getDataInicioCalculo().toString()));
-            getTxtDataFinalCorrecao().setText(Utils.formatDataTexto(getCalculo().getListaPeriodoCalculo().get(0).getDataFinalCalculo().toString()));
-//        getLblValorFinal().setText(Utils.converterToMoneySaldoBase(getCalculo().getValorFinal().toString()));
-            getCkbPcond().setSelected(getCalculo().isPcond());
-
+        if(getCalculo().getMetodologia()!=null){
+             getCmbMetodologia().setValue(getCalculo().getMetodologia());
         }
+           
+        if(getCalculo().getCliente()!=null){
+             getTxtCpjCnpj().setText(getCalculo().getCliente().getCpf());
+        }
+        
+        if(getCalculo().getCliente()!=null){
+            getTxtNome().setText(getCalculo().getCliente().getNomeCliente());
+        }
+        
+        if(getCalculo().getNomeBanco()!=null){
+             getCmbBanco().setValue(getCalculo().getNomeBanco());
+        }
+           
+        if(getCalculo().getNumeroAgencia()!=null){
+           getTxtAgencia().setText(getCalculo().getNumeroAgencia().toString()); 
+        }
+            
+           
+        if(getCalculo().getNumeroConta()!=null){
+           getTxtConta().setText(getCalculo().getNumeroConta());
+        }
+            
+        if(getCalculo().getPlanoEconomico()!=null){
+             getCmbPlanoEconomico().setValue(getCalculo().getPlanoEconomico());
+        }
+           
+        if(getCalculo().getSaldoBase()!=null){
+             getTxtSaldoBase().setText(Utils.converterToMoneySaldoBase(getCalculo().getSaldoBase().toString()));
+        }
+           
+        if(getCalculo().getDiaBase()!=null){
+             getTxtDiaBase().setText(getCalculo().getDiaBase().toString());
+        }
+        
+        if(getCalculo().getMora().getDataInicio()!=null){
+              getTxtJurMora().setText(Utils.converteData(getCalculo().getMora().getDataInicio()));
+        }
+           
+        if(getCalculo().getJuroRemuneratorio().getDataInicio()!=null){
+             getTxtInitJurRem().setText(Utils.converteData(getCalculo().getJuroRemuneratorio().getDataInicio()));
+        }
+           
+        if(getCalculo().getJuroRemuneratorio().getDataFinal()!=null){
+          getTxtFimJurRem().setText(Utils.converteData(getCalculo().getJuroRemuneratorio().getDataFinal()));   
+        }
+          
+        if(getCalculo().getExpurgo()!=null){
+           getCmbExpurgo().setValue(getCalculo().getExpurgo());   
+        }
+           
+           
+        if(getCalculo().getListaPeriodoCalculo().get(0).getIndice()!=null){
+            getCmbIndice().setValue(getCalculo().getListaPeriodoCalculo().get(0).getIndice());
+        }
+          
+        if(getCalculo().getListaPeriodoCalculo().get(0).getDataInicioCalculo()!=null){
+             getTxtDataInicioCorrecao().setText(Utils.formatDataTexto(getCalculo().getListaPeriodoCalculo().get(0).getDataInicioCalculo().toString()));
+        }
+            
+        if(getCalculo().getListaPeriodoCalculo().get(0).getDataFinalCalculo()!=null){
+              getTxtDataFinalCorrecao().setText(Utils.formatDataTexto(getCalculo().getListaPeriodoCalculo().get(0).getDataFinalCalculo().toString()));
+        }   
+        
+        if(getCalculo().getValorFinal()!=null){
+             getLblValorFinal().setText(Utils.converterToMoneySaldoBase(getCalculo().getValorFinal().toString()));
+        }
+          
+    
+        
+            getCkbPcond().setSelected(getCalculo().isPcond());
+
     }
 
     void passarNpjProtocolo(TelaPrincipalController telaPrincipalController, Npj npj, ProtocoloGsv protocoloGSV) {

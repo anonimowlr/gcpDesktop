@@ -113,7 +113,7 @@ public class TelaPrincipalController extends AbstractController implements Initi
 
         getTvTabelaCalculoEdicao().getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> editaLinha(newValue));
 
-        setCalculo(new Calculo());
+        //setCalculo(new Calculo());
         setProtocoloGsvDAO(new ProtocoloGsvDAO<>());
         setNpjDAO(new NpjDAO<>());
 
@@ -559,7 +559,7 @@ public class TelaPrincipalController extends AbstractController implements Initi
 
         edicaoCalculoController.passarCalculo(this, getCalculo());
 
-        System.out.println(getTvTabelaCalculoEdicao().getSelectionModel().getSelectedItem().getValorFinal());
+        //System.out.println(getTvTabelaCalculoEdicao().getSelectionModel().getSelectedItem().getValorFinal());
 
     }
 
