@@ -531,6 +531,7 @@ public class EdicaoCalculoController extends AbstractController implements Initi
         getCalculo().setListaAtualizacao(new ArrayList<>());
         setNpj(calculo.getProtocoloGsv().getNpj());
         setProtocoloGsv(calculo.getProtocoloGsv());
+        
 
         getCmbMetodologia().setValue(getCalculo().getMetodologia());
         getTxtCpfCnpj().setText(getCalculo().getCliente().getCpf());
@@ -765,13 +766,10 @@ public class EdicaoCalculoController extends AbstractController implements Initi
 
     public void atualizarCalculo(Calculo calculo) {
 
-        if (getCalculoDAO().atualizar(calculo)) {
+        getCalculoDAO().atualizar(calculo);
 
-            Utils.alertaGeralInformacao(null,null,getCalculoDAO().getMensagem());
-        } else {
-            Utils.alertaGeral(null, null, getCalculoDAO().getMensagem());
-
-        }
+           
+      
 
     }
 
@@ -847,23 +845,12 @@ public class EdicaoCalculoController extends AbstractController implements Initi
 
     public void salvarCalculo(Calculo calculo) {
 
-        if (getCalculoDAO().salvar(calculo)) {
-            Utils.alertaGeralInformacao(null, null, getCalculoDAO().getMensagem());
-
-        } else {
-
-            Utils.alertaGeral(null, null, getCalculoDAO().getMensagem());
-
-        }
-
+        getCalculoDAO().salvar(calculo);
+          
     }
 
     public void novo() {
 
-//        if (getCalculo() != null && getCalculo().getId() != null) {
-//            atualizaFormularioCalculo();
-//            return;
-//        }
 
         if (getProtocoloGsv().getListaCalculo().size() > 0) {
             Calculo calculoUltimaLinha = getProtocoloGsv().getListaCalculo().get(getProtocoloGsv().getListaCalculo().size() - 1);
@@ -898,9 +885,9 @@ public class EdicaoCalculoController extends AbstractController implements Initi
             calculo.setExpurgo(calculoUltimaLinha.getExpurgo());
 
             getProtocoloGsv().adicionarCalculo(calculo);
-            atualizaFormularioCalculo();
+         // atualizaFormularioCalculo();
 
-            return;
+           
 
         }
 
@@ -918,7 +905,7 @@ public class EdicaoCalculoController extends AbstractController implements Initi
                 getProtocoloGsv().setMulta(getMulta());
                 getProtocoloGsv().setHonorario(getHonorario());
             }
-
+ 
             return;
 
         } else {
@@ -936,10 +923,12 @@ public class EdicaoCalculoController extends AbstractController implements Initi
             getCalculo().setPlanoEconomico(getPlanoEconomicoDAO().getEm().find(PlanoEconomico.class, 1));
             setPeriodoCalculo(new PeriodoCalculo());
             getPeriodoCalculo().setIndice(getIndiceDAO().getEm().find(Indice.class, 1));
+            getCalculo().setExpurgo(getExpurgoDAO().getEm().find(Expurgo.class, 1));
             
             
         }
 
+        getProtocoloGsv().adicionarCalculo(getCalculo());
         getCalculo().adicionarPeriodoCalculo(getPeriodoCalculo());
         atualizaFormularioCalculo();
     }
@@ -1042,6 +1031,11 @@ public class EdicaoCalculoController extends AbstractController implements Initi
     @FXML
     private void avaliarParaSalvar(ActionEvent event) throws Exception {
 
+        
+        try {
+            
+      
+        
         getCalculo().setMetodologia(getCmbMetodologia().getValue());
         getCalculo().getCliente().setCpf(getTxtCpfCnpj().getText());
         getCalculo().getCliente().setNomeCliente(getTxtNome().getText());
@@ -1129,17 +1123,14 @@ public class EdicaoCalculoController extends AbstractController implements Initi
                 getCalculo().setCalculoPcond(calculoPcond);
                 atualizarCalculo(getCalculo());
                 gerarPdf.gerarDocumentoResumoPcond(getCalculoPcondDAO().localizarCalculoPcondPorProtocolo(getProtocoloGsv().getCdPrc()));
-                atualizaTabelaPrincipal();
-                novo();
-                atualizaFormularioCalculo();
+              
+               
                
 
             } else {
                 salvarCalculo(getCalculo());
-                atualizaTabelaPrincipal();
-                novo();
-                atualizaFormularioCalculo();
-                
+               
+              
             }
 
         } else {
@@ -1200,24 +1191,27 @@ public class EdicaoCalculoController extends AbstractController implements Initi
                 atualizarCalculo(getCalculo());
 
                 gerarPdf.gerarDocumentoResumoPcond(getCalculoPcondDAO().localizarCalculoPcondPorProtocolo(getProtocoloGsv().getCdPrc()));
-                atualizaTabelaPrincipal();
-
-                novo();
-                atualizaFormularioCalculo();
+               
+             
               
 
             } else {
 
                 atualizarCalculo(getCalculo());
-                gerarPdf.gerarDocumentoResumoPcond(getCalculoPcondDAO().localizarCalculoPcondPorProtocolo(getProtocoloGsv().getCdPrc()));
-                atualizaTabelaPrincipal();
-                novo();
-                atualizaFormularioCalculo();
+                gerarPdf.gerarDocumentoResumo(getCalculo().getProtocoloGsv());
+               
+               
                
             }
         }
+         atualizaTabelaPrincipal();
+          novo();
+          atualizaFormularioCalculo();
 
-     
+         Utils.alertaGeralInformacao(null,null,getCalculoDAO().getMensagem());
+       } catch (Exception e) {
+           Utils.alertaGeral(null, null, "Erro - ao persistir este erro comunique a equipe responsável" + "\n" + e);
+        }
 
     }
 
@@ -1349,7 +1343,6 @@ public class EdicaoCalculoController extends AbstractController implements Initi
         this.setTp(telaPrincipalController);
         setProtocoloGsv(protocoloGSV);
         setNpj(npj);
-        getNpj().adicionarProtocolo(getProtocoloGsv());
 
         novo();
     }
