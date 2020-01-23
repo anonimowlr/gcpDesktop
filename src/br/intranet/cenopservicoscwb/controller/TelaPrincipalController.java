@@ -61,7 +61,7 @@ public class TelaPrincipalController extends AbstractController implements Initi
     private NpjDAO<Npj, Object> npjDAO;
     private Multa multa;
     private Honorario honorario;
-
+    private EdicaoCalculoController edicaoCalculoController;
     private Map<String, BigDecimal> valorIndiceUmMap;
     private Map<String, BigDecimal> valorIndiceDoisMap;
     private Map<String, BigDecimal> valorIndiceTresMap;
@@ -106,6 +106,11 @@ public class TelaPrincipalController extends AbstractController implements Initi
     private TableColumn<Calculo, Cliente> colCpfCnpj;
     @FXML
     private Label lblChave;
+    @FXML
+    private JFXTextField txtPercentHonor;
+    @FXML
+    private JFXTextField txtPercentMulta;
+    private JFXButton btnAplicarParametros;
 
     public TelaPrincipalController() {
 
@@ -129,7 +134,7 @@ public class TelaPrincipalController extends AbstractController implements Initi
 
         getTvTabelaCalculoEdicao().getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> editaLinha(newValue));
 
-        //setCalculo(new Calculo());
+        setCalculo(new Calculo());
         setDao(new Dao());
         setValorIndiceUmMap((Map<String, BigDecimal>) new HashMap());
         setValorIndiceDoisMap((Map<String, BigDecimal>) new HashMap());
@@ -140,7 +145,6 @@ public class TelaPrincipalController extends AbstractController implements Initi
 
         setProtocoloGsvDAO(new ProtocoloGsvDAO<>());
         setNpjDAO(new NpjDAO<>());
-
         getTblCalculoPoupanca().refresh();
 
         setCalculoDAO(new CalculoDAO<>());
@@ -409,7 +413,8 @@ public class TelaPrincipalController extends AbstractController implements Initi
     @FXML
     public void consultaGsv(ActionEvent event) {
 
-       // t1 = new Thread(() -> {
+        // t1 = new Thread(() -> {
+        try {
 
             getTvTabelaCalculoEdicao().refresh();
             setNpj(new Npj());
@@ -427,6 +432,10 @@ public class TelaPrincipalController extends AbstractController implements Initi
 
             if (protocoloGsv != null) {
                 setProtocoloGSV(protocoloGsv);
+                if (!getNpj().equals(getNpjDAO().localizar(getProtocoloGSV().getNpj().getNrPrc()))) {
+                    Utils.alertaGeralInformacao(null, null, "O protocolo " + getProtocoloGSV().getCdPrc().toString() + " " + "já está associado a outro NPJ:  " + getProtocoloGsvDAO().localizar(getProtocoloGSV().getCdPrc()).getNpj().getNrPrc().toString());
+                    return;
+                }
 
             }
 
@@ -438,11 +447,21 @@ public class TelaPrincipalController extends AbstractController implements Initi
                 getProtocoloGSV().setMulta(getMulta());
                 setHonorario(protocoloGsv.getHonorario());
                 getProtocoloGSV().setHonorario(getHonorario());
+                
+                atualizaComponentesParametros();
 
             } else {
                 getProtocoloGSV().setHonorario(new Honorario());
                 getProtocoloGSV().setMulta(new Multa());
+                
+                atualizaComponentesParametros();
+                
             }
+
+            
+
+            getProtocoloGSV().getMulta().setTaxaMulta(Utils.converterStringParaBigDecimal(Utils.tratarVariavel(getTxtPercentMulta().getText())));
+            getProtocoloGSV().getHonorario().setTaxaHonorario(Utils.converterStringParaBigDecimal(Utils.tratarVariavel(getTxtPercentHonor().getText())));
 
             if (getProtocoloGSV().getListaCalculo().size() > 0) {
                 popularTabelacalculoEdicao();
@@ -455,11 +474,19 @@ public class TelaPrincipalController extends AbstractController implements Initi
                 chamaFormEdicao();
             }
             getTvTabelaCalculoEdicao().refresh();
-       // });
 
-      //  t1.start();
+        } catch (Exception e) {
+            Utils.alertaGeral(null, null, "Erro ao iniciar consulta de protocolo \n" + e);
+        }
+        // });
+
+        //  t1.start();
     }
 
+    
+    
+    
+    
     public void salvar() {
 
         if (getNpjDAO().atualizar(getNpj())) {
@@ -593,6 +620,8 @@ public class TelaPrincipalController extends AbstractController implements Initi
         Calculo calculo = getTvTabelaCalculoEdicao().getSelectionModel().getSelectedItem();
         setCalculo(calculo);
 
+        atualizaParametrosGerais();
+
         edicaoCalculoController.passarCalculo(this, getCalculo());
 
         //System.out.println(getTvTabelaCalculoEdicao().getSelectionModel().getSelectedItem().getValorFinal());
@@ -601,10 +630,11 @@ public class TelaPrincipalController extends AbstractController implements Initi
     public void chamaFormEdicao() {
         String path = "/br/intranet/cenopservicoscwb/views/EdicaoCalculo.fxml";
 
-        EdicaoCalculoController edicaoCalculoController = new EdicaoCalculoController();
-        edicaoCalculoController = (EdicaoCalculoController) getMainApp().showCenterAnchorPaneWithReturn(path, edicaoCalculoController, getAnchorCalcEdit());
+        setEdicaoCalculoController(new EdicaoCalculoController());
+        
+        this.edicaoCalculoController = (EdicaoCalculoController) getMainApp().showCenterAnchorPaneWithReturn(path, edicaoCalculoController, getAnchorCalcEdit());
 
-        edicaoCalculoController.passarNpjProtocolo(this, getNpj(), getProtocoloGSV(), getValorIndiceUmMap(), getValorIndiceDoisMap(), getValorIndiceTresMap(), getValorIndiceQuatroMap(), getValorIndiceCincoMap());
+        this.edicaoCalculoController.passarNpjProtocolo(this, getNpj(), getProtocoloGSV(), getValorIndiceUmMap(), getValorIndiceDoisMap(), getValorIndiceTresMap(), getValorIndiceQuatroMap(), getValorIndiceCincoMap());
     }
 
     /**
@@ -773,7 +803,6 @@ public class TelaPrincipalController extends AbstractController implements Initi
 
     }
 
-    
     /**
      * @return the t1
      */
@@ -816,6 +845,84 @@ public class TelaPrincipalController extends AbstractController implements Initi
         this.lblChave = lblChave;
     }
 
+    /**
+     * @return the txtPercentHonor
+     */
+    public JFXTextField getTxtPercentHonor() {
+        return txtPercentHonor;
+    }
 
+    /**
+     * @param txtPercentHonor the txtPercentHonor to set
+     */
+    public void setTxtPercentHonor(JFXTextField txtPercentHonor) {
+        this.txtPercentHonor = txtPercentHonor;
+    }
+
+    /**
+     * @return the txtPercentMulta
+     */
+    public JFXTextField getTxtPercentMulta() {
+        return txtPercentMulta;
+    }
+
+    /**
+     * @param txtPercentMulta the txtPercentMulta to set
+     */
+    public void setTxtPercentMulta(JFXTextField txtPercentMulta) {
+        this.txtPercentMulta = txtPercentMulta;
+    }
+
+    private void atualizaParametrosGerais() {
+
+        getProtocoloGSV().getMulta().setTaxaMulta(Utils.converterStringParaBigDecimal(Utils.tratarVariavel(getTxtPercentMulta().getText())));
+        getProtocoloGSV().getHonorario().setTaxaHonorario(Utils.converterStringParaBigDecimal(Utils.tratarVariavel(getTxtPercentHonor().getText())));
+        
+       
+
+        getEdicaoCalculoController().passarNpjProtocoloAtualizado(this, getNpj(), getProtocoloGSV());
+        
+        
+        
+    }
+
+    /**
+     * @return the edicaoCalculoController
+     */
+    public EdicaoCalculoController getEdicaoCalculoController() {
+        return edicaoCalculoController;
+    }
+
+    /**
+     * @param edicaoCalculoController the edicaoCalculoController to set
+     */
+    public void setEdicaoCalculoController(EdicaoCalculoController edicaoCalculoController) {
+        this.edicaoCalculoController = edicaoCalculoController;
+    }
+
+    /**
+     * @return the btnAplicarParametros
+     */
+    public JFXButton getBtnAplicarParametros() {
+        return btnAplicarParametros;
+    }
+
+    /**
+     * @param btnAplicarParametros the btnAplicarParametros to set
+     */
+    public void setBtnAplicarParametros(JFXButton btnAplicarParametros) {
+        this.btnAplicarParametros = btnAplicarParametros;
+    }
+
+    private void atualizaComponentesParametros() {
+
+        if(getTxtPercentHonor().getText().equals("") || getTxtPercentMulta().getText().equals("") ){
+          getTxtPercentHonor().setText(getProtocoloGSV().getHonorario().getTaxaHonorario().toString());
+          getTxtPercentMulta().setText(getProtocoloGSV().getMulta().getTaxaMulta().toString());  
+        }    
+        
+
+
+    }
 
 }

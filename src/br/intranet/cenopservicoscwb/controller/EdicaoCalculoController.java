@@ -884,8 +884,8 @@ public class EdicaoCalculoController extends AbstractController implements Initi
 
             calculo.setExpurgo(calculoUltimaLinha.getExpurgo());
 
-            getProtocoloGsv().adicionarCalculo(calculo);
-         // atualizaFormularioCalculo();
+           // getProtocoloGsv().adicionarCalculo(calculo);
+            atualizaFormularioCalculo();
 
            
 
@@ -918,7 +918,7 @@ public class EdicaoCalculoController extends AbstractController implements Initi
             getCalculo().setMora(new Mora());
             getCalculo().setJuroRemuneratorio(new JuroRemuneratorio());
             getCalculo().setArquivo(new Arquivo());
-            getProtocoloGsv().adicionarCalculo(getCalculo());
+            //getProtocoloGsv().adicionarCalculo(getCalculo());
             getProtocoloGsv().setNpj(getNpj());
             getCalculo().setPlanoEconomico(getPlanoEconomicoDAO().getEm().find(PlanoEconomico.class, 1));
             setPeriodoCalculo(new PeriodoCalculo());
@@ -1566,5 +1566,12 @@ public class EdicaoCalculoController extends AbstractController implements Initi
      */
     public void setTxtCpfCnpj(JFXTextField txtCpfCnpj) {
         this.txtCpfCnpj = txtCpfCnpj;
+    }
+
+    void passarNpjProtocoloAtualizado(TelaPrincipalController tp, Npj npj, ProtocoloGsv protocoloGSV) {
+        setTp(tp) ;
+        setNpj(npj);
+        setProtocoloGsv(protocoloGSV);
+
     }
 }

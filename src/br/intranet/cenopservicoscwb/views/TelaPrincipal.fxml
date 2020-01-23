@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.scene.paint.*?>
 <?import CurrencyField.*?>
 <?import javafx.scene.image.*?>
 <?import javafx.scene.text.*?>
@@ -24,12 +25,17 @@
                                  <children>
                                     <JFXTextField id="txtNpj" fx:id="txtNPJ" labelFloat="true" layoutX="54.0" layoutY="49.0" onKeyTyped="#inputDataKeyTypedNPJ" promptText="Digite O NPJ" />
                                     <JFXTextField id="txtGSV" fx:id="txtGSV" labelFloat="true" layoutX="214.0" layoutY="49.0" promptText="Digite  o GSV" />
-                                    <JFXButton fx:id="btnConsultaGsv" buttonType="RAISED" layoutX="403.0" layoutY="47.0" onAction="#consultaGsv" prefHeight="30.0" prefWidth="136.0" style="-fx-background-color: #0f56ff;" text="Ok" textFill="#fff200">
+                                    <JFXTextField id="txtNpj" fx:id="txtPercentHonor" labelFloat="true" layoutX="54.0" layoutY="127.0" promptText="Taxa  % de honorário" />
+                                    <JFXButton fx:id="btnConsultaGsv" buttonType="RAISED" layoutX="403.0" layoutY="47.0" onAction="#consultaGsv" prefHeight="30.0" prefWidth="192.0" style="-fx-background-color: #0f56ff;" text="Ok" textFill="#fff200">
                                        <font>
                                           <Font name="Open Sans Bold" size="14.0" />
                                        </font>
                                     </JFXButton>
-                                    <Label fx:id="lblChave" layoutX="1288.0" layoutY="14.0" prefHeight="17.0" prefWidth="69.0" text="Label" />
+                                    <Label fx:id="lblChave" layoutX="1240.0" layoutY="14.0" prefHeight="28.0" prefWidth="101.0" textFill="#0f56ff">
+                                       <font>
+                                          <Font size="19.0" />
+                                       </font></Label>
+                                    <JFXTextField id="txtNpj" fx:id="txtPercentMulta" labelFloat="true" layoutX="226.0" layoutY="127.0" promptText="Taxa % de Multa" />
                                  </children>
                               </AnchorPane>
                             <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="607.0" prefWidth="1259.0">
