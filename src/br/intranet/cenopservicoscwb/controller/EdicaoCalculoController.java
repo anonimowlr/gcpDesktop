@@ -49,6 +49,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.ResourceBundle;
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.event.Event;
 import javafx.fxml.FXML;
@@ -56,6 +57,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.input.KeyEvent;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
 import main.MainApp;
 
@@ -94,9 +96,9 @@ public class EdicaoCalculoController extends AbstractController implements Initi
     private FuncionarioDAO<Funcionario, Object> funcionarioDAO;
     private Map<String, BigDecimal> valorIndiceMap;
     private BigDecimal saldoNaDataBase;
-    
+
     static private Map<String, BigDecimal> valorIndiceUmMap;
-    static  private Map<String, BigDecimal> valorIndiceDoisMap;
+    static private Map<String, BigDecimal> valorIndiceDoisMap;
     static private Map<String, BigDecimal> valorIndiceTresMap;
     static private Map<String, BigDecimal> valorIndiceQuatroMap;
     static private Map<String, BigDecimal> valorIndiceCincoMap;
@@ -145,7 +147,7 @@ public class EdicaoCalculoController extends AbstractController implements Initi
     private JFXTextField txtDataFinalCorrecao;
 
     private TelaPrincipalController tp;
-    
+
     @FXML
     private JFXTextField txtCpfCnpj;
 
@@ -394,8 +396,6 @@ public class EdicaoCalculoController extends AbstractController implements Initi
         this.cmbExpurgo = cmbExpurgo;
     }
 
-    
-
     /**
      * @return the txtDiaBase
      */
@@ -524,17 +524,23 @@ public class EdicaoCalculoController extends AbstractController implements Initi
 
     public void passarCalculo(TelaPrincipalController tp, Calculo calculo) {
 
-        this.setTp(tp);
-
-        if(calculo==null){
+       
+        if (calculo == null) {
             return;
         }
+        if(calculo.getId()==null){
+          return;
+        }
+         this.setTp(tp);
+
         setCalculo(calculo);
         getCalculo().setListaAtualizacao(new ArrayList<>());
         setNpj(calculo.getProtocoloGsv().getNpj());
         setProtocoloGsv(calculo.getProtocoloGsv());
+       
         
-       atualizaFormularioCalculo();
+
+        atualizaFormularioCalculo();
     }
 
     /**
@@ -572,8 +578,7 @@ public class EdicaoCalculoController extends AbstractController implements Initi
         //Funcionario usuario = (Funcionario) session.getAttribute("usuarioLogado");
         try {
 
-            
-             switch (calculo.getListaPeriodoCalculo().get(0).getIndice().getId()) {
+            switch (calculo.getListaPeriodoCalculo().get(0).getIndice().getId()) {
 
                 case 1:
                     setValorIndiceMap(getValorIndiceUmMap());
@@ -591,12 +596,7 @@ public class EdicaoCalculoController extends AbstractController implements Initi
                     setValorIndiceMap(getValorIndiceCincoMap());
                     break;
             }
-            
-            
-            
-            
-            
-            
+
             if (calculo.getMetodologia().getId() == 3) {
                 calculo.getMora().setDataInicio(new Date("07/01/1994"));
                 calculo.setPcond(false);
@@ -751,9 +751,6 @@ public class EdicaoCalculoController extends AbstractController implements Initi
 
         getCalculoDAO().atualizar(calculo);
 
-           
-      
-
     }
 
     /**
@@ -829,11 +826,10 @@ public class EdicaoCalculoController extends AbstractController implements Initi
     public void salvarCalculo(Calculo calculo) {
 
         getCalculoDAO().salvar(calculo);
-          
+
     }
 
     public void novo() {
-
 
         if (getProtocoloGsv().getListaCalculo().size() > 0) {
             Calculo calculoUltimaLinha = getProtocoloGsv().getListaCalculo().get(getProtocoloGsv().getListaCalculo().size() - 1);
@@ -867,10 +863,8 @@ public class EdicaoCalculoController extends AbstractController implements Initi
 
             calculo.setExpurgo(calculoUltimaLinha.getExpurgo());
 
-           // getProtocoloGsv().adicionarCalculo(calculo);
+            // getProtocoloGsv().adicionarCalculo(calculo);
             atualizaFormularioCalculo();
-
-           
 
         }
 
@@ -888,14 +882,14 @@ public class EdicaoCalculoController extends AbstractController implements Initi
                 getProtocoloGsv().setMulta(getMulta());
                 getProtocoloGsv().setHonorario(getHonorario());
             }
- 
+
             return;
 
         } else {
 
             //salvar();
             setCalculo(new Calculo());
-           getCalculo().setListaAtualizacao(new ArrayList<Atualizacao>());
+            getCalculo().setListaAtualizacao(new ArrayList<Atualizacao>());
             getCalculo().setCliente(new Cliente());
             // getCliente().adicionarCalculo(getCalculo());
             getCalculo().setMora(new Mora());
@@ -908,8 +902,8 @@ public class EdicaoCalculoController extends AbstractController implements Initi
             getPeriodoCalculo().setIndice(getIndiceDAO().getEm().find(Indice.class, 1));
             getCalculo().setExpurgo(getExpurgoDAO().getEm().find(Expurgo.class, 1));
             getCalculo().setMetodologia(getMetodologiaDAO().getEm().find(Metodologia.class, 1));
-            
-            
+           
+
         }
 
         getProtocoloGsv().adicionarCalculo(getCalculo());
@@ -917,20 +911,7 @@ public class EdicaoCalculoController extends AbstractController implements Initi
         atualizaFormularioCalculo();
     }
 
-//      public void salvar() {
-//
-//        if (getNpjDAO().atualizar(getNpj())) {
-//          //  Util.mensagemInformacao(getNpjDAO().getMensagem());
-//
-//        } else {
-//
-//           // Util.mensagemErro(getNpjDAO().getMensagem());
-//        }
-//
-//    }
-    /**
-     * @return the multa
-     */
+
     public Multa getMulta() {
         return multa;
     }
@@ -1015,169 +996,159 @@ public class EdicaoCalculoController extends AbstractController implements Initi
     @FXML
     private void avaliarParaSalvar(ActionEvent event) throws Exception {
 
-        
         try {
-            
-      
-        atualizarObjetoComDadosFormulario();
-      
-        //setCalculo(getCalculo());
-        if (getCalculo().getMetodologia().getId() == 2) {
-            getCalculo().setDiaBase(br.com.intranet.cenopservicoscwb.model.util.Utils.getDia(getCalculo().getListaPeriodoCalculo().get(0).getDataInicioCalculo()));
-        }
 
-        if (getCalculo().getMora().getDataInicio().after(getCalculo().getListaPeriodoCalculo().get(getCalculo().getListaPeriodoCalculo().size() - 1).getDataFinalCalculo())) {
-            Utils.alertaGeralInformacao(null, null, "Data de mora não pode ser superior à data de atualização do cálculo.");
-            return;
-        }
+            atualizarObjetoComDadosFormulario();
 
-        GerarPdf gerarPdf = new GerarPdf();
-
-        if (!getNpj().equals(getNpjDAO().localizar(getCalculo().getProtocoloGsv().getNpj().getNrPrc()))) {
-            Utils.alertaGeralInformacao(null, null, "O protocolo " + getCalculo().getProtocoloGsv().getCdPrc().toString() + " " + "já está associado a outro NPJ:  " + getProtocoloGsvDAO().localizar(getProtocoloGsv().getCdPrc()).getNpj().getNrPrc().toString());
-            return;
-        }
-
-        if (getCalculo().getId() == null) {
-            complementarDadosCalculo(getCalculo());
-            MotorCalculoPoupanca motorCalculoPoupanca = new MotorCalculoPoupanca();
-
-             switch (getCalculo().getMetodologia().getId()) {
-                case 1:
-                    motorCalculoPoupanca.calcular(getCalculo(), getValorIndiceMap(), getValorIndiceUmMap(), getValorIndiceQuatroMap());
-                    break;
-                case 2:
-                    motorCalculoPoupanca.calcularPj(getCalculo(), getValorIndiceMap());
-                    break;
-                case 3:
-                    motorCalculoPoupanca.calcularDiferencaApadecoCumprimentoSentenca(getCalculo(), getValorIndiceMap());
-                    break;
-                case 4:
-                    motorCalculoPoupanca.calcular(getCalculo(), getValorIndiceMap(), getValorIndiceUmMap(), getValorIndiceQuatroMap());
-                    break;
-                
-                default:
-                    Utils.alertaGeralInformacao(null, null, getCalculo().getMetodologia().getNomeMetodologia() + "não é uma metodologia válida");
-                    return;
+            //setCalculo(getCalculo());
+            if (getCalculo().getMetodologia().getId() == 2) {
+                getCalculo().setDiaBase(br.com.intranet.cenopservicoscwb.model.util.Utils.getDia(getCalculo().getListaPeriodoCalculo().get(0).getDataInicioCalculo()));
             }
 
-            gerarPdf.gerarDocumentoResumo(getCalculo().getProtocoloGsv());
-            if (getCalculo().isPcond() == true) {
-
-                CalculoPcond calculoPcond = new CalculoPcond();
-                calculoPcond.setSaldoBase(getCalculo().getSaldoBase());
-                calculoPcond.setMetodologia(getCalculo().getMetodologia());
-                calculoPcond.setCliente(getCalculo().getCliente());
-                alterarClienteCalculoPcond(calculoPcond);
-                calculoPcond.setFuncionario(getCalculo().getFuncionario());
-                calculoPcond.setNomeBanco(getCalculo().getNomeBanco());
-                calculoPcond.setNumeroAgencia(getCalculo().getNumeroAgencia());
-                calculoPcond.setNumeroConta(getCalculo().getNumeroConta());
-                calculoPcond.setDiaBase(getCalculo().getDiaBase());
-                calculoPcond.setDataRealizacaoCalculo(getCalculo().getDataRealizacaoCalculo());
-                calculoPcond.setPlanoEconomico(getCalculo().getPlanoEconomico());
-
-                PeriodoCalculo periodocalculoPcond = new PeriodoCalculo();
-                periodocalculoPcond.setDataInicioCalculo(getCalculo().getListaPeriodoCalculo().get(0).getDataInicioCalculo());
-                periodocalculoPcond.setDataFinalCalculo((getCalculo().getListaPeriodoCalculo().get(getCalculo().getListaPeriodoCalculo().size() - 1).getDataFinalCalculo()));
-                calculoPcond.adicionarPeriodoCalculo(periodocalculoPcond);
-
-                calculoPcond.setExpurgo(getExpurgoDAO().localizar(2));
-                calculoPcond.setProtocoloGsv(getCalculo().getProtocoloGsv());
-                alterarParametrosParaPcond(calculoPcond);
-                motorCalculoPoupanca.calcularPcond(calculoPcond, getValorIndiceUmMap());
-                //salvarCalculoPcond(calculoPcond);
-                getCalculo().setCalculoPcond(calculoPcond);
-                atualizarCalculo(getCalculo());
-                gerarPdf.gerarDocumentoResumoPcond(getCalculoPcondDAO().localizarCalculoPcondPorProtocolo(getProtocoloGsv().getCdPrc()));
-              
-               
-               
-
-            } else {
-                salvarCalculo(getCalculo());
-               
-              
+            if (getCalculo().getMora().getDataInicio().after(getCalculo().getListaPeriodoCalculo().get(getCalculo().getListaPeriodoCalculo().size() - 1).getDataFinalCalculo())) {
+                Utils.alertaGeralInformacao(null, null, "Data de mora não pode ser superior à data de atualização do cálculo.");
+                return;
             }
 
-        } else {
+            GerarPdf gerarPdf = new GerarPdf();
 
-            excluirPdfCalculo(getCalculo());
-            excluirPdfCalculoPcond(getCalculo());
-            complementarDadosCalculo(getCalculo());
-
-            MotorCalculoPoupanca motorCalculoPoupanca = new MotorCalculoPoupanca();
-
-             switch (getCalculo().getMetodologia().getId()) {
-                case 1:
-                    motorCalculoPoupanca.calcular(getCalculo(), getValorIndiceMap(), getValorIndiceUmMap(), getValorIndiceQuatroMap());
-                    break;
-                case 2:
-                    motorCalculoPoupanca.calcularPj(getCalculo(), getValorIndiceMap());
-                    break;
-                case 3:
-                    motorCalculoPoupanca.calcularDiferencaApadecoCumprimentoSentenca(getCalculo(), getValorIndiceMap());
-                    break;
-                case 4:
-                    motorCalculoPoupanca.calcular(getCalculo(), getValorIndiceMap(), getValorIndiceUmMap(), getValorIndiceQuatroMap());
-                    break;
-                default:
-                    Utils.alertaGeralInformacao(null, null, getCalculo().getMetodologia().getNomeMetodologia() + "não é uma metodologia válida");
-                    return;
+            if (!getNpj().equals(getNpjDAO().localizar(getCalculo().getProtocoloGsv().getNpj().getNrPrc()))) {
+                Utils.alertaGeralInformacao(null, null, "O protocolo " + getCalculo().getProtocoloGsv().getCdPrc().toString() + " " + "já está associado a outro NPJ:  " + getProtocoloGsvDAO().localizar(getProtocoloGsv().getCdPrc()).getNpj().getNrPrc().toString());
+                return;
             }
 
-            gerarPdf.gerarDocumentoResumo(getCalculo().getProtocoloGsv());
+            if (getCalculo().getId() == null) {
+                complementarDadosCalculo(getCalculo());
+                MotorCalculoPoupanca motorCalculoPoupanca = new MotorCalculoPoupanca();
 
-            if (getCalculo().isPcond() == true) {
+                switch (getCalculo().getMetodologia().getId()) {
+                    case 1:
+                        motorCalculoPoupanca.calcular(getCalculo(), getValorIndiceMap(), getValorIndiceUmMap(), getValorIndiceQuatroMap());
+                        break;
+                    case 2:
+                        motorCalculoPoupanca.calcularPj(getCalculo(), getValorIndiceMap());
+                        break;
+                    case 3:
+                        motorCalculoPoupanca.calcularDiferencaApadecoCumprimentoSentenca(getCalculo(), getValorIndiceMap());
+                        break;
+                    case 4:
+                        motorCalculoPoupanca.calcular(getCalculo(), getValorIndiceMap(), getValorIndiceUmMap(), getValorIndiceQuatroMap());
+                        break;
 
-                CalculoPcond calculoPcond = new CalculoPcond();
-                calculoPcond.setSaldoBase(getCalculo().getSaldoBase());
-                calculoPcond.setMetodologia(getCalculo().getMetodologia());
-                calculoPcond.setCliente(getCalculo().getCliente());
-                alterarClienteCalculoPcond(calculoPcond);
-                calculoPcond.setFuncionario(getCalculo().getFuncionario());
-                calculoPcond.setNomeBanco(getCalculo().getNomeBanco());
-                calculoPcond.setNumeroAgencia(getCalculo().getNumeroAgencia());
-                calculoPcond.setNumeroConta(getCalculo().getNumeroConta());
-                calculoPcond.setDiaBase(getCalculo().getDiaBase());
-                calculoPcond.setDataRealizacaoCalculo(getCalculo().getDataRealizacaoCalculo());
-                calculoPcond.setPlanoEconomico(getCalculo().getPlanoEconomico());
+                    default:
+                        Utils.alertaGeralInformacao(null, null, getCalculo().getMetodologia().getNomeMetodologia() + "não é uma metodologia válida");
+                        return;
+                }
 
-                PeriodoCalculo periodocalculoPcond = new PeriodoCalculo();
-                periodocalculoPcond.setDataInicioCalculo(getCalculo().getListaPeriodoCalculo().get(0).getDataInicioCalculo());
-                periodocalculoPcond.setDataFinalCalculo((getCalculo().getListaPeriodoCalculo().get(getCalculo().getListaPeriodoCalculo().size() - 1).getDataFinalCalculo()));
-                calculoPcond.adicionarPeriodoCalculo(periodocalculoPcond);
-
-                calculoPcond.setExpurgo(getExpurgoDAO().localizar(2));
-                calculoPcond.setProtocoloGsv(getCalculo().getProtocoloGsv());
-                alterarParametrosParaPcond(calculoPcond);
-
-                motorCalculoPoupanca.calcularPcond(calculoPcond, getValorIndiceUmMap());
-                // salvarCalculoPcond(calculoPcond);
-                getCalculo().setCalculoPcond(calculoPcond);
-                atualizarCalculo(getCalculo());
-
-                gerarPdf.gerarDocumentoResumoPcond(getCalculoPcondDAO().localizarCalculoPcondPorProtocolo(getProtocoloGsv().getCdPrc()));
-               
-             
-              
-
-            } else {
-
-                atualizarCalculo(getCalculo());
                 gerarPdf.gerarDocumentoResumo(getCalculo().getProtocoloGsv());
-               
-               
-               
-            }
-        }
-         atualizaTabelaPrincipal();
-          novo();
-          atualizaFormularioCalculo();
+                if (getCalculo().isPcond() == true) {
 
-         Utils.alertaGeralInformacao(null,null,getCalculoDAO().getMensagem());
-       } catch (Exception e) {
-           Utils.alertaGeral(null, null, "Erro - ao persistir este erro comunique a equipe responsável" + "\n" + e);
+                    CalculoPcond calculoPcond = new CalculoPcond();
+                    calculoPcond.setSaldoBase(getCalculo().getSaldoBase());
+                    calculoPcond.setMetodologia(getCalculo().getMetodologia());
+                    calculoPcond.setCliente(getCalculo().getCliente());
+                    alterarClienteCalculoPcond(calculoPcond);
+                    calculoPcond.setFuncionario(getCalculo().getFuncionario());
+                    calculoPcond.setNomeBanco(getCalculo().getNomeBanco());
+                    calculoPcond.setNumeroAgencia(getCalculo().getNumeroAgencia());
+                    calculoPcond.setNumeroConta(getCalculo().getNumeroConta());
+                    calculoPcond.setDiaBase(getCalculo().getDiaBase());
+                    calculoPcond.setDataRealizacaoCalculo(getCalculo().getDataRealizacaoCalculo());
+                    calculoPcond.setPlanoEconomico(getCalculo().getPlanoEconomico());
+
+                    PeriodoCalculo periodocalculoPcond = new PeriodoCalculo();
+                    periodocalculoPcond.setDataInicioCalculo(getCalculo().getListaPeriodoCalculo().get(0).getDataInicioCalculo());
+                    periodocalculoPcond.setDataFinalCalculo((getCalculo().getListaPeriodoCalculo().get(getCalculo().getListaPeriodoCalculo().size() - 1).getDataFinalCalculo()));
+                    calculoPcond.adicionarPeriodoCalculo(periodocalculoPcond);
+
+                    calculoPcond.setExpurgo(getExpurgoDAO().localizar(2));
+                    calculoPcond.setProtocoloGsv(getCalculo().getProtocoloGsv());
+                    alterarParametrosParaPcond(calculoPcond);
+                    motorCalculoPoupanca.calcularPcond(calculoPcond, getValorIndiceUmMap());
+                    //salvarCalculoPcond(calculoPcond);
+                    getCalculo().setCalculoPcond(calculoPcond);
+                    atualizarCalculo(getCalculo());
+                    gerarPdf.gerarDocumentoResumoPcond(getCalculoPcondDAO().localizarCalculoPcondPorProtocolo(getProtocoloGsv().getCdPrc()));
+
+                } else {
+                    salvarCalculo(getCalculo());
+
+                }
+
+            } else {
+
+                excluirPdfCalculo(getCalculo());
+                excluirPdfCalculoPcond(getCalculo());
+                complementarDadosCalculo(getCalculo());
+
+                MotorCalculoPoupanca motorCalculoPoupanca = new MotorCalculoPoupanca();
+
+                switch (getCalculo().getMetodologia().getId()) {
+                    case 1:
+                        motorCalculoPoupanca.calcular(getCalculo(), getValorIndiceMap(), getValorIndiceUmMap(), getValorIndiceQuatroMap());
+                        break;
+                    case 2:
+                        motorCalculoPoupanca.calcularPj(getCalculo(), getValorIndiceMap());
+                        break;
+                    case 3:
+                        motorCalculoPoupanca.calcularDiferencaApadecoCumprimentoSentenca(getCalculo(), getValorIndiceMap());
+                        break;
+                    case 4:
+                        motorCalculoPoupanca.calcular(getCalculo(), getValorIndiceMap(), getValorIndiceUmMap(), getValorIndiceQuatroMap());
+                        break;
+                    default:
+                        Utils.alertaGeralInformacao(null, null, getCalculo().getMetodologia().getNomeMetodologia() + "não é uma metodologia válida");
+                        return;
+                }
+
+               gerarPdf.gerarDocumentoResumo(getCalculo().getProtocoloGsv());
+
+                if (getCalculo().isPcond() == true) {
+
+                    CalculoPcond calculoPcond = new CalculoPcond();
+                    calculoPcond.setSaldoBase(getCalculo().getSaldoBase());
+                    calculoPcond.setMetodologia(getCalculo().getMetodologia());
+                    calculoPcond.setCliente(getCalculo().getCliente());
+                    alterarClienteCalculoPcond(calculoPcond);
+                    calculoPcond.setFuncionario(getCalculo().getFuncionario());
+                    calculoPcond.setNomeBanco(getCalculo().getNomeBanco());
+                    calculoPcond.setNumeroAgencia(getCalculo().getNumeroAgencia());
+                    calculoPcond.setNumeroConta(getCalculo().getNumeroConta());
+                    calculoPcond.setDiaBase(getCalculo().getDiaBase());
+                    calculoPcond.setDataRealizacaoCalculo(getCalculo().getDataRealizacaoCalculo());
+                    calculoPcond.setPlanoEconomico(getCalculo().getPlanoEconomico());
+
+                    PeriodoCalculo periodocalculoPcond = new PeriodoCalculo();
+                    periodocalculoPcond.setDataInicioCalculo(getCalculo().getListaPeriodoCalculo().get(0).getDataInicioCalculo());
+                    periodocalculoPcond.setDataFinalCalculo((getCalculo().getListaPeriodoCalculo().get(getCalculo().getListaPeriodoCalculo().size() - 1).getDataFinalCalculo()));
+                    calculoPcond.adicionarPeriodoCalculo(periodocalculoPcond);
+
+                    calculoPcond.setExpurgo(getExpurgoDAO().localizar(2));
+                    calculoPcond.setProtocoloGsv(getCalculo().getProtocoloGsv());
+                    alterarParametrosParaPcond(calculoPcond);
+
+                    motorCalculoPoupanca.calcularPcond(calculoPcond, getValorIndiceUmMap());
+                    // salvarCalculoPcond(calculoPcond);
+                    getCalculo().setCalculoPcond(calculoPcond);
+                    atualizarCalculo(getCalculo());
+                   
+
+                    gerarPdf.gerarDocumentoResumoPcond(getCalculoPcondDAO().localizarCalculoPcondPorProtocolo(getProtocoloGsv().getCdPrc()));
+
+                } else {
+
+                    atualizarCalculo(getCalculo());
+                    
+
+                }
+            }
+            atualizaTabelaPrincipal();
+            novo();
+            atualizaFormularioCalculo();
+
+            //Utils.alertaGeralInformacao(null,null,getCalculoDAO().getMensagem());
+        } catch (Exception e) {
+            Utils.alertaGeral(null, null, "Erro - ao persistir este erro comunique a equipe responsável" + "\n" + e);
         }
 
     }
@@ -1188,7 +1159,7 @@ public class EdicaoCalculoController extends AbstractController implements Initi
             return;
         }
 
-        File file = new File("C:\\Users\\f5078775\\Desktop\\GCPDESKTOP\\" + "PCONDNPJ" + calculo.getProtocoloGsv().getNpj().getNrPrc().toString() + "\\" + calculo.getProtocoloGsv().getCdPrc().toString() + "\\" + "CALCULO INTERNO (PCOND)" + " - " + calculo.getCalculoPcond().getCliente().getNomeCliente() + " - " + br.com.intranet.cenopservicoscwb.model.util.Utils.tratarConta(calculo.getNumeroConta().toString()) + " - " + calculo.getCalculoPcond().getPlanoEconomico().getNomePlanoEconomico() + " - " + br.com.intranet.cenopservicoscwb.model.util.Utils.converterToMoney(calculo.getCalculoPcond().getValorFinal().toString()) + ".pdf");
+        File file = new File("C:\\Users\\" + calculo.getFuncionario().getChaveFunci() + "\\Desktop\\GCPDESKTOP\\" + calculo.getProtocoloGsv().getCdPrc().toString() + "\\" + "PCOND" + "\\" + "CALCULO INTERNO (PCOND)" + " - " + calculo.getCalculoPcond().getCliente().getNomeCliente() + " - " + br.com.intranet.cenopservicoscwb.model.util.Utils.tratarConta(calculo.getNumeroConta().toString()) + " - " + calculo.getCalculoPcond().getPlanoEconomico().getNomePlanoEconomico() + " - " + br.com.intranet.cenopservicoscwb.model.util.Utils.converterToMoney(calculo.getCalculoPcond().getValorFinal().toString()) + ".pdf");
         if (file.exists()) {
             file.delete();
 
@@ -1198,7 +1169,7 @@ public class EdicaoCalculoController extends AbstractController implements Initi
 
     public void excluirPdfCalculo(Calculo calculo) {
 
-        File file = new File("C:\\Users\\f5078775\\Desktop\\GCPDESKTOP\\" + "NPJ" + calculo.getProtocoloGsv().getNpj().getNrPrc().toString() + "\\" + calculo.getProtocoloGsv().getCdPrc().toString() + "\\" + "CALCULO DEFESA" + " - " + calculo.getCliente().getNomeCliente() + " - " + br.com.intranet.cenopservicoscwb.model.util.Utils.tratarConta(calculo.getNumeroConta().toString()) + " - " + calculo.getPlanoEconomico().getNomePlanoEconomico() + " - " + br.com.intranet.cenopservicoscwb.model.util.Utils.converterToMoney(calculo.getValorFinal().toString()) + ".pdf");
+        File file = new File("C:\\Users\\" + calculo.getFuncionario().getChaveFunci() + "\\Desktop\\GCPDESKTOP\\" + calculo.getProtocoloGsv().getCdPrc().toString() + "\\" + "DEFESA" + "\\" + "CALCULO DEFESA" + " - " + calculo.getCliente().getNomeCliente() + " - " + br.com.intranet.cenopservicoscwb.model.util.Utils.tratarConta(calculo.getNumeroConta().toString()) + " - " + calculo.getPlanoEconomico().getNomePlanoEconomico() + " - " + br.com.intranet.cenopservicoscwb.model.util.Utils.converterToMoney(calculo.getValorFinal().toString()) + ".pdf");
         if (file.exists()) {
             file.delete();
 
@@ -1211,102 +1182,88 @@ public class EdicaoCalculoController extends AbstractController implements Initi
         this.getTp().popularTabelacalculoEdicao();
     }
 
-    
-    
-    
-    
     public void atualizaFormularioCalculo() {
 
-       
+        if (getCalculo().getMetodologia() != null) {
+            getCmbMetodologia().setValue(getCalculo().getMetodologia());
+        }
 
-        if(getCalculo().getMetodologia()!=null){
-             getCmbMetodologia().setValue(getCalculo().getMetodologia());
+        if (getCalculo().getCliente() != null) {
+            getTxtCpfCnpj().setText(getCalculo().getCliente().getCpf());
         }
-           
-        if(getCalculo().getCliente()!=null){
-             getTxtCpfCnpj().setText(getCalculo().getCliente().getCpf());
-        }
-        
-        if(getCalculo().getCliente()!=null){
+
+        if (getCalculo().getCliente() != null) {
             getTxtNome().setText(getCalculo().getCliente().getNomeCliente());
         }
-        
-        if(getCalculo().getNomeBanco()!=null){
-             getCmbBanco().setValue(getCalculo().getNomeBanco());
+
+        if (getCalculo().getNomeBanco() != null) {
+            getCmbBanco().setValue(getCalculo().getNomeBanco());
         }
-           
-        if(getCalculo().getNumeroAgencia()!=null){
-           getTxtAgencia().setText(getCalculo().getNumeroAgencia().toString()); 
+
+        if (getCalculo().getNumeroAgencia() != null) {
+            getTxtAgencia().setText(getCalculo().getNumeroAgencia().toString());
         }
-            
-           
-        if(getCalculo().getNumeroConta()!=null){
-           getTxtConta().setText(getCalculo().getNumeroConta());
+
+        if (getCalculo().getNumeroConta() != null) {
+            getTxtConta().setText(getCalculo().getNumeroConta());
         }
-            
-        if(getCalculo().getPlanoEconomico()!=null){
-             getCmbPlanoEconomico().setValue(getCalculo().getPlanoEconomico());
+
+        if (getCalculo().getPlanoEconomico() != null) {
+            getCmbPlanoEconomico().setValue(getCalculo().getPlanoEconomico());
         }
-           
-        if(getCalculo().getSaldoBase()!=null){
-             getTxtSaldoBase().setText(Utils.converterToMoneySaldoBase(getCalculo().getSaldoBase().toString()));
+
+        if (getCalculo().getSaldoBase() != null) {
+            getTxtSaldoBase().setText(Utils.converterToMoneySaldoBase(getCalculo().getSaldoBase().toString()));
         }
-           
-        if(getCalculo().getDiaBase()!=null){
-             getTxtDiaBase().setText(getCalculo().getDiaBase().toString());
+
+        if (getCalculo().getDiaBase() != null) {
+            getTxtDiaBase().setText(getCalculo().getDiaBase().toString());
         }
-        
-        if(getCalculo().getMora().getDataInicio()!=null){
-              getTxtJurMora().setText(Utils.converteData(getCalculo().getMora().getDataInicio()));
+
+        if (getCalculo().getMora().getDataInicio() != null) {
+            getTxtJurMora().setText(Utils.converteData(getCalculo().getMora().getDataInicio()));
         }
-           
-        if(getCalculo().getJuroRemuneratorio().getDataInicio()!=null){
-             getTxtInitJurRem().setText(Utils.converteData(getCalculo().getJuroRemuneratorio().getDataInicio()));
+
+        if (getCalculo().getJuroRemuneratorio().getDataInicio() != null) {
+            getTxtInitJurRem().setText(Utils.converteData(getCalculo().getJuroRemuneratorio().getDataInicio()));
         }
-           
-        if(getCalculo().getJuroRemuneratorio().getDataFinal()!=null){
-          getTxtFimJurRem().setText(Utils.converteData(getCalculo().getJuroRemuneratorio().getDataFinal()));   
+
+        if (getCalculo().getJuroRemuneratorio().getDataFinal() != null) {
+            getTxtFimJurRem().setText(Utils.converteData(getCalculo().getJuroRemuneratorio().getDataFinal()));
         }
-          
-        if(getCalculo().getExpurgo()!=null){
-           getCmbExpurgo().setValue(getCalculo().getExpurgo());   
+
+        if (getCalculo().getExpurgo() != null) {
+            getCmbExpurgo().setValue(getCalculo().getExpurgo());
         }
-           
-           
-        if(getCalculo().getListaPeriodoCalculo().get(0).getIndice()!=null){
+
+        if (getCalculo().getListaPeriodoCalculo().get(0).getIndice() != null) {
             getCmbIndice().setValue(getCalculo().getListaPeriodoCalculo().get(0).getIndice());
         }
-          
-        if(getCalculo().getListaPeriodoCalculo().get(0).getDataInicioCalculo()!=null){
-             getTxtDataInicioCorrecao().setText(Utils.formatDataTexto(getCalculo().getListaPeriodoCalculo().get(0).getDataInicioCalculo().toString()));
+
+        if (getCalculo().getListaPeriodoCalculo().get(0).getDataInicioCalculo() != null) {
+            getTxtDataInicioCorrecao().setText(Utils.formatDataTexto(getCalculo().getListaPeriodoCalculo().get(0).getDataInicioCalculo().toString()));
         }
-            
-        if(getCalculo().getListaPeriodoCalculo().get(0).getDataFinalCalculo()!=null){
-              getTxtDataFinalCorrecao().setText(Utils.formatDataTexto(getCalculo().getListaPeriodoCalculo().get(0).getDataFinalCalculo().toString()));
-        }   
-        
-        if(getCalculo().getValorFinal()!=null){
-             getLblValorFinal().setText(Utils.converterToMoneySaldoBase(getCalculo().getValorFinal().toString()));
+
+        if (getCalculo().getListaPeriodoCalculo().get(0).getDataFinalCalculo() != null) {
+            getTxtDataFinalCorrecao().setText(Utils.formatDataTexto(getCalculo().getListaPeriodoCalculo().get(0).getDataFinalCalculo().toString()));
         }
-          
-    
-        
-            getCkbPcond().setSelected(getCalculo().isPcond());
+
+        if (getCalculo().getValorFinal() != null) {
+            getLblValorFinal().setText(Utils.converterToMoneySaldoBase(getCalculo().getValorFinal().toString()));
+        }
+
+        getCkbPcond().setSelected(getCalculo().isPcond());
 
     }
 
-    void passarNpjProtocolo(TelaPrincipalController telaPrincipalController, Npj npj, ProtocoloGsv protocoloGSV, Map<String,BigDecimal> valorIndiceUmMap,Map<String, BigDecimal> valorIndiceDoisMap,Map<String, BigDecimal> valorIndiceTresMap, Map<String, BigDecimal> valorIndiceQuatroMap, Map<String, BigDecimal> valorIndiceCincoMap) {
+    void passarNpjProtocolo(TelaPrincipalController telaPrincipalController, Npj npj, ProtocoloGsv protocoloGSV, Map<String, BigDecimal> valorIndiceUmMap, Map<String, BigDecimal> valorIndiceDoisMap, Map<String, BigDecimal> valorIndiceTresMap, Map<String, BigDecimal> valorIndiceQuatroMap, Map<String, BigDecimal> valorIndiceCincoMap) {
 
-        
         setValorIndiceUmMap(valorIndiceUmMap);
         setValorIndiceDoisMap(valorIndiceDoisMap);
         setValorIndiceTresMap(valorIndiceTresMap);
         setValorIndiceQuatroMap(valorIndiceQuatroMap);
         setValorIndiceCincoMap(valorIndiceCincoMap);
-        
-        
-        
-        
+
         this.setTp(telaPrincipalController);
         setProtocoloGsv(protocoloGSV);
         setNpj(npj);
@@ -1496,19 +1453,20 @@ public class EdicaoCalculoController extends AbstractController implements Initi
         this.valorIndiceCincoMap = valorIndiceCincoMap;
     }
 
-    
-    
+    @FXML
     public void inputDataKeyTypedCPF(KeyEvent event) {
 
-        TextFieldFormatter tff = new TextFieldFormatter();
-        tff.setMask("###.###.###-##");
+        Platform.runLater(() -> {
 
-        tff.setCaracteresValidos("0123456789");
-        tff.setTf(getTxtCpfCnpj());
-        tff.formatter();
+            TextFieldFormatter tff = new TextFieldFormatter();
+            tff.setMask("###.###.###-##");
 
+            tff.setCaracteresValidos("0123456789");
+            tff.setTf(getTxtCpfCnpj());
+            tff.formatter();
+        });
     }
-    
+
 //     @FXML
 //    public void inputDataKeyTypedNPJ(KeyEvent event) {
 //
@@ -1520,7 +1478,6 @@ public class EdicaoCalculoController extends AbstractController implements Initi
 //        tff.formatter();
 //
 //    }
-
     /**
      * @return the txtCpfCnpj
      */
@@ -1536,39 +1493,32 @@ public class EdicaoCalculoController extends AbstractController implements Initi
     }
 
     void passarNpjProtocoloAtualizado(TelaPrincipalController tp, Npj npj, ProtocoloGsv protocoloGSV) {
-        setTp(tp) ;
+        setTp(tp);
         setNpj(npj);
         setProtocoloGsv(protocoloGSV);
 
     }
-    
-    
+
     @FXML
-      public void calcularParaConferencia() {
+    public void calcularParaConferencia() {
 
-          try {
-          atualizarObjetoComDadosFormulario();
-        if (getCalculo().getMetodologia().getId() == 2 && getCalculo().getListaPeriodoCalculo().get(0).getDataInicioCalculo() == null) {
-            return;
-        }
+        try {
+            atualizarObjetoComDadosFormulario();
+            if (getCalculo().getMetodologia().getId() == 2 && getCalculo().getListaPeriodoCalculo().get(0).getDataInicioCalculo() == null) {
+                return;
+            }
 
-       
+            MotorCalculoPoupanca motorCalculoPoupanca = new MotorCalculoPoupanca();
+            motorCalculoPoupanca.calcularParaConferencia(getCalculo());
+            setSaldoNaDataBase(getCalculo().getSaldoBase().add(getCalculo().getRemuneracaoBasica().add(getCalculo().getJurosCreditado())));
 
-        MotorCalculoPoupanca motorCalculoPoupanca = new MotorCalculoPoupanca();
-        motorCalculoPoupanca.calcularParaConferencia(getCalculo());
-        setSaldoNaDataBase(getCalculo().getSaldoBase().add(getCalculo().getRemuneracaoBasica().add(getCalculo().getJurosCreditado())));
+            getTp().passarCalculo(this, calculo);
 
-       
-
-          getTp().passarCalculo(this, calculo);
-
-        
-             
         } catch (Exception e) {
-            
+
             Utils.alertaGeral(null, null, "Erro no método calcularParaConferencia,  caso persista informe à equipe responsável \n" + e);
         }
-          
+
     }
 
     /**
@@ -1601,84 +1551,74 @@ public class EdicaoCalculoController extends AbstractController implements Initi
 
     private void atualizarObjetoComDadosFormulario() throws Exception {
 
-        
-        if(getCmbMetodologia().getValue()!=null){
-              getCalculo().setMetodologia(getCmbMetodologia().getValue());
+        if (getCmbMetodologia().getValue() != null) {
+            getCalculo().setMetodologia(getCmbMetodologia().getValue());
         }
-        
-        if(!getTxtCpfCnpj().getText().equals("")){
-             getCalculo().getCliente().setCpf(getTxtCpfCnpj().getText());
+
+        if (!getTxtCpfCnpj().getText().equals("")) {
+            getCalculo().getCliente().setCpf(getTxtCpfCnpj().getText());
         }
-        
-      if(!getTxtNome().getText().equals("")){
-          getCalculo().getCliente().setNomeCliente(getTxtNome().getText());
-      }
-      
-      if(getCmbBanco().getValue() !=null){
-          getCalculo().setNomeBanco(getCmbBanco().getValue());
-      }
-       
-        
-      if(!getTxtConta().getText().equals("")){
+
+        if (!getTxtNome().getText().equals("")) {
+            getCalculo().getCliente().setNomeCliente(getTxtNome().getText());
+        }
+
+        if (getCmbBanco().getValue() != null) {
+            getCalculo().setNomeBanco(getCmbBanco().getValue());
+        }
+
+        if (!getTxtConta().getText().equals("")) {
             getCalculo().setNumeroConta(getTxtConta().getText());
-      }
-        
-      if(!getTxtAgencia().getText().equals("")){
-           getCalculo().setNumeroAgencia(Integer.parseInt(getTxtAgencia().getText()));
-      }
-      
-      
-      if(!getTxtSaldoBase().getText().equals("")){
-           getCalculo().setSaldoBase(new BigDecimal(Utils.tratarVariavel(getTxtSaldoBase().getText())));
-      }
-      
-       
-      if(!getTxtDiaBase().getText().equals("")){
-            getCalculo().setDiaBase(Integer.parseInt(getTxtDiaBase().getText()));
-      }
-      
-      if(!getTxtJurMora().getText().equals("")){
-           getCalculo().getMora().setDataInicio(Utils.formataData(getTxtJurMora().getText()));
-      }
-      
-      if(!getTxtInitJurRem().getText().equals("")){
-           getCalculo().getJuroRemuneratorio().setDataInicio(Utils.formataData(getTxtInitJurRem().getText()));
-      }
-       
-      
-      if(!getTxtFimJurRem().getText().equals('"')){
-           getCalculo().getJuroRemuneratorio().setDataFinal(Utils.formataData(getTxtFimJurRem().getText()));
-      }
-      
-       
-       if(getCmbExpurgo().getValue()!=null){
-           getCalculo().setExpurgo(getCmbExpurgo().getValue());
-       }
-       
-       
-        
-        getCalculo().setPcond(getCkbPcond().isSelected());
-        
-        if(!getTxtDataInicioCorrecao().getText().equals("")){
-             getCalculo().getListaPeriodoCalculo().get(0).setDataInicioCalculo(Utils.formataData(getTxtDataInicioCorrecao().getText()));
         }
-        
-        if(!getTxtDataFinalCorrecao().getText().equals("")){
+
+        if (!getTxtAgencia().getText().equals("")) {
+            getCalculo().setNumeroAgencia(Integer.parseInt(getTxtAgencia().getText()));
+        }
+
+        if (!getTxtSaldoBase().getText().equals("")) {
+            getCalculo().setSaldoBase(new BigDecimal(Utils.tratarVariavel(getTxtSaldoBase().getText())));
+        }
+
+        if (!getTxtDiaBase().getText().equals("")) {
+            getCalculo().setDiaBase(Integer.parseInt(getTxtDiaBase().getText()));
+        }
+
+        if (!getTxtJurMora().getText().equals("")) {
+            getCalculo().getMora().setDataInicio(Utils.formataData(getTxtJurMora().getText()));
+        }
+
+        if (!getTxtInitJurRem().getText().equals("")) {
+            getCalculo().getJuroRemuneratorio().setDataInicio(Utils.formataData(getTxtInitJurRem().getText()));
+        }
+
+        if (!getTxtFimJurRem().getText().equals('"')) {
+            getCalculo().getJuroRemuneratorio().setDataFinal(Utils.formataData(getTxtFimJurRem().getText()));
+        }
+
+        if (getCmbExpurgo().getValue() != null) {
+            getCalculo().setExpurgo(getCmbExpurgo().getValue());
+        }
+
+        getCalculo().setPcond(getCkbPcond().isSelected());
+
+        if (!getTxtDataInicioCorrecao().getText().equals("")) {
+            getCalculo().getListaPeriodoCalculo().get(0).setDataInicioCalculo(Utils.formataData(getTxtDataInicioCorrecao().getText()));
+        }
+
+        if (!getTxtDataFinalCorrecao().getText().equals("")) {
             getCalculo().getListaPeriodoCalculo().get(0).setDataFinalCalculo(Utils.formataData(getTxtDataFinalCorrecao().getText()));
         }
-       
-        if(getCmbIndice().getValue()!=null){
-              getCalculo().getListaPeriodoCalculo().get(0).setIndice(getCmbIndice().getValue());
-        }
-        
-        
-        if(getCmbPlanoEconomico().getValue()!=null){
-             getCalculo().setPlanoEconomico(getCmbPlanoEconomico().getValue());
-        }
-      
-       
 
+        if (getCmbIndice().getValue() != null) {
+            getCalculo().getListaPeriodoCalculo().get(0).setIndice(getCmbIndice().getValue());
+        }
+
+        if (getCmbPlanoEconomico().getValue() != null) {
+            getCalculo().setPlanoEconomico(getCmbPlanoEconomico().getValue());
+        }
+        
+      
 
     }
-    
+
 }
