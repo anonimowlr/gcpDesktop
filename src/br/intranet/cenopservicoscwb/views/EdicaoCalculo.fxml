@@ -39,7 +39,7 @@
             <JFXTextField fx:id="txtConta" GridPane.columnIndex="1" GridPane.rowIndex="5" />
             <JFXComboBox fx:id="cmbPlanoEconomico" prefHeight="25.0" prefWidth="243.0" GridPane.columnIndex="1" GridPane.rowIndex="6" />
             <JFXTextField fx:id="txtSaldoBase" GridPane.columnIndex="1" GridPane.rowIndex="7" />
-            <JFXTextField fx:id="txtDiaBase" GridPane.columnIndex="1" GridPane.rowIndex="8" />
+            <JFXTextField fx:id="txtDiaBase" onKeyTyped="#calcularParaConferencia" GridPane.columnIndex="1" GridPane.rowIndex="8" />
             <JFXComboBox fx:id="cmbIndice" prefHeight="25.0" prefWidth="247.0" GridPane.columnIndex="1" GridPane.rowIndex="9" />
             <JFXTextField fx:id="txtDataInicioCorrecao" GridPane.columnIndex="1" GridPane.rowIndex="10" />
             <JFXTextField fx:id="txtDataFinalCorrecao" GridPane.columnIndex="1" GridPane.rowIndex="11" />

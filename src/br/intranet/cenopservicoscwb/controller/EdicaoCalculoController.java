@@ -93,6 +93,7 @@ public class EdicaoCalculoController extends AbstractController implements Initi
     private Funcionario funcionario;
     private FuncionarioDAO<Funcionario, Object> funcionarioDAO;
     private Map<String, BigDecimal> valorIndiceMap;
+    private BigDecimal saldoNaDataBase;
     
     static private Map<String, BigDecimal> valorIndiceUmMap;
     static  private Map<String, BigDecimal> valorIndiceDoisMap;
@@ -144,6 +145,7 @@ public class EdicaoCalculoController extends AbstractController implements Initi
     private JFXTextField txtDataFinalCorrecao;
 
     private TelaPrincipalController tp;
+    
     @FXML
     private JFXTextField txtCpfCnpj;
 
@@ -532,26 +534,7 @@ public class EdicaoCalculoController extends AbstractController implements Initi
         setNpj(calculo.getProtocoloGsv().getNpj());
         setProtocoloGsv(calculo.getProtocoloGsv());
         
-
-        getCmbMetodologia().setValue(getCalculo().getMetodologia());
-        getTxtCpfCnpj().setText(getCalculo().getCliente().getCpf());
-        getTxtNome().setText(getCalculo().getCliente().getNomeCliente());
-        getCmbBanco().setValue(getCalculo().getNomeBanco());
-        getTxtAgencia().setText(getCalculo().getNumeroAgencia().toString());
-        getTxtConta().setText(getCalculo().getNumeroConta());
-        getCmbPlanoEconomico().setValue(getCalculo().getPlanoEconomico());
-        getTxtSaldoBase().setText(Utils.converterToMoneySaldoBase(getCalculo().getSaldoBase().toString()));
-        getTxtDiaBase().setText(getCalculo().getDiaBase().toString());
-        getTxtJurMora().setText(Utils.converteData(getCalculo().getMora().getDataInicio()));
-        getTxtInitJurRem().setText(Utils.converteData(getCalculo().getJuroRemuneratorio().getDataInicio()));
-        getTxtFimJurRem().setText(Utils.converteData(getCalculo().getJuroRemuneratorio().getDataFinal()));
-        getCmbExpurgo().setValue(getCalculo().getExpurgo());
-        getCmbIndice().setValue(getCalculo().getListaPeriodoCalculo().get(0).getIndice());
-        getTxtDataInicioCorrecao().setText(Utils.formatDataTexto(getCalculo().getListaPeriodoCalculo().get(0).getDataInicioCalculo().toString()));
-        getTxtDataFinalCorrecao().setText(Utils.formatDataTexto(getCalculo().getListaPeriodoCalculo().get(0).getDataFinalCalculo().toString()));
-        getLblValorFinal().setText(Utils.converterToMoneySaldoBase(getCalculo().getValorFinal().toString()));
-        getCkbPcond().setSelected(getCalculo().isPcond());
-
+       atualizaFormularioCalculo();
     }
 
     /**
@@ -924,6 +907,7 @@ public class EdicaoCalculoController extends AbstractController implements Initi
             setPeriodoCalculo(new PeriodoCalculo());
             getPeriodoCalculo().setIndice(getIndiceDAO().getEm().find(Indice.class, 1));
             getCalculo().setExpurgo(getExpurgoDAO().getEm().find(Expurgo.class, 1));
+            getCalculo().setMetodologia(getMetodologiaDAO().getEm().find(Metodologia.class, 1));
             
             
         }
@@ -1035,25 +1019,8 @@ public class EdicaoCalculoController extends AbstractController implements Initi
         try {
             
       
-        
-        getCalculo().setMetodologia(getCmbMetodologia().getValue());
-        getCalculo().getCliente().setCpf(getTxtCpfCnpj().getText());
-        getCalculo().getCliente().setNomeCliente(getTxtNome().getText());
-        getCalculo().setNomeBanco(getCmbBanco().getValue());
-        getCalculo().setNumeroConta(getTxtConta().getText());
-        getCalculo().setNumeroAgencia(Integer.parseInt(getTxtAgencia().getText()));
-        getCalculo().setSaldoBase(new BigDecimal(Utils.tratarVariavel(getTxtSaldoBase().getText())));
-        getCalculo().setDiaBase(Integer.parseInt(getTxtDiaBase().getText()));
-        getCalculo().getMora().setDataInicio(Utils.formataData(getTxtJurMora().getText()));
-        getCalculo().getJuroRemuneratorio().setDataInicio(Utils.formataData(getTxtInitJurRem().getText()));
-        getCalculo().getJuroRemuneratorio().setDataFinal(Utils.formataData(getTxtFimJurRem().getText()));
-        getCalculo().setExpurgo(getCmbExpurgo().getValue());
-        getCalculo().setPcond(getCkbPcond().isSelected());
-        getCalculo().getListaPeriodoCalculo().get(0).setDataInicioCalculo(Utils.formataData(getTxtDataInicioCorrecao().getText()));
-        getCalculo().getListaPeriodoCalculo().get(0).setDataFinalCalculo(Utils.formataData(getTxtDataFinalCorrecao().getText()));
-        getCalculo().getListaPeriodoCalculo().get(0).setIndice(getCmbIndice().getValue());
-        getCalculo().setPlanoEconomico(getCmbPlanoEconomico().getValue());
-
+        atualizarObjetoComDadosFormulario();
+      
         //setCalculo(getCalculo());
         if (getCalculo().getMetodologia().getId() == 2) {
             getCalculo().setDiaBase(br.com.intranet.cenopservicoscwb.model.util.Utils.getDia(getCalculo().getListaPeriodoCalculo().get(0).getDataInicioCalculo()));
@@ -1574,4 +1541,144 @@ public class EdicaoCalculoController extends AbstractController implements Initi
         setProtocoloGsv(protocoloGSV);
 
     }
+    
+    
+    @FXML
+      public void calcularParaConferencia() {
+
+          try {
+          atualizarObjetoComDadosFormulario();
+        if (getCalculo().getMetodologia().getId() == 2 && getCalculo().getListaPeriodoCalculo().get(0).getDataInicioCalculo() == null) {
+            return;
+        }
+
+       
+
+        MotorCalculoPoupanca motorCalculoPoupanca = new MotorCalculoPoupanca();
+        motorCalculoPoupanca.calcularParaConferencia(getCalculo());
+        setSaldoNaDataBase(getCalculo().getSaldoBase().add(getCalculo().getRemuneracaoBasica().add(getCalculo().getJurosCreditado())));
+
+       
+
+          getTp().passarCalculo(this, calculo);
+
+        
+             
+        } catch (Exception e) {
+            
+            Utils.alertaGeral(null, null, "Erro no método calcularParaConferencia,  caso persista informe à equipe responsável \n" + e);
+        }
+          
+    }
+
+    /**
+     * @return the saldoNaDataBase
+     */
+    public BigDecimal getSaldoNaDataBase() {
+        return saldoNaDataBase;
+    }
+
+    /**
+     * @param saldoNaDataBase the saldoNaDataBase to set
+     */
+    public void setSaldoNaDataBase(BigDecimal saldoNaDataBase) {
+        this.saldoNaDataBase = saldoNaDataBase;
+    }
+
+    /**
+     * @return the txtCpjCnpj
+     */
+    public JFXTextField getTxtCpjCnpj() {
+        return txtCpjCnpj;
+    }
+
+    /**
+     * @param txtCpjCnpj the txtCpjCnpj to set
+     */
+    public void setTxtCpjCnpj(JFXTextField txtCpjCnpj) {
+        this.txtCpjCnpj = txtCpjCnpj;
+    }
+
+    private void atualizarObjetoComDadosFormulario() throws Exception {
+
+        
+        if(getCmbMetodologia().getValue()!=null){
+              getCalculo().setMetodologia(getCmbMetodologia().getValue());
+        }
+        
+        if(!getTxtCpfCnpj().getText().equals("")){
+             getCalculo().getCliente().setCpf(getTxtCpfCnpj().getText());
+        }
+        
+      if(!getTxtNome().getText().equals("")){
+          getCalculo().getCliente().setNomeCliente(getTxtNome().getText());
+      }
+      
+      if(getCmbBanco().getValue() !=null){
+          getCalculo().setNomeBanco(getCmbBanco().getValue());
+      }
+       
+        
+      if(!getTxtConta().getText().equals("")){
+            getCalculo().setNumeroConta(getTxtConta().getText());
+      }
+        
+      if(!getTxtAgencia().getText().equals("")){
+           getCalculo().setNumeroAgencia(Integer.parseInt(getTxtAgencia().getText()));
+      }
+      
+      
+      if(!getTxtSaldoBase().getText().equals("")){
+           getCalculo().setSaldoBase(new BigDecimal(Utils.tratarVariavel(getTxtSaldoBase().getText())));
+      }
+      
+       
+      if(!getTxtDiaBase().getText().equals("")){
+            getCalculo().setDiaBase(Integer.parseInt(getTxtDiaBase().getText()));
+      }
+      
+      if(!getTxtJurMora().getText().equals("")){
+           getCalculo().getMora().setDataInicio(Utils.formataData(getTxtJurMora().getText()));
+      }
+      
+      if(!getTxtInitJurRem().getText().equals("")){
+           getCalculo().getJuroRemuneratorio().setDataInicio(Utils.formataData(getTxtInitJurRem().getText()));
+      }
+       
+      
+      if(!getTxtFimJurRem().getText().equals('"')){
+           getCalculo().getJuroRemuneratorio().setDataFinal(Utils.formataData(getTxtFimJurRem().getText()));
+      }
+      
+       
+       if(getCmbExpurgo().getValue()!=null){
+           getCalculo().setExpurgo(getCmbExpurgo().getValue());
+       }
+       
+       
+        
+        getCalculo().setPcond(getCkbPcond().isSelected());
+        
+        if(!getTxtDataInicioCorrecao().getText().equals("")){
+             getCalculo().getListaPeriodoCalculo().get(0).setDataInicioCalculo(Utils.formataData(getTxtDataInicioCorrecao().getText()));
+        }
+        
+        if(!getTxtDataFinalCorrecao().getText().equals("")){
+            getCalculo().getListaPeriodoCalculo().get(0).setDataFinalCalculo(Utils.formataData(getTxtDataFinalCorrecao().getText()));
+        }
+       
+        if(getCmbIndice().getValue()!=null){
+              getCalculo().getListaPeriodoCalculo().get(0).setIndice(getCmbIndice().getValue());
+        }
+        
+        
+        if(getCmbPlanoEconomico().getValue()!=null){
+             getCalculo().setPlanoEconomico(getCmbPlanoEconomico().getValue());
+        }
+      
+       
+
+
+    }
+    
 }

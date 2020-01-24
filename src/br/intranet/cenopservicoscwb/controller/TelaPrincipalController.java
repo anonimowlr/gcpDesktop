@@ -42,6 +42,7 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.HBox;
 import main.MainApp;
 
 /**
@@ -67,6 +68,7 @@ public class TelaPrincipalController extends AbstractController implements Initi
     private Map<String, BigDecimal> valorIndiceTresMap;
     private Map<String, BigDecimal> valorIndiceQuatroMap;
     private Map<String, BigDecimal> valorIndiceCincoMap;
+    private EdicaoCalculoController  ec;
     private Dao dao;
 
     @FXML
@@ -111,6 +113,20 @@ public class TelaPrincipalController extends AbstractController implements Initi
     @FXML
     private JFXTextField txtPercentMulta;
     private JFXButton btnAplicarParametros;
+    @FXML
+    private HBox hbAreaParaDadosConferencia;
+    @FXML
+    private Label lblIdConferencia;
+    @FXML
+    private Label lblSaldoConferencia;
+    @FXML
+    private Label lblRemBaseConferencia;
+    @FXML
+    private Label lblJurCredConferencia;
+    @FXML
+    private Label lblSaldoNaDataBaseConferencia;
+    @FXML
+    private AnchorPane ancorSecaoParametros;
 
     public TelaPrincipalController() {
 
@@ -415,6 +431,7 @@ public class TelaPrincipalController extends AbstractController implements Initi
 
         // t1 = new Thread(() -> {
         try {
+            limparComponentes();
 
             getTvTabelaCalculoEdicao().refresh();
             setNpj(new Npj());
@@ -632,9 +649,9 @@ public class TelaPrincipalController extends AbstractController implements Initi
 
         setEdicaoCalculoController(new EdicaoCalculoController());
         
-        this.edicaoCalculoController = (EdicaoCalculoController) getMainApp().showCenterAnchorPaneWithReturn(path, edicaoCalculoController, getAnchorCalcEdit());
+        this.setEdicaoCalculoController((EdicaoCalculoController) getMainApp().showCenterAnchorPaneWithReturn(path, getEdicaoCalculoController(), getAnchorCalcEdit()));
 
-        this.edicaoCalculoController.passarNpjProtocolo(this, getNpj(), getProtocoloGSV(), getValorIndiceUmMap(), getValorIndiceDoisMap(), getValorIndiceTresMap(), getValorIndiceQuatroMap(), getValorIndiceCincoMap());
+        this.getEdicaoCalculoController().passarNpjProtocolo(this, getNpj(), getProtocoloGSV(), getValorIndiceUmMap(), getValorIndiceDoisMap(), getValorIndiceTresMap(), getValorIndiceQuatroMap(), getValorIndiceCincoMap());
     }
 
     /**
@@ -922,6 +939,134 @@ public class TelaPrincipalController extends AbstractController implements Initi
         }    
         
 
+
+    }
+    
+    
+      public void passarCalculo(EdicaoCalculoController  ec, Calculo calculo) {
+
+        this.setEc(ec);
+        
+        if(calculo==null){
+            return;
+        }
+        setCalculo(calculo);
+        atualizaComponentes();
+    }
+
+    /**
+     * @return the ec
+     */
+    public EdicaoCalculoController getEc() {
+        return ec;
+    }
+
+    /**
+     * @param ec the ec to set
+     */
+    public void setEc(EdicaoCalculoController ec) {
+        this.ec = ec;
+    }
+
+    /**
+     * @return the hbAreaParaDadosConferencia
+     */
+    public HBox getHbAreaParaDadosConferencia() {
+        return hbAreaParaDadosConferencia;
+    }
+
+    /**
+     * @param hbAreaParaDadosConferencia the hbAreaParaDadosConferencia to set
+     */
+    public void setHbAreaParaDadosConferencia(HBox hbAreaParaDadosConferencia) {
+        this.hbAreaParaDadosConferencia = hbAreaParaDadosConferencia;
+    }
+
+    /**
+     * @return the lblIdConferencia
+     */
+    public Label getLblIdConferencia() {
+        return lblIdConferencia;
+    }
+
+    /**
+     * @param lblIdConferencia the lblIdConferencia to set
+     */
+    public void setLblIdConferencia(Label lblIdConferencia) {
+        this.lblIdConferencia = lblIdConferencia;
+    }
+
+    /**
+     * @return the lblSaldoConferencia
+     */
+    public Label getLblSaldoConferencia() {
+        return lblSaldoConferencia;
+    }
+
+    /**
+     * @param lblSaldoConferencia the lblSaldoConferencia to set
+     */
+    public void setLblSaldoConferencia(Label lblSaldoConferencia) {
+        this.lblSaldoConferencia = lblSaldoConferencia;
+    }
+
+    /**
+     * @return the lblRemBaseConferencia
+     */
+    public Label getLblRemBaseConferencia() {
+        return lblRemBaseConferencia;
+    }
+
+    /**
+     * @param lblRemBaseConferencia the lblRemBaseConferencia to set
+     */
+    public void setLblRemBaseConferencia(Label lblRemBaseConferencia) {
+        this.lblRemBaseConferencia = lblRemBaseConferencia;
+    }
+
+    /**
+     * @return the lblJurCredConferencia
+     */
+    public Label getLblJurCredConferencia() {
+        return lblJurCredConferencia;
+    }
+
+    /**
+     * @param lblJurCredConferencia the lblJurCredConferencia to set
+     */
+    public void setLblJurCredConferencia(Label lblJurCredConferencia) {
+        this.lblJurCredConferencia = lblJurCredConferencia;
+    }
+
+    /**
+     * @return the lblSaldoNaDataBaseConferencia
+     */
+    public Label getLblSaldoNaDataBaseConferencia() {
+        return lblSaldoNaDataBaseConferencia;
+    }
+
+    /**
+     * @param lblSaldoNaDataBaseConferencia the lblSaldoNaDataBaseConferencia to set
+     */
+    public void setLblSaldoNaDataBaseConferencia(Label lblSaldoNaDataBaseConferencia) {
+        this.lblSaldoNaDataBaseConferencia = lblSaldoNaDataBaseConferencia;
+    }
+
+    private void atualizaComponentes() {
+        
+        getLblSaldoConferencia().setText(Utils.converterToMoneySaldoBase(getCalculo().getSaldoBase().toString()));
+        getLblRemBaseConferencia().setText(Utils.converterToMoneySaldoBase(getCalculo().getRemuneracaoBasica().toString()));
+        getLblJurCredConferencia().setText(Utils.converterToMoneySaldoBase(getCalculo().getJurosCreditado().toString()));
+        getLblSaldoNaDataBaseConferencia().setText(Utils.converterToMoneySaldoBase(getCalculo().getSaldoBase().add(getCalculo().getRemuneracaoBasica().add(getCalculo().getJurosCreditado())).toString()));
+
+    }
+    
+    
+    private void limparComponentes(){
+          getLblSaldoConferencia().setText("");
+        getLblRemBaseConferencia().setText("");
+        getLblJurCredConferencia().setText("");
+        getLblSaldoNaDataBaseConferencia().setText("");
 
     }
 

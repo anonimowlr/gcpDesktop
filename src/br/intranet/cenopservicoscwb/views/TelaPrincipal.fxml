@@ -21,12 +21,12 @@
                      <children>
                         <SplitPane id="splTela" dividerPositions="0.5" layoutX="59.0" layoutY="24.0" orientation="VERTICAL" prefHeight="801.0" prefWidth="1373.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                           <items>
-                            <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="0.0" minWidth="0.0" prefHeight="200.0" prefWidth="1373.0" snapToPixel="false" style="-fx-background-color: #f9dd16; -fx-background-color: ;">
+                            <AnchorPane fx:id="ancorSecaoParametros" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="0.0" minWidth="0.0" prefHeight="200.0" prefWidth="1373.0" snapToPixel="false" style="-fx-background-color: #f9dd16; -fx-background-color: ;">
                                  <children>
                                     <JFXTextField id="txtNpj" fx:id="txtNPJ" labelFloat="true" layoutX="54.0" layoutY="49.0" onKeyTyped="#inputDataKeyTypedNPJ" promptText="Digite O NPJ" />
                                     <JFXTextField id="txtGSV" fx:id="txtGSV" labelFloat="true" layoutX="214.0" layoutY="49.0" promptText="Digite  o GSV" />
                                     <JFXTextField id="txtNpj" fx:id="txtPercentHonor" labelFloat="true" layoutX="54.0" layoutY="127.0" promptText="Taxa  % de honorário" />
-                                    <JFXButton fx:id="btnConsultaGsv" buttonType="RAISED" layoutX="403.0" layoutY="47.0" onAction="#consultaGsv" prefHeight="30.0" prefWidth="192.0" style="-fx-background-color: #0f56ff;" text="Ok" textFill="#fff200">
+                                    <JFXButton fx:id="btnConsultaGsv" buttonType="RAISED" layoutX="403.0" layoutY="47.0" onAction="#consultaGsv" prefHeight="30.0" prefWidth="192.0" style="-fx-background-color: #0f56ff;" text="Novo Cálculo" textFill="#fff200">
                                        <font>
                                           <Font name="Open Sans Bold" size="14.0" />
                                        </font>
@@ -36,6 +36,55 @@
                                           <Font size="19.0" />
                                        </font></Label>
                                     <JFXTextField id="txtNpj" fx:id="txtPercentMulta" labelFloat="true" layoutX="226.0" layoutY="127.0" promptText="Taxa % de Multa" />
+                                    <HBox fx:id="hbAreaParaDadosConferencia" layoutX="776.0" prefHeight="200.0" prefWidth="326.0">
+                                       <children>
+                                          <GridPane prefHeight="200.0" prefWidth="335.0">
+                                            <columnConstraints>
+                                              <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                                              <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                                            </columnConstraints>
+                                            <rowConstraints>
+                                                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                              <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                              <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                              <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                            </rowConstraints>
+                                             <children>
+                                                <Label text="Saldo Base:" GridPane.rowIndex="1" />
+                                                <Label text="Remuneração Creditada:" GridPane.rowIndex="2" />
+                                                <Label text="Juros Creditados:" GridPane.rowIndex="3" />
+                                                <Label text="Saldo na data Base:" GridPane.rowIndex="4" />
+                                                <Label text="ID: " />
+                                                <Label fx:id="lblIdConferencia" prefHeight="21.0" prefWidth="129.0" textFill="#e82019" GridPane.columnIndex="1">
+                                                   <font>
+                                                      <Font size="15.0" />
+                                                   </font>
+                                                </Label>
+                                                <Label fx:id="lblSaldoConferencia" prefHeight="21.0" prefWidth="123.0" textFill="#e82019" GridPane.columnIndex="1" GridPane.rowIndex="1">
+                                                   <font>
+                                                      <Font size="15.0" />
+                                                   </font>
+                                                </Label>
+                                                <Label fx:id="lblRemBaseConferencia" prefHeight="21.0" prefWidth="119.0" textFill="#e82019" GridPane.columnIndex="1" GridPane.rowIndex="2">
+                                                   <font>
+                                                      <Font size="15.0" />
+                                                   </font>
+                                                </Label>
+                                                <Label fx:id="lblJurCredConferencia" prefHeight="21.0" prefWidth="135.0" textFill="#e82019" GridPane.columnIndex="1" GridPane.rowIndex="3">
+                                                   <font>
+                                                      <Font size="15.0" />
+                                                   </font>
+                                                </Label>
+                                                <Label fx:id="lblSaldoNaDataBaseConferencia" prefHeight="21.0" prefWidth="148.0" textFill="#e82019" GridPane.columnIndex="1" GridPane.rowIndex="4">
+                                                   <font>
+                                                      <Font size="15.0" />
+                                                   </font>
+                                                </Label>
+                                             </children>
+                                          </GridPane>
+                                       </children>
+                                    </HBox>
                                  </children>
                               </AnchorPane>
                             <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="607.0" prefWidth="1259.0">
