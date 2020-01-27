@@ -41,6 +41,7 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.KeyEvent;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
 import main.MainApp;
@@ -494,6 +495,7 @@ public class TelaPrincipalController extends AbstractController implements Initi
 
         } catch (Exception e) {
             Utils.alertaGeral(null, null, "Erro ao iniciar consulta de protocolo \n" + e);
+           
         }
         // });
 
@@ -545,6 +547,8 @@ public class TelaPrincipalController extends AbstractController implements Initi
 
         observableListCalculo = FXCollections.observableList(getListaCalculo());
         getTvTabelaCalculoEdicao().setItems(observableListCalculo);
+        
+       
 
         //getLbMensagemNavegacao().setText(getCalculoDAO().mensagemNavegacao());
     }
@@ -1069,5 +1073,6 @@ public class TelaPrincipalController extends AbstractController implements Initi
         getLblSaldoNaDataBaseConferencia().setText("");
 
     }
+
 
 }

@@ -41,8 +41,10 @@ import com.jfoenix.controls.JFXCheckBox;
 import com.jfoenix.controls.JFXComboBox;
 import com.jfoenix.controls.JFXTextField;
 import java.io.File;
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.net.URL;
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -56,6 +58,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
+import javafx.scene.input.InputMethodEvent;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
@@ -524,21 +527,18 @@ public class EdicaoCalculoController extends AbstractController implements Initi
 
     public void passarCalculo(TelaPrincipalController tp, Calculo calculo) {
 
-       
         if (calculo == null) {
             return;
         }
-        if(calculo.getId()==null){
-          return;
+        if (calculo.getId() == null) {
+            return;
         }
-         this.setTp(tp);
+        this.setTp(tp);
 
         setCalculo(calculo);
         getCalculo().setListaAtualizacao(new ArrayList<>());
         setNpj(calculo.getProtocoloGsv().getNpj());
         setProtocoloGsv(calculo.getProtocoloGsv());
-       
-        
 
         atualizaFormularioCalculo();
     }
@@ -860,30 +860,14 @@ public class EdicaoCalculoController extends AbstractController implements Initi
             juroRemuneratorio.setDataInicio(calculoUltimaLinha.getJuroRemuneratorio().getDataInicio());
             juroRemuneratorio.setDataFinal(calculoUltimaLinha.getJuroRemuneratorio().getDataFinal());
             calculo.setJuroRemuneratorio(juroRemuneratorio);
+            
 
+            
             calculo.setExpurgo(calculoUltimaLinha.getExpurgo());
+            calculo.getExpurgo().setListaValorExpurgo(getExpurgoDAO().localizar((calculoUltimaLinha.getExpurgo().getId())).getListaValorExpurgo());
 
             // getProtocoloGsv().adicionarCalculo(calculo);
             atualizaFormularioCalculo();
-
-        }
-
-        if (getProtocoloGsv() != null && getProtocoloGsv().getListaCalculo().size() >= 1) {
-            setNpj(getProtocoloGsv().getNpj());
-            setProtocoloGsv(getProtocoloGsv());
-            getNpj().adicionarProtocolo(getProtocoloGsv());
-            if (getProtocoloGsv().getMulta() != null) {
-
-                setMulta(getProtocoloGsv().getMulta());
-                getProtocoloGsv().setMulta(getMulta());
-                setHonorario(getProtocoloGsv().getHonorario());
-                getProtocoloGsv().setHonorario(getProtocoloGsv().getHonorario());
-            } else {
-                getProtocoloGsv().setMulta(getMulta());
-                getProtocoloGsv().setHonorario(getHonorario());
-            }
-
-            return;
 
         } else {
 
@@ -902,15 +886,14 @@ public class EdicaoCalculoController extends AbstractController implements Initi
             getPeriodoCalculo().setIndice(getIndiceDAO().getEm().find(Indice.class, 1));
             getCalculo().setExpurgo(getExpurgoDAO().getEm().find(Expurgo.class, 1));
             getCalculo().setMetodologia(getMetodologiaDAO().getEm().find(Metodologia.class, 1));
-           
+            getCalculo().adicionarPeriodoCalculo(getPeriodoCalculo());
 
         }
 
         getProtocoloGsv().adicionarCalculo(getCalculo());
-        getCalculo().adicionarPeriodoCalculo(getPeriodoCalculo());
+       
         atualizaFormularioCalculo();
     }
-
 
     public Multa getMulta() {
         return multa;
@@ -998,7 +981,16 @@ public class EdicaoCalculoController extends AbstractController implements Initi
 
         try {
 
+            
+            
+            
             atualizarObjetoComDadosFormulario();
+            
+            alterarClienteCalculo(getCalculo());
+            
+            if(validarCampos()==false){
+                return;
+            }
 
             //setCalculo(getCalculo());
             if (getCalculo().getMetodologia().getId() == 2) {
@@ -1074,12 +1066,18 @@ public class EdicaoCalculoController extends AbstractController implements Initi
                     salvarCalculo(getCalculo());
 
                 }
+                
+                 atualizaTabelaPrincipal();
+                novo();
+                atualizaFormularioCalculo();
+                
 
             } else {
 
                 excluirPdfCalculo(getCalculo());
                 excluirPdfCalculoPcond(getCalculo());
                 complementarDadosCalculo(getCalculo());
+                atualizarObjetoComDadosFormulario();
 
                 MotorCalculoPoupanca motorCalculoPoupanca = new MotorCalculoPoupanca();
 
@@ -1101,7 +1099,7 @@ public class EdicaoCalculoController extends AbstractController implements Initi
                         return;
                 }
 
-               gerarPdf.gerarDocumentoResumo(getCalculo().getProtocoloGsv());
+                gerarPdf.gerarDocumentoResumo(getCalculo().getProtocoloGsv());
 
                 if (getCalculo().isPcond() == true) {
 
@@ -1131,20 +1129,24 @@ public class EdicaoCalculoController extends AbstractController implements Initi
                     // salvarCalculoPcond(calculoPcond);
                     getCalculo().setCalculoPcond(calculoPcond);
                     atualizarCalculo(getCalculo());
-                   
 
                     gerarPdf.gerarDocumentoResumoPcond(getCalculoPcondDAO().localizarCalculoPcondPorProtocolo(getProtocoloGsv().getCdPrc()));
 
                 } else {
 
                     atualizarCalculo(getCalculo());
-                    
 
                 }
+               
+               
+                atualizaTabelaPrincipal();
+                atualizaFormularioCalculo(); 
+               
+                
             }
-            atualizaTabelaPrincipal();
-            novo();
-            atualizaFormularioCalculo();
+//            atualizaTabelaPrincipal();
+//            novo();
+//            atualizaFormularioCalculo();
 
             //Utils.alertaGeralInformacao(null,null,getCalculoDAO().getMensagem());
         } catch (Exception e) {
@@ -1180,6 +1182,7 @@ public class EdicaoCalculoController extends AbstractController implements Initi
     public void atualizaTabelaPrincipal() {
         //  TelaPrincipalController telaPrincipalController = new TelaPrincipalController();
         this.getTp().popularTabelacalculoEdicao();
+        this.getTp().chamaFormEdicao();
     }
 
     public void atualizaFormularioCalculo() {
@@ -1459,7 +1462,16 @@ public class EdicaoCalculoController extends AbstractController implements Initi
         Platform.runLater(() -> {
 
             TextFieldFormatter tff = new TextFieldFormatter();
-            tff.setMask("###.###.###-##");
+           
+            String texto = getTxtCpfCnpj().getText();
+            
+            if(Utils.limparPontos(getTxtCpfCnpj().getText()).length() <= 11){
+                 tff.setMask("###.###.###-##");
+                 
+            } else {
+               tff.setMask("##.###.###/####-##");
+            }
+            
 
             tff.setCaracteresValidos("0123456789");
             tff.setTf(getTxtCpfCnpj());
@@ -1467,20 +1479,64 @@ public class EdicaoCalculoController extends AbstractController implements Initi
         });
     }
 
-//     @FXML
-//    public void inputDataKeyTypedNPJ(KeyEvent event) {
-//
-//        TextFieldFormatter tff = new TextFieldFormatter();
-//        tff.setMask("####/#######-##");
-//
-//        tff.setCaracteresValidos("0123456789");
-//        tff.setTf(txtNPJ);
-//        tff.formatter();
-//
-//    }
-    /**
-     * @return the txtCpfCnpj
-     */
+    
+    public void alterarClienteCalculo(Calculo calculo)  {
+
+        try {
+
+            if (calculo.getId() != null) {
+                Cliente cliente = getClienteDAO().localizarCliente(calculo.getCliente().getCpf());
+                if (cliente != null) {
+                    calculo.setCliente(cliente);
+
+                } else {
+
+                    setCliente(new Cliente());
+                    getCliente().setNomeCliente(calculo.getCliente().getNomeCliente());
+                    getCliente().setCpf(calculo.getCliente().getCpf());
+                    calculo.setCliente(getCliente());
+
+                }
+
+            }
+
+            consultaCalculoCpf(calculo.getCliente().getCpf());
+
+        } catch (Exception e) {
+           Utils.alertaGeral(null, null,"erro metodo alteraCliente, se persistir comunique a equipe responsável" + Utils.getMensagemErro(e));
+        }
+
+    }
+    
+    
+    
+    
+     public void consultaCalculoCpf(String cpf) {
+        List<Calculo> listaCalculo = new ArrayList<>();
+        listaCalculo = getCalculoDAO().consultaCalculoCpf(cpf);
+
+        if (listaCalculo.size() > 0) {
+            Utils.alertaGeralInformacao(null,null,"Há cálculos vinculados a este CPF.");
+        }
+
+    }
+    
+    
+    
+    public boolean  validarCampos(){
+        if(!Utils.isCpfCnpj(getCalculo().getCliente().getCpf())){
+            
+            Utils.alertaGeral(null, null, "CPF/CNPJ inválidos, não será possível continuar");
+            return false;
+            
+        }
+        
+        return true;
+    }
+    
+    
+    
+    
     public JFXTextField getTxtCpfCnpj() {
         return txtCpfCnpj;
     }
@@ -1535,19 +1591,7 @@ public class EdicaoCalculoController extends AbstractController implements Initi
         this.saldoNaDataBase = saldoNaDataBase;
     }
 
-    /**
-     * @return the txtCpjCnpj
-     */
-    public JFXTextField getTxtCpjCnpj() {
-        return txtCpjCnpj;
-    }
-
-    /**
-     * @param txtCpjCnpj the txtCpjCnpj to set
-     */
-    public void setTxtCpjCnpj(JFXTextField txtCpjCnpj) {
-        this.txtCpjCnpj = txtCpjCnpj;
-    }
+    
 
     private void atualizarObjetoComDadosFormulario() throws Exception {
 
@@ -1616,9 +1660,9 @@ public class EdicaoCalculoController extends AbstractController implements Initi
         if (getCmbPlanoEconomico().getValue() != null) {
             getCalculo().setPlanoEconomico(getCmbPlanoEconomico().getValue());
         }
-        
-      
 
     }
+
+
 
 }

@@ -32,8 +32,8 @@
             <Label text="Data início correção" GridPane.rowIndex="10" />
             <Label text="Data final correção" GridPane.rowIndex="11" />
             <JFXComboBox fx:id="cmbMetodologia" prefHeight="25.0" prefWidth="242.0" GridPane.columnIndex="1" />
-            <JFXTextField fx:id="txtCpfCnpj" onKeyTyped="#inputDataKeyTypedCPF" pickOnBounds="false" GridPane.columnIndex="1" GridPane.rowIndex="1" />
-            <JFXTextField fx:id="txtNome" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+            <JFXTextField fx:id="txtCpfCnpj" pickOnBounds="false" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+            <JFXTextField fx:id="txtNome" onKeyTyped="#inputDataKeyTypedCPF" GridPane.columnIndex="1" GridPane.rowIndex="2" />
             <JFXComboBox fx:id="cmbBanco" prefHeight="25.0" prefWidth="242.0" GridPane.columnIndex="1" GridPane.rowIndex="3" />
             <JFXTextField fx:id="txtAgencia" GridPane.columnIndex="1" GridPane.rowIndex="4" />
             <JFXTextField fx:id="txtConta" GridPane.columnIndex="1" GridPane.rowIndex="5" />

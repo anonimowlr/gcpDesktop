@@ -23,13 +23,16 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.InputMismatchException;
 import java.util.List;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 import javafx.scene.control.Alert;
 
 public class Utils {
- List<String> filesListInDir = new ArrayList<String>();
+
+    List<String> filesListInDir = new ArrayList<String>();
+
     public static String getDataAtual() {
 
         Date data = new Date(System.currentTimeMillis());
@@ -752,7 +755,7 @@ public class Utils {
         return formataData(diaBase + "/" + "07/1987");
 
     }
-    
+
     public static Date getDataPlanoCollorIAbril(String diaBase) throws Exception {
 
         if (diaBase.length() < 2) {
@@ -763,7 +766,7 @@ public class Utils {
         return formataData(diaBase + "/" + "05/1990");
 
     }
-    
+
     public static Date getDataPlanoCollorIMaio(String diaBase) throws Exception {
 
         if (diaBase.length() < 2) {
@@ -774,7 +777,7 @@ public class Utils {
         return formataData(diaBase + "/" + "06/1990");
 
     }
-    
+
     public static Date getDataPlanoCollorII(String diaBase) throws Exception {
 
         if (diaBase.length() < 2) {
@@ -850,19 +853,17 @@ public class Utils {
 
     }
 
-    
-    
-    public  void compactarDiretorio(File dir, String zipDirName) {
+    public void compactarDiretorio(File dir, String zipDirName) {
         try {
             populateFilesList(dir);
             //now zip files one by one
             //create ZipOutputStream to write to the zip file
             FileOutputStream fos = new FileOutputStream(zipDirName);
             ZipOutputStream zos = new ZipOutputStream(fos);
-            for( String filePath : filesListInDir){
-                System.out.println("Zipping "+filePath);
+            for (String filePath : filesListInDir) {
+                System.out.println("Zipping " + filePath);
                 //for ZipEntry we need to keep only relative file path, so we used substring on absolute path
-                ZipEntry ze = new ZipEntry(filePath.substring(dir.getAbsolutePath().length()+1, filePath.length()));
+                ZipEntry ze = new ZipEntry(filePath.substring(dir.getAbsolutePath().length() + 1, filePath.length()));
                 zos.putNextEntry(ze);
                 //read the file and write to ZipOutputStream
                 FileInputStream fis = new FileInputStream(filePath);
@@ -880,26 +881,25 @@ public class Utils {
             e.printStackTrace();
         }
     }
-    
-    
-    public  void populateFilesList(File dir) throws IOException {
-       
-        
+
+    public void populateFilesList(File dir) throws IOException {
+
         try {
-         File files[] = dir.listFiles();
-        for(File file : files){
-            if(file.isFile()) filesListInDir.add(file.getAbsolutePath());
-            else populateFilesList(file);
-        }   
+            File files[] = dir.listFiles();
+            for (File file : files) {
+                if (file.isFile()) {
+                    filesListInDir.add(file.getAbsolutePath());
+                } else {
+                    populateFilesList(file);
+                }
+            }
         } catch (Exception e) {
             e.printStackTrace();
-            
+
         }
-        
+
     }
-    
-    
-    
+
     public static void alertaGeral(String a, String b, String c) {
 
         Alert alert = new Alert(Alert.AlertType.ERROR);
@@ -909,8 +909,8 @@ public class Utils {
         alert.show();
 
     }
-     
-      public static void alertaGeralInformacao(String a, String b, String c) {
+
+    public static void alertaGeralInformacao(String a, String b, String c) {
 
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
         alert.setTitle(a);
@@ -919,7 +919,131 @@ public class Utils {
         alert.show();
 
     }
-    
-    
-    
+
+    public static Boolean isCpfCnpj(String value) {
+
+        value = Utils.limparPontos((value).toString());
+        String cpfCnpj = (String) value;
+
+        if (cpfCnpj.length() > 11 && !isCNPJ(cpfCnpj)) {
+            return false;
+        } else if (cpfCnpj.length() <= 11) {
+            if (cpfCnpj.length() != 11 || !calcularDigitoVerificador(cpfCnpj.substring(0, 9)).equals(cpfCnpj.substring(9, 11)) || cpfCnpj.equals("00000000000") || cpfCnpj.equals("11111111111") || cpfCnpj.equals("22222222222") || cpfCnpj.equals("33333333333") || cpfCnpj.equals("44444444444") || cpfCnpj.equals("55555555555") || cpfCnpj.equals("66666666666") || cpfCnpj.equals("77777777777") || cpfCnpj.equals("88888888888") || cpfCnpj.equals("99999999999")) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    private static String calcularDigitoVerificador(String num) {
+
+        Integer primDig, segDig;
+        int soma = 0;
+        int peso = 10;
+        for (int i = 0; i < num.length(); i++) {
+            soma += Integer.parseInt(num.substring(i, i + 1)) * peso--;
+        }
+        if (soma % 11 == 0 | soma % 11 == 1) {
+            primDig = new Integer(0);
+        } else {
+            primDig = new Integer(11 - (soma % 11));
+        }
+        soma = 0;
+        peso = 11;
+        for (int i = 0; i < num.length(); i++) {
+            soma += Integer.parseInt(num.substring(i, i + 1)) * peso--;
+        }
+        soma += primDig.intValue() * 2;
+        if (soma % 11 == 0 | soma % 11 == 1) {
+            segDig = new Integer(0);
+        } else {
+            segDig = new Integer(11 - (soma % 11));
+        }
+        return primDig.toString() + segDig.toString();
+    }
+
+    public static boolean isCNPJ(String CNPJ) {
+// considera-se erro CNPJ's formados por uma sequencia de numeros iguais
+        if (CNPJ.equals("11111111111111") || CNPJ.equals("00000000000000")
+                || CNPJ.equals("22222222222222") || CNPJ.equals("33333333333333")
+                || CNPJ.equals("44444444444444") || CNPJ.equals("55555555555555")
+                || CNPJ.equals("66666666666666") || CNPJ.equals("77777777777777")
+                || CNPJ.equals("88888888888888") || CNPJ.equals("99999999999999")
+                || (CNPJ.length() != 14)) {
+            return (false);
+        }
+
+        char dig13, dig14;
+        int sm, i, r, num, peso;
+
+// "try" - protege o código para eventuais erros de conversao de tipo (int)
+        try {
+// Calculo do 1o. Digito Verificador
+            sm = 0;
+            peso = 2;
+            for (i = 11; i >= 0; i--) {
+// converte o i-ésimo caractere do CNPJ em um número:
+// por exemplo, transforma o caractere '0' no inteiro 0
+// (48 eh a posição de '0' na tabela ASCII)
+                num = (int) (CNPJ.charAt(i) - 48);
+                sm = sm + (num * peso);
+                peso = peso + 1;
+                if (peso == 10) {
+                    peso = 2;
+                }
+            }
+
+            r = sm % 11;
+            if ((r == 0) || (r == 1)) {
+                dig13 = '0';
+            } else {
+                dig13 = (char) ((11 - r) + 48);
+            }
+
+// Calculo do 2o. Digito Verificador
+            sm = 0;
+            peso = 2;
+            for (i = 12; i >= 0; i--) {
+                num = (int) (CNPJ.charAt(i) - 48);
+                sm = sm + (num * peso);
+                peso = peso + 1;
+                if (peso == 10) {
+                    peso = 2;
+                }
+            }
+
+            r = sm % 11;
+            if ((r == 0) || (r == 1)) {
+                dig14 = '0';
+            } else {
+                dig14 = (char) ((11 - r) + 48);
+            }
+
+// Verifica se os dígitos calculados conferem com os dígitos informados.
+            if ((dig13 == CNPJ.charAt(12)) && (dig14 == CNPJ.charAt(13))) {
+                return (true);
+            } else {
+                return (false);
+            }
+        } catch (InputMismatchException erro) {
+            return (false);
+        }
+    }
+
+    public static String getMensagemErro(Exception e) {
+
+        while (e.getCause() != null) {
+            e = (Exception) e.getCause();
+        }
+
+        String retorno = e.getMessage();
+        if (retorno.contains("foreign key")) {
+
+            retorno = "Registro nao pode ser excluido, possui referencia no sistema";
+        }
+
+        return retorno;
+    }
+
 }
