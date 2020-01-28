@@ -181,7 +181,7 @@ public class EdicaoCalculoController extends AbstractController implements Initi
         getCmbMetodologia().getItems().addAll(listaMetodologia);
         getCmbPlanoEconomico().getItems().addAll(getPlanoEconomicoDAO().getListaTodos());
         getCmbBanco().getItems().addAll("BB", "BESC", "BNC");
-        getCmbIndice().getItems().addAll(getIndiceDAO().getListaTodos());
+        getCmbIndice().getItems().addAll(getIndiceDAO().getListaIndiceSemTr());
 
     }
 
@@ -603,6 +603,8 @@ public class EdicaoCalculoController extends AbstractController implements Initi
                 Indice indice = getIndiceDAO().getEm().find(Indice.class, 3);
                 calculo.getListaPeriodoCalculo().get(0).setIndice(indice);
                 calculo.setJuroRemuneratorio(new JuroRemuneratorio());
+                setValorIndiceMap(getValorIndiceTresMap());
+                
             }
 
             if (calculo.getMetodologia().getId() == 4) {
@@ -1150,7 +1152,7 @@ public class EdicaoCalculoController extends AbstractController implements Initi
 
             //Utils.alertaGeralInformacao(null,null,getCalculoDAO().getMensagem());
         } catch (Exception e) {
-            Utils.alertaGeral(null, null, "Erro - ao persistir este erro comunique a equipe responsável" + "\n" + e);
+            Utils.alertaGeral(null, null, "Erro  método avaliarParaSalvar, caso persista comunique à equipe responsável" + e.toString());
         }
 
     }

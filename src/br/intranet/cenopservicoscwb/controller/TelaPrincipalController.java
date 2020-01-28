@@ -7,6 +7,7 @@ package br.intranet.cenopservicoscwb.controller;
 
 import CurrencyField.CurrencyField;
 import CurrencyField.TextFieldFormatter;
+import br.com.intranet.cenopservicoscwb.model.calculo.MotorCalculoPoupanca;
 import br.com.intranet.cenopservicoscwb.model.dao.Dao;
 import br.com.intranet.cenopservicoscwb.model.entidade.Calculo;
 import br.com.intranet.cenopservicoscwb.model.entidade.Cliente;
@@ -481,10 +482,16 @@ public class TelaPrincipalController extends AbstractController implements Initi
             getProtocoloGSV().getMulta().setTaxaMulta(Utils.converterStringParaBigDecimal(Utils.tratarVariavel(getTxtPercentMulta().getText())));
             getProtocoloGSV().getHonorario().setTaxaHonorario(Utils.converterStringParaBigDecimal(Utils.tratarVariavel(getTxtPercentHonor().getText())));
 
+            MotorCalculoPoupanca motorCalculoPoupanca = new MotorCalculoPoupanca();
+            motorCalculoPoupanca.calcularHonorarioMulta(getProtocoloGSV());
+            
+            
             if (getProtocoloGSV().getListaCalculo().size() > 0) {
                 popularTabelacalculoEdicao();
 
+                salvar();
                 chamaFormEdicao();
+                
             } else {
 
                 salvar();
@@ -954,6 +961,11 @@ public class TelaPrincipalController extends AbstractController implements Initi
         if(calculo==null){
             return;
         }
+        
+        if(calculo.getId()==null){
+            
+        }
+        
         setCalculo(calculo);
         atualizaComponentes();
     }
@@ -1067,7 +1079,7 @@ public class TelaPrincipalController extends AbstractController implements Initi
     
     
     private void limparComponentes(){
-          getLblSaldoConferencia().setText("");
+        getLblSaldoConferencia().setText("");
         getLblRemBaseConferencia().setText("");
         getLblJurCredConferencia().setText("");
         getLblSaldoNaDataBaseConferencia().setText("");
