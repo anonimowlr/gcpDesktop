@@ -1,5 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.scene.shape.*?>
+<?import CurrencyField.*?>
+<?import javafx.geometry.*?>
 <?import javafx.scene.text.*?>
 <?import com.jfoenix.controls.*?>
 <?import java.lang.*?>
@@ -8,50 +11,110 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<AnchorPane prefHeight="919.0" prefWidth="404.0" style="-fx-background-color: #99ccff;" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="br.intranet.cenopservicoscwb.controller.EdicaoCalculoController">
+<AnchorPane maxHeight="877.0" maxWidth="365.0" prefHeight="877.0" prefWidth="365.0" style="-fx-background-color: #5073C3;" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="br.intranet.cenopservicoscwb.controller.EdicaoCalculoController">
    <children>
-      <GridPane fx:id="grdEdicao" layoutX="14.0" layoutY="-7.0" prefHeight="823.0" prefWidth="395.0" AnchorPane.bottomAnchor="103.0" AnchorPane.leftAnchor="14.0" AnchorPane.rightAnchor="14.0" AnchorPane.topAnchor="-7.0">
+      <GridPane fx:id="grdEdicao" layoutX="18.0" layoutY="-7.0" prefHeight="823.0" prefWidth="336.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="17.0" AnchorPane.topAnchor="-7.0">
          <children>
-            <Label text="Metodologia:" />
-            <Label focusTraversable="false" text="CPF/CNPJ:" GridPane.rowIndex="1" />
-            <Label focusTraversable="false" text="Nome:" GridPane.rowIndex="2" />
-            <Label focusTraversable="false" text="Banco:" GridPane.rowIndex="3" />
-            <Label text="Agência:" GridPane.rowIndex="4" />
-            <Label text="Conta:" GridPane.rowIndex="5" />
-            <Label text="Plano Econômico:" GridPane.rowIndex="6" />
-            <Label text="Saldo Base:" GridPane.rowIndex="7" />
-            <Label text="Dia Base:" GridPane.rowIndex="8" />
-            <Label text="Índice" GridPane.rowIndex="9" />
-            <Label text="Juros Mora:" GridPane.rowIndex="12" />
-            <Label text="Início jur. Rem." GridPane.rowIndex="13" />
-            <Label text="Fim Jur. Rem." GridPane.rowIndex="14" />
-            <Label text="Expurgo:" GridPane.rowIndex="15" />
-            <Label text="Valor Final:" GridPane.rowIndex="16" />
-            <Label text="PCOND:" GridPane.rowIndex="17" />
-            <Label fx:id="lblValorFinal" prefHeight="30.0" prefWidth="164.0" text="Label" GridPane.columnIndex="1" GridPane.rowIndex="16" />
-            <Label text="Data início correção" GridPane.rowIndex="10" />
-            <Label text="Data final correção" GridPane.rowIndex="11" />
-            <JFXComboBox fx:id="cmbMetodologia" prefHeight="25.0" prefWidth="242.0" GridPane.columnIndex="1" />
-            <JFXTextField fx:id="txtCpfCnpj" pickOnBounds="false" GridPane.columnIndex="1" GridPane.rowIndex="1" />
-            <JFXTextField fx:id="txtNome" onKeyTyped="#inputDataKeyTypedCPF" GridPane.columnIndex="1" GridPane.rowIndex="2" />
-            <JFXComboBox fx:id="cmbBanco" prefHeight="25.0" prefWidth="242.0" GridPane.columnIndex="1" GridPane.rowIndex="3" />
-            <JFXTextField fx:id="txtAgencia" GridPane.columnIndex="1" GridPane.rowIndex="4" />
-            <JFXTextField fx:id="txtConta" GridPane.columnIndex="1" GridPane.rowIndex="5" />
-            <JFXComboBox fx:id="cmbPlanoEconomico" prefHeight="25.0" prefWidth="243.0" GridPane.columnIndex="1" GridPane.rowIndex="6" />
-            <JFXTextField fx:id="txtSaldoBase" GridPane.columnIndex="1" GridPane.rowIndex="7" />
-            <JFXTextField fx:id="txtDiaBase" onKeyTyped="#calcularParaConferencia" GridPane.columnIndex="1" GridPane.rowIndex="8" />
-            <JFXComboBox fx:id="cmbIndice" prefHeight="25.0" prefWidth="247.0" GridPane.columnIndex="1" GridPane.rowIndex="9" />
-            <JFXTextField fx:id="txtDataInicioCorrecao" GridPane.columnIndex="1" GridPane.rowIndex="10" />
-            <JFXTextField fx:id="txtDataFinalCorrecao" GridPane.columnIndex="1" GridPane.rowIndex="11" />
-            <JFXTextField fx:id="txtJurMora" GridPane.columnIndex="1" GridPane.rowIndex="12" />
-            <JFXTextField fx:id="txtInitJurRem" GridPane.columnIndex="1" GridPane.rowIndex="13" />
-            <JFXTextField fx:id="txtFimJurRem" GridPane.columnIndex="1" GridPane.rowIndex="14" />
-            <JFXComboBox fx:id="cmbExpurgo" GridPane.columnIndex="1" GridPane.rowIndex="15" />
-            <JFXCheckBox fx:id="ckbPcond" text="SIM" GridPane.columnIndex="1" GridPane.rowIndex="17" />
+            <Label text="Metodologia:" textFill="WHITE">
+               <font>
+                  <Font name="Open Sans Bold" size="13.0" />
+               </font></Label>
+            <Label focusTraversable="false" text="CPF/CNPJ:" textFill="WHITE" GridPane.rowIndex="1">
+               <font>
+                  <Font name="Open Sans Bold" size="13.0" />
+               </font></Label>
+            <Label focusTraversable="false" text="Nome:" textFill="WHITE" GridPane.rowIndex="2">
+               <font>
+                  <Font name="Open Sans Bold" size="13.0" />
+               </font></Label>
+            <Label focusTraversable="false" text="Banco:" textFill="WHITE" GridPane.rowIndex="3">
+               <font>
+                  <Font name="Open Sans Bold" size="13.0" />
+               </font></Label>
+            <Label text="Agência:" textFill="WHITE" GridPane.rowIndex="4">
+               <font>
+                  <Font name="Open Sans Bold" size="13.0" />
+               </font></Label>
+            <Label text="Conta:" textFill="WHITE" GridPane.rowIndex="5">
+               <font>
+                  <Font name="Open Sans Bold" size="13.0" />
+               </font></Label>
+            <Label text="Plano Econômico:" textFill="WHITE" GridPane.rowIndex="6">
+               <font>
+                  <Font name="Open Sans Bold" size="13.0" />
+               </font></Label>
+            <Label text="Saldo Base:" textFill="WHITE" GridPane.rowIndex="7">
+               <font>
+                  <Font name="Open Sans Bold" size="13.0" />
+               </font></Label>
+            <Label text="Dia Base:" textFill="WHITE" GridPane.rowIndex="8">
+               <font>
+                  <Font name="Open Sans Bold" size="13.0" />
+               </font></Label>
+            <Label text="Índice:" textFill="WHITE" GridPane.rowIndex="9">
+               <font>
+                  <Font name="Open Sans Bold" size="13.0" />
+               </font></Label>
+            <Label text="Juros Mora:" textFill="#f2f2f2" GridPane.rowIndex="12">
+               <font>
+                  <Font name="Open Sans Bold" size="13.0" />
+               </font></Label>
+            <Label text="Início jur. Rem." textFill="#f2f2f2" GridPane.rowIndex="13">
+               <font>
+                  <Font name="Open Sans Bold" size="13.0" />
+               </font></Label>
+            <Label text="Fim Jur. Rem." textFill="#f2f2f2" GridPane.rowIndex="14">
+               <font>
+                  <Font name="Open Sans Bold" size="13.0" />
+               </font></Label>
+            <Label text="Expurgo:" textFill="#f2f2f2" GridPane.rowIndex="15">
+               <font>
+                  <Font name="Open Sans Bold" size="13.0" />
+               </font></Label>
+            <Label text="Valor Final:" textFill="#f2f2f2" GridPane.rowIndex="16">
+               <font>
+                  <Font name="Open Sans Bold" size="13.0" />
+               </font></Label>
+            <Label text="PCOND:" textFill="#f2f2f2" GridPane.rowIndex="17">
+               <font>
+                  <Font name="Open Sans Bold" size="13.0" />
+               </font></Label>
+            <Label text="Data início correção:" textFill="WHITE" GridPane.rowIndex="10">
+               <font>
+                  <Font name="Open Sans Bold" size="13.0" />
+               </font></Label>
+            <Label text="Data final correção:" textFill="WHITE" GridPane.rowIndex="11">
+               <font>
+                  <Font name="Open Sans Bold" size="13.0" />
+               </font></Label>
+            <JFXComboBox fx:id="cmbMetodologia" focusColor="WHITE" maxWidth="200.0" prefHeight="25.0" prefWidth="200.0" style="-fx-text-fill: #ffffff; -fx-prompt-text-fill: #ffffff; -jfx-text-fill: #ffffff;" styleClass="jfx-combo-box" stylesheets="@ComboBox.css" unFocusColor="WHITE" GridPane.columnIndex="1" GridPane.halignment="LEFT">
+               <GridPane.margin>
+                  <Insets />
+               </GridPane.margin></JFXComboBox>
+            <JFXTextField fx:id="txtCpfCnpj" focusColor="WHITE" maxWidth="200.0" onKeyTyped="#inputDataKeyTypedCPF" pickOnBounds="false" prefWidth="200.0" style="-fx-text-fill: WHITE;" unFocusColor="WHITE" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+            <JFXTextField fx:id="txtNome" focusColor="WHITE" maxWidth="200.0" prefWidth="200.0" style="-fx-text-fill: WHITE;" unFocusColor="WHITE" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+            <JFXComboBox fx:id="cmbBanco" focusColor="WHITE" maxWidth="200.0" prefHeight="25.0" prefWidth="200.0" style="-fx-text-fill: WHITE;" styleClass="jfx-combo-box" stylesheets="@ComboBox.css" unFocusColor="#fffbfb" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+            <JFXTextField fx:id="txtAgencia" focusColor="WHITE" maxWidth="200.0" prefWidth="200.0" style="-fx-text-fill: WHITE;" unFocusColor="WHITE" GridPane.columnIndex="1" GridPane.rowIndex="4" />
+            <JFXTextField fx:id="txtConta" focusColor="WHITE" maxWidth="200.0" prefWidth="200.0" style="-fx-text-fill: WHITE;" unFocusColor="WHITE" GridPane.columnIndex="1" GridPane.rowIndex="5" />
+            <JFXComboBox fx:id="cmbPlanoEconomico" focusColor="WHITE" maxWidth="200.0" prefHeight="25.0" prefWidth="200.0" style="-fx-text-fill: WHITE;" styleClass="jfx-combo-box" stylesheets="@ComboBox.css" unFocusColor="#fffbfb" GridPane.columnIndex="1" GridPane.rowIndex="6" />
+            <JFXTextField fx:id="txtSaldoBase" focusColor="WHITE" maxWidth="200.0" prefWidth="200.0" style="-fx-text-fill: WHITE;" unFocusColor="WHITE" GridPane.columnIndex="1" GridPane.rowIndex="7" />
+            <JFXTextField fx:id="txtDiaBase" focusColor="WHITE" maxWidth="200.0" onKeyTyped="#calcularParaConferencia" prefWidth="200.0" style="-fx-text-fill: WHITE;" unFocusColor="WHITE" GridPane.columnIndex="1" GridPane.rowIndex="8" />
+            <JFXComboBox fx:id="cmbIndice" focusColor="WHITE" maxWidth="200.0" onKeyTyped="#atribuirDataInicialPlano" prefHeight="25.0" prefWidth="200.0" style="-fx-text-fill: WHITE;" styleClass="jfx-combo-box" stylesheets="@ComboBox.css" unFocusColor="#fffbfb" GridPane.columnIndex="1" GridPane.rowIndex="9" />
+            <JFXTextField fx:id="txtDataInicioCorrecao" focusColor="WHITE" maxWidth="200.0" prefWidth="200.0" style="-fx-text-fill: WHITE;" unFocusColor="WHITE" GridPane.columnIndex="1" GridPane.rowIndex="10" />
+            <JFXTextField fx:id="txtDataFinalCorrecao" focusColor="WHITE" maxWidth="200.0" prefWidth="200.0" style="-fx-text-fill: WHITE;" unFocusColor="WHITE" GridPane.columnIndex="1" GridPane.rowIndex="11" />
+            <JFXTextField fx:id="txtJurMora" focusColor="WHITE" maxWidth="200.0" prefWidth="200.0" style="-fx-text-fill: WHITE;" unFocusColor="WHITE" GridPane.columnIndex="1" GridPane.rowIndex="12" />
+            <JFXTextField fx:id="txtInitJurRem" focusColor="WHITE" maxWidth="200.0" prefWidth="200.0" style="-fx-text-fill: WHITE;" unFocusColor="WHITE" GridPane.columnIndex="1" GridPane.rowIndex="13" />
+            <JFXTextField fx:id="txtFimJurRem" focusColor="WHITE" maxWidth="200.0" prefWidth="200.0" style="-fx-text-fill: WHITE;" unFocusColor="WHITE" GridPane.columnIndex="1" GridPane.rowIndex="14" />
+            <JFXComboBox fx:id="cmbExpurgo" focusColor="WHITE" maxWidth="200.0" prefWidth="200.0" style="-fx-text-fill: WHITE;" styleClass="jfx-combo-box" stylesheets="@ComboBox.css" unFocusColor="#fffbfb" GridPane.columnIndex="1" GridPane.rowIndex="15" />
+            <JFXCheckBox fx:id="ckbPcond" checkedColor="#1053e4" text="SIM" textFill="WHITE" unCheckedColor="#fff646" GridPane.columnIndex="1" GridPane.rowIndex="17">
+               <font>
+                  <Font name="Open Sans Bold" size="13.0" />
+               </font></JFXCheckBox>
+            <JFXTextField fx:id="lblValorFinal" focusColor="WHITE" maxWidth="200.0" prefWidth="200.0" style="-fx-text-fill: WHITE;" unFocusColor="WHITE" GridPane.columnIndex="1" GridPane.rowIndex="16" />
          </children>
          <columnConstraints>
-            <ColumnConstraints hgrow="SOMETIMES" maxWidth="196.0" minWidth="10.0" prefWidth="142.0" />
-            <ColumnConstraints hgrow="SOMETIMES" maxWidth="307.0" minWidth="10.0" prefWidth="248.0" />
+            <ColumnConstraints hgrow="SOMETIMES" maxWidth="196.0" minWidth="10.0" prefWidth="164.0" />
+            <ColumnConstraints hgrow="SOMETIMES" maxWidth="307.0" minWidth="10.0" prefWidth="212.0" />
          </columnConstraints>
          <rowConstraints>
             <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
@@ -74,7 +137,7 @@
             <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
          </rowConstraints>
       </GridPane>
-      <JFXButton fx:id="btCalcular" buttonType="RAISED" layoutX="253.0" layoutY="867.0" onAction="#avaliarParaSalvar" prefHeight="30.0" prefWidth="136.0" style="-fx-background-color: #fff646;" text="Salvar" textFill="LIGHTSLATEGRAY" AnchorPane.bottomAnchor="22.0" AnchorPane.rightAnchor="15.0">
+      <JFXButton fx:id="btCalcular" buttonType="RAISED" layoutX="233.0" layoutY="825.0" onAction="#avaliarParaSalvar" prefHeight="30.0" prefWidth="136.0" style="-fx-background-color: #fff646;" text="Salvar" textFill="LIGHTSLATEGRAY" AnchorPane.rightAnchor="21.0">
          <font>
             <Font name="Open Sans Bold" size="14.0" />
          </font>

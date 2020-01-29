@@ -40,7 +40,10 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
+import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
@@ -99,8 +102,8 @@ public class TelaPrincipalController extends AbstractController implements Initi
     private JFXButton btnEditarSelecionado;
     @FXML
     private TableColumn<Calculo, Integer> colId;
-    private TableColumn<Calculo, Integer> colIdTbEdicao;
     @FXML
+    private TableColumn<Calculo, Integer> colIdTbEdicao;
     private Label lblChaveFunci;
     @FXML
     private TableColumn<Calculo, Metodologia> colMetodologia;
@@ -109,26 +112,28 @@ public class TelaPrincipalController extends AbstractController implements Initi
     @FXML
     private TableColumn<Calculo, Cliente> colCpfCnpj;
     @FXML
-    private Label lblChave;
+    private TextField lblChave;
     @FXML
     private JFXTextField txtPercentHonor;
     @FXML
     private JFXTextField txtPercentMulta;
     private JFXButton btnAplicarParametros;
-    @FXML
     private HBox hbAreaParaDadosConferencia;
     @FXML
-    private Label lblIdConferencia;
+    private JFXTextField lblIdConferencia;
     @FXML
-    private Label lblSaldoConferencia;
+    private JFXTextField lblSaldoConferencia;
     @FXML
-    private Label lblRemBaseConferencia;
+    private JFXTextField lblRemBaseConferencia;
     @FXML
-    private Label lblJurCredConferencia;
+    private JFXTextField lblJurCredConferencia;
     @FXML
-    private Label lblSaldoNaDataBaseConferencia;
+    private JFXTextField lblSaldoNaDataBaseConferencia;
     @FXML
     private AnchorPane ancorSecaoParametros;
+    @FXML
+    private ImageView imageView;
+   
 
     public TelaPrincipalController() {
 
@@ -140,6 +145,9 @@ public class TelaPrincipalController extends AbstractController implements Initi
      */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
+        
+            Image imagem = new Image("/views/imagens/logo.png");
+        getImageView().setImage(imagem);
 
         CurrencyField cur = new CurrencyField();
         cur.amountProperty().addListener(new ChangeListener<Number>() {
@@ -547,7 +555,7 @@ public class TelaPrincipalController extends AbstractController implements Initi
 
         observableListCalculo = FXCollections.observableArrayList();
 
-        //getColIdTbEdicao().setCellValueFactory(new PropertyValueFactory<>("id")); // atributo da entidade
+        getColIdTbEdicao().setCellValueFactory(new PropertyValueFactory<>("id")); // atributo da entidade
         getColMetodologia().setCellValueFactory(new PropertyValueFactory<>("metodologia")); // atributo da entidade
         getColValorFinal().setCellValueFactory((new PropertyValueFactory<>("valorFinal"))); // atributo da entidade
         getColCpfCnpj().setCellValueFactory((new PropertyValueFactory<>("cliente"))); // atributo da entidade
@@ -651,6 +659,7 @@ public class TelaPrincipalController extends AbstractController implements Initi
         atualizaParametrosGerais();
 
         edicaoCalculoController.passarCalculo(this, getCalculo());
+        atualizaComponentes();
 
         //System.out.println(getTvTabelaCalculoEdicao().getSelectionModel().getSelectedItem().getValorFinal());
     }
@@ -859,17 +868,14 @@ public class TelaPrincipalController extends AbstractController implements Initi
         this.colCpfCnpj = colCpfCnpj;
     }
 
-    /**
-     * @return the lblChave
-     */
-    public Label getLblChave() {
+    public TextField getLblChave() {
         return lblChave;
     }
 
     /**
-     * @param lblChave the lblChave to set
+     * @return the lblChave
      */
-    public void setLblChave(Label lblChave) {
+    public void setLblChave(TextField lblChave) { 
         this.lblChave = lblChave;
     }
 
@@ -962,9 +968,6 @@ public class TelaPrincipalController extends AbstractController implements Initi
             return;
         }
         
-        if(calculo.getId()==null){
-            
-        }
         
         setCalculo(calculo);
         atualizaComponentes();
@@ -998,93 +1001,119 @@ public class TelaPrincipalController extends AbstractController implements Initi
         this.hbAreaParaDadosConferencia = hbAreaParaDadosConferencia;
     }
 
-    /**
-     * @return the lblIdConferencia
-     */
-    public Label getLblIdConferencia() {
+    public JFXTextField getLblIdConferencia() {
         return lblIdConferencia;
     }
 
-    /**
-     * @param lblIdConferencia the lblIdConferencia to set
-     */
-    public void setLblIdConferencia(Label lblIdConferencia) {
+    public void setLblIdConferencia(JFXTextField lblIdConferencia) {
         this.lblIdConferencia = lblIdConferencia;
     }
 
-    /**
-     * @return the lblSaldoConferencia
-     */
-    public Label getLblSaldoConferencia() {
-        return lblSaldoConferencia;
-    }
-
-    /**
-     * @param lblSaldoConferencia the lblSaldoConferencia to set
-     */
-    public void setLblSaldoConferencia(Label lblSaldoConferencia) {
-        this.lblSaldoConferencia = lblSaldoConferencia;
-    }
-
-    /**
-     * @return the lblRemBaseConferencia
-     */
-    public Label getLblRemBaseConferencia() {
+    public JFXTextField getLblRemBaseConferencia() {
         return lblRemBaseConferencia;
     }
 
-    /**
-     * @param lblRemBaseConferencia the lblRemBaseConferencia to set
-     */
-    public void setLblRemBaseConferencia(Label lblRemBaseConferencia) {
+    public void setLblRemBaseConferencia(JFXTextField lblRemBaseConferencia) {
         this.lblRemBaseConferencia = lblRemBaseConferencia;
     }
 
-    /**
-     * @return the lblJurCredConferencia
-     */
-    public Label getLblJurCredConferencia() {
+    public JFXTextField getLblJurCredConferencia() {
         return lblJurCredConferencia;
     }
 
-    /**
-     * @param lblJurCredConferencia the lblJurCredConferencia to set
-     */
-    public void setLblJurCredConferencia(Label lblJurCredConferencia) {
+    public void setLblJurCredConferencia(JFXTextField lblJurCredConferencia) {
         this.lblJurCredConferencia = lblJurCredConferencia;
     }
 
-    /**
-     * @return the lblSaldoNaDataBaseConferencia
-     */
-    public Label getLblSaldoNaDataBaseConferencia() {
+    public JFXTextField getLblSaldoNaDataBaseConferencia() {
         return lblSaldoNaDataBaseConferencia;
     }
 
-    /**
-     * @param lblSaldoNaDataBaseConferencia the lblSaldoNaDataBaseConferencia to set
-     */
-    public void setLblSaldoNaDataBaseConferencia(Label lblSaldoNaDataBaseConferencia) {
+    public void setLblSaldoNaDataBaseConferencia(JFXTextField lblSaldoNaDataBaseConferencia) {
         this.lblSaldoNaDataBaseConferencia = lblSaldoNaDataBaseConferencia;
     }
 
+    public JFXTextField getLblSaldoConferencia() {
+        return lblSaldoConferencia;
+    }
+
+    public void setLblSaldoConferencia(JFXTextField lblSaldoConferencia) {
+        this.lblSaldoConferencia = lblSaldoConferencia;
+    }
+
+   
+
     private void atualizaComponentes() {
         
-        getLblSaldoConferencia().setText(Utils.converterToMoneySaldoBase(getCalculo().getSaldoBase().toString()));
-        getLblRemBaseConferencia().setText(Utils.converterToMoneySaldoBase(getCalculo().getRemuneracaoBasica().toString()));
-        getLblJurCredConferencia().setText(Utils.converterToMoneySaldoBase(getCalculo().getJurosCreditado().toString()));
-        getLblSaldoNaDataBaseConferencia().setText(Utils.converterToMoneySaldoBase(getCalculo().getSaldoBase().add(getCalculo().getRemuneracaoBasica().add(getCalculo().getJurosCreditado())).toString()));
-
+        
+        if(getCalculo().getId()!=null){
+             getLblIdConferencia().setText(getCalculo().getId().toString());
+        }
+        
+       
+        if(getCalculo().getSaldoBase()!=null){
+            getLblSaldoConferencia().setText(Utils.converterToMoneySaldoBase(getCalculo().getSaldoBase().toString()));
+        }
+        
+        
+        if(getCalculo().getRemuneracaoBasica()!= null){
+           getLblRemBaseConferencia().setText(Utils.converterToMoneySaldoBase(getCalculo().getRemuneracaoBasica().toString())); 
+        }
+        
+        
+        if(getCalculo().getJurosCreditado()!=null){
+            getLblJurCredConferencia().setText(Utils.converterToMoneySaldoBase(getCalculo().getJurosCreditado().toString()));
+        }
+        
+        if(getCalculo().getRemuneracaoBasica()!=null){
+          getLblSaldoNaDataBaseConferencia().setText(Utils.converterToMoneySaldoBase(getCalculo().getSaldoBase().add(getCalculo().getRemuneracaoBasica().add(getCalculo().getJurosCreditado())).toString()));
+  
+        }
+        
+        
+        
     }
     
     
     private void limparComponentes(){
+        getLblIdConferencia().setText("");
         getLblSaldoConferencia().setText("");
         getLblRemBaseConferencia().setText("");
         getLblJurCredConferencia().setText("");
         getLblSaldoNaDataBaseConferencia().setText("");
 
     }
+
+    /**
+     * @return the ancorSecaoParametros
+     */
+    public AnchorPane getAncorSecaoParametros() {
+        return ancorSecaoParametros;
+    }
+
+    /**
+     * @param ancorSecaoParametros the ancorSecaoParametros to set
+     */
+    public void setAncorSecaoParametros(AnchorPane ancorSecaoParametros) {
+        this.ancorSecaoParametros = ancorSecaoParametros;
+    }
+
+    /**
+     * @return the imageView
+     */
+    public ImageView getImageView() {
+        return imageView;
+    }
+
+    /**
+     * @param imageView the imageView to set
+     */
+    public void setImageView(ImageView imageView) {
+        this.imageView = imageView;
+    }
+
+  
+    
 
 
 }

@@ -58,12 +58,12 @@ public class MainApp extends Application {
     public void start(Stage primaryStage) throws ClassNotFoundException, SQLException {
         this.setPrimaryStage(primaryStage);
         this.getPrimaryStage().setTitle("Gestão e Cálculo de Planos Econômicos");
-        //primaryStage.resizableProperty().setValue(Boolean.FALSE);
+        primaryStage.resizableProperty().setValue(Boolean.FALSE);
         
         ConsultaSQL sql = new ConsultaSQL();
         usuarioDAO = new UsuarioDAO();
-        funci = usuarioDAO.getFuncionario(System.getProperty("user.name"));
-         //funci = usuarioDAO.getFuncionario("f5078775");
+        //funci = usuarioDAO.getFuncionario(System.getProperty("user.name"));
+        funci = usuarioDAO.getFuncionario("f5078775");
          
         try {
             if (sql.confirmaVersao(codigoFerramenta, versao)) {

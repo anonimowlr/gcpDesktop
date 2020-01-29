@@ -5,6 +5,7 @@
  */
 package br.intranet.cenopservicoscwb.controller;
 
+import CurrencyField.CurrencyField;
 import CurrencyField.TextFieldFormatter;
 import br.com.intranet.cenopservicoscwb.model.calculo.MotorCalculoPoupanca;
 import br.com.intranet.cenopservicoscwb.model.entidade.Arquivo;
@@ -131,7 +132,7 @@ public class EdicaoCalculoController extends AbstractController implements Initi
     @FXML
     private JFXTextField txtInitJurRem;
     @FXML
-    private Label lblValorFinal;
+    private JFXTextField lblValorFinal;
     @FXML
     private JFXCheckBox ckbPcond;
     @FXML
@@ -182,6 +183,7 @@ public class EdicaoCalculoController extends AbstractController implements Initi
         getCmbPlanoEconomico().getItems().addAll(getPlanoEconomicoDAO().getListaTodos());
         getCmbBanco().getItems().addAll("BB", "BESC", "BNC");
         getCmbIndice().getItems().addAll(getIndiceDAO().getListaIndiceSemTr());
+        
 
     }
 
@@ -309,6 +311,22 @@ public class EdicaoCalculoController extends AbstractController implements Initi
      */
     public void setCmbBanco(JFXComboBox<String> cmbBanco) {
         this.cmbBanco = cmbBanco;
+    }
+
+    public JFXTextField getTxtCpjCnpj() {
+        return txtCpjCnpj;
+    }
+
+    public void setTxtCpjCnpj(JFXTextField txtCpjCnpj) {
+        this.txtCpjCnpj = txtCpjCnpj;
+    }
+
+    public JFXTextField getLblValorFinal() {
+        return lblValorFinal;
+    }
+
+    public void setLblValorFinal(JFXTextField lblValorFinal) {
+        this.lblValorFinal = lblValorFinal;
     }
 
     /**
@@ -439,20 +457,6 @@ public class EdicaoCalculoController extends AbstractController implements Initi
      */
     public void setTxtInitJurRem(JFXTextField txtInitJurRem) {
         this.txtInitJurRem = txtInitJurRem;
-    }
-
-    /**
-     * @return the lblValorFinal
-     */
-    public Label getLblValorFinal() {
-        return lblValorFinal;
-    }
-
-    /**
-     * @param lblValorFinal the lblValorFinal to set
-     */
-    public void setLblValorFinal(Label lblValorFinal) {
-        this.lblValorFinal = lblValorFinal;
     }
 
     /**
@@ -604,7 +608,7 @@ public class EdicaoCalculoController extends AbstractController implements Initi
                 calculo.getListaPeriodoCalculo().get(0).setIndice(indice);
                 calculo.setJuroRemuneratorio(new JuroRemuneratorio());
                 setValorIndiceMap(getValorIndiceTresMap());
-                
+
             }
 
             if (calculo.getMetodologia().getId() == 4) {
@@ -862,9 +866,7 @@ public class EdicaoCalculoController extends AbstractController implements Initi
             juroRemuneratorio.setDataInicio(calculoUltimaLinha.getJuroRemuneratorio().getDataInicio());
             juroRemuneratorio.setDataFinal(calculoUltimaLinha.getJuroRemuneratorio().getDataFinal());
             calculo.setJuroRemuneratorio(juroRemuneratorio);
-            
 
-            
             calculo.setExpurgo(calculoUltimaLinha.getExpurgo());
             calculo.getExpurgo().setListaValorExpurgo(getExpurgoDAO().localizar((calculoUltimaLinha.getExpurgo().getId())).getListaValorExpurgo());
 
@@ -893,7 +895,7 @@ public class EdicaoCalculoController extends AbstractController implements Initi
         }
 
         getProtocoloGsv().adicionarCalculo(getCalculo());
-       
+
         atualizaFormularioCalculo();
     }
 
@@ -983,14 +985,11 @@ public class EdicaoCalculoController extends AbstractController implements Initi
 
         try {
 
-            
-            
-            
             atualizarObjetoComDadosFormulario();
-            
+
             alterarClienteCalculo(getCalculo());
-            
-            if(validarCampos()==false){
+
+            if (validarCampos() == false) {
                 return;
             }
 
@@ -1068,11 +1067,10 @@ public class EdicaoCalculoController extends AbstractController implements Initi
                     salvarCalculo(getCalculo());
 
                 }
-                
-                 atualizaTabelaPrincipal();
+
+                atualizaTabelaPrincipal();
                 novo();
                 atualizaFormularioCalculo();
-                
 
             } else {
 
@@ -1139,12 +1137,10 @@ public class EdicaoCalculoController extends AbstractController implements Initi
                     atualizarCalculo(getCalculo());
 
                 }
-               
-               
+
                 atualizaTabelaPrincipal();
-                atualizaFormularioCalculo(); 
-               
-                
+                atualizaFormularioCalculo();
+
             }
 //            atualizaTabelaPrincipal();
 //            novo();
@@ -1464,16 +1460,15 @@ public class EdicaoCalculoController extends AbstractController implements Initi
         Platform.runLater(() -> {
 
             TextFieldFormatter tff = new TextFieldFormatter();
-           
+
             String texto = getTxtCpfCnpj().getText();
-            
-            if(Utils.limparPontos(getTxtCpfCnpj().getText()).length() <= 11){
-                 tff.setMask("###.###.###-##");
-                 
+
+            if (Utils.limparPontos(getTxtCpfCnpj().getText()).length() <= 11) {
+                tff.setMask("###.###.###-##");
+
             } else {
-               tff.setMask("##.###.###/####-##");
+                tff.setMask("##.###.###/####-##");
             }
-            
 
             tff.setCaracteresValidos("0123456789");
             tff.setTf(getTxtCpfCnpj());
@@ -1481,8 +1476,7 @@ public class EdicaoCalculoController extends AbstractController implements Initi
         });
     }
 
-    
-    public void alterarClienteCalculo(Calculo calculo)  {
+    public void alterarClienteCalculo(Calculo calculo) {
 
         try {
 
@@ -1505,40 +1499,39 @@ public class EdicaoCalculoController extends AbstractController implements Initi
             consultaCalculoCpf(calculo.getCliente().getCpf());
 
         } catch (Exception e) {
-           Utils.alertaGeral(null, null,"erro metodo alteraCliente, se persistir comunique a equipe responsável" + Utils.getMensagemErro(e));
+            Utils.alertaGeral(null, null, "erro metodo alteraCliente, se persistir comunique a equipe responsável" + Utils.getMensagemErro(e));
         }
 
     }
-    
-    
-    
-    
-     public void consultaCalculoCpf(String cpf) {
+
+    public void consultaCalculoCpf(String cpf) {
         List<Calculo> listaCalculo = new ArrayList<>();
         listaCalculo = getCalculoDAO().consultaCalculoCpf(cpf);
 
         if (listaCalculo.size() > 0) {
-            Utils.alertaGeralInformacao(null,null,"Há cálculos vinculados a este CPF.");
+            Utils.alertaGeralInformacao(null, null, "Há cálculos vinculados a este CPF.");
         }
 
     }
-    
-    
-    
-    public boolean  validarCampos(){
-        if(!Utils.isCpfCnpj(getCalculo().getCliente().getCpf())){
-            
+
+    public boolean validarCampos() {
+        if (!Utils.isCpfCnpj(getCalculo().getCliente().getCpf())) {
+
             Utils.alertaGeral(null, null, "CPF/CNPJ inválidos, não será possível continuar");
             return false;
-            
+
         }
         
+        
+        if(verificarDataInicioPlano(getCalculo().getListaPeriodoCalculo().get(0).getDataInicioCalculo())==false){
+            return  false;
+        }
+        
+        
+
         return true;
     }
-    
-    
-    
-    
+
     public JFXTextField getTxtCpfCnpj() {
         return txtCpfCnpj;
     }
@@ -1561,22 +1554,283 @@ public class EdicaoCalculoController extends AbstractController implements Initi
     public void calcularParaConferencia() {
 
         try {
+            
             atualizarObjetoComDadosFormulario();
+            
+           
+           
+           
             if (getCalculo().getMetodologia().getId() == 2 && getCalculo().getListaPeriodoCalculo().get(0).getDataInicioCalculo() == null) {
                 return;
             }
+            
+            
+           
 
             MotorCalculoPoupanca motorCalculoPoupanca = new MotorCalculoPoupanca();
             motorCalculoPoupanca.calcularParaConferencia(getCalculo());
             setSaldoNaDataBase(getCalculo().getSaldoBase().add(getCalculo().getRemuneracaoBasica().add(getCalculo().getJurosCreditado())));
 
             getTp().passarCalculo(this, calculo);
+            
 
         } catch (Exception e) {
 
             Utils.alertaGeral(null, null, "Erro no método calcularParaConferencia,  caso persista informe à equipe responsável \n" + e);
         }
 
+    }
+    
+    
+    
+    @FXML
+     public void atribuirDataInicialPlano() throws Exception {
+         
+         
+         atualizarObjetoComDadosFormulario();
+
+        if ((getCalculo().getPlanoEconomico().getId() == 1 || getCalculo().getPlanoEconomico().getId() == 2) && getCalculo().getDiaBase() > 15) {
+            Utils.alertaGeral(null,null,"Nos Planos BRESSER e VERÃO o dia base não pode ser superior a 15");
+            return;
+        }
+
+        if (getCalculo().getDiaBase() > 28) {
+            Utils.alertaGeral(null,null,"Informe uma dia base entre 01 e 28 para realização do cálculo!");
+            return;
+        }
+
+        switch (getCalculo().getMetodologia().getId()) {
+            case 1:
+                if (getCalculo().getPlanoEconomico().getId().equals(1)) {
+                    getCalculo().getListaPeriodoCalculo().get(0).setDataInicioCalculo(br.com.intranet.cenopservicoscwb.model.util.Utils.getDataPlanoVerao(getCalculo().getDiaBase().toString()));
+                    try {
+
+                        if (getCalculo().getListaPeriodoCalculo().get(0).getDataFinalCalculo() != null) {
+                            return;
+
+                        }
+                        getCalculo().getListaPeriodoCalculo().get(getCalculo().getListaPeriodoCalculo().size() - 1).setDataFinalCalculo(br.com.intranet.cenopservicoscwb.model.util.Utils.getDataAtualFormatoMysql());
+                    } catch (Exception ex) {
+                        Utils.alertaGeralInformacao(null,null,Utils.getMensagemErro(ex));
+                    }
+                } else if (getCalculo().getPlanoEconomico().getId().equals(2)) {
+                    getCalculo().getListaPeriodoCalculo().get(0).setDataInicioCalculo(br.com.intranet.cenopservicoscwb.model.util.Utils.getDataPlanoBresser(getCalculo().getDiaBase().toString()));
+                    try {
+
+                        if (getCalculo().getListaPeriodoCalculo().get(0).getDataFinalCalculo() != null) {
+                            return;
+
+                        }
+                        getCalculo().getListaPeriodoCalculo().get(getCalculo().getListaPeriodoCalculo().size() - 1).setDataFinalCalculo(br.com.intranet.cenopservicoscwb.model.util.Utils.getDataAtualFormatoMysql());
+                    } catch (Exception ex) {
+                       Utils.alertaGeralInformacao(null,null,Utils.getMensagemErro(ex));
+                    }
+
+                } else if (getCalculo().getPlanoEconomico().getId().equals(3)) {
+                    getCalculo().getListaPeriodoCalculo().get(0).setDataInicioCalculo(br.com.intranet.cenopservicoscwb.model.util.Utils.getDataPlanoCollorIAbril(getCalculo().getDiaBase().toString()));
+                    try {
+
+                        if (getCalculo().getListaPeriodoCalculo().get(0).getDataFinalCalculo() != null) {
+                            return;
+
+                        }
+                        getCalculo().getListaPeriodoCalculo().get(getCalculo().getListaPeriodoCalculo().size() - 1).setDataFinalCalculo(br.com.intranet.cenopservicoscwb.model.util.Utils.getDataAtualFormatoMysql());
+                    } catch (Exception ex) {
+                      Utils.alertaGeralInformacao(null,null,Utils.getMensagemErro(ex));
+                    }
+                } else if (getCalculo().getPlanoEconomico().getId().equals(4)) {
+                    getCalculo().getListaPeriodoCalculo().get(0).setDataInicioCalculo(br.com.intranet.cenopservicoscwb.model.util.Utils.getDataPlanoCollorIMaio(getCalculo().getDiaBase().toString()));
+                    try {
+
+                        if (getCalculo().getListaPeriodoCalculo().get(0).getDataFinalCalculo() != null) {
+                            return;
+
+                        }
+                        getCalculo().getListaPeriodoCalculo().get(getCalculo().getListaPeriodoCalculo().size() - 1).setDataFinalCalculo(br.com.intranet.cenopservicoscwb.model.util.Utils.getDataAtualFormatoMysql());
+                    } catch (Exception ex) {
+                       Utils.alertaGeralInformacao(null,null,Utils.getMensagemErro(ex));
+                    }
+                } else if (getCalculo().getPlanoEconomico().getId().equals(5)) {
+                    getCalculo().getListaPeriodoCalculo().get(0).setDataInicioCalculo(br.com.intranet.cenopservicoscwb.model.util.Utils.getDataPlanoCollorII(getCalculo().getDiaBase().toString()));
+                    try {
+
+                        if (getCalculo().getListaPeriodoCalculo().get(0).getDataFinalCalculo() != null) {
+                            return;
+
+                        }
+                        getCalculo().getListaPeriodoCalculo().get(getCalculo().getListaPeriodoCalculo().size() - 1).setDataFinalCalculo(br.com.intranet.cenopservicoscwb.model.util.Utils.getDataAtualFormatoMysql());
+                    } catch (Exception ex) {
+                      Utils.alertaGeralInformacao(null,null,Utils.getMensagemErro(ex));
+                    }
+                }
+
+                break;
+
+            case 2:
+                getCalculo().getListaPeriodoCalculo().get(getCalculo().getListaPeriodoCalculo().size() - 1).setDataFinalCalculo(br.com.intranet.cenopservicoscwb.model.util.Utils.getDataAtualFormatoMysql());
+                break;
+
+            case 3:
+                if (getCalculo().getPlanoEconomico().getId().equals(1)) {
+                    getCalculo().getListaPeriodoCalculo().get(0).setDataInicioCalculo(br.com.intranet.cenopservicoscwb.model.util.Utils.getDataPlanoVerao(getCalculo().getDiaBase().toString()));
+                    try {
+
+                        if (getCalculo().getListaPeriodoCalculo().get(0).getDataFinalCalculo() != null) {
+                            return;
+
+                        }
+                        getCalculo().getListaPeriodoCalculo().get(getCalculo().getListaPeriodoCalculo().size() - 1).setDataFinalCalculo(br.com.intranet.cenopservicoscwb.model.util.Utils.getDataAtualFormatoMysql());
+                    } catch (Exception ex) {
+                       Utils.alertaGeralInformacao(null,null,Utils.getMensagemErro(ex));
+                    }
+                } else if (getCalculo().getPlanoEconomico().getId().equals(2)) {
+                    getCalculo().getListaPeriodoCalculo().get(0).setDataInicioCalculo(br.com.intranet.cenopservicoscwb.model.util.Utils.getDataPlanoBresser(getCalculo().getDiaBase().toString()));
+                    try {
+
+                        if (getCalculo().getListaPeriodoCalculo().get(0).getDataFinalCalculo() != null) {
+                            return;
+
+                        }
+                        getCalculo().getListaPeriodoCalculo().get(getCalculo().getListaPeriodoCalculo().size() - 1).setDataFinalCalculo(br.com.intranet.cenopservicoscwb.model.util.Utils.getDataAtualFormatoMysql());
+                    } catch (Exception ex) {
+                        Utils.alertaGeralInformacao(null,null,Utils.getMensagemErro(ex));
+                    }
+                }
+                break;
+
+            case 4:
+                if (getCalculo().getPlanoEconomico().getId().equals(1)) {
+                    getCalculo().getListaPeriodoCalculo().get(0).setDataInicioCalculo(br.com.intranet.cenopservicoscwb.model.util.Utils.getDataPlanoVerao(getCalculo().getDiaBase().toString()));
+                    try {
+
+                        if (getCalculo().getListaPeriodoCalculo().get(0).getDataFinalCalculo() != null) {
+                            return;
+
+                        }
+                        getCalculo().getListaPeriodoCalculo().get(getCalculo().getListaPeriodoCalculo().size() - 1).setDataFinalCalculo(br.com.intranet.cenopservicoscwb.model.util.Utils.getDataAtualFormatoMysql());
+                    } catch (Exception ex) {
+                        Utils.alertaGeralInformacao(null,null,Utils.getMensagemErro(ex));
+                    }
+                } else if (getCalculo().getPlanoEconomico().getId().equals(2)) {
+                    getCalculo().getListaPeriodoCalculo().get(0).setDataInicioCalculo(br.com.intranet.cenopservicoscwb.model.util.Utils.getDataPlanoBresser(getCalculo().getDiaBase().toString()));
+                    try {
+
+                        if (getCalculo().getListaPeriodoCalculo().get(0).getDataFinalCalculo() != null) {
+                            return;
+
+                        }
+                        getCalculo().getListaPeriodoCalculo().get(getCalculo().getListaPeriodoCalculo().size() - 1).setDataFinalCalculo(br.com.intranet.cenopservicoscwb.model.util.Utils.getDataAtualFormatoMysql());
+                    } catch (Exception ex) {
+                        Utils.alertaGeralInformacao(null,null,Utils.getMensagemErro(ex));
+                    }
+                }
+                break;
+
+        }
+        
+        atualizaFormularioCalculo();
+
+    }
+    
+    
+    
+    
+    
+    
+    
+    public void configuraLinha() throws Exception {
+        atualizarObjetoComDadosFormulario();
+        if (getCalculo().getMetodologia().getId() == 2) {
+            getCalculo().getListaPeriodoCalculo().get(0).setDataInicioCalculo(null);
+            getCalculo().getListaPeriodoCalculo().get(0).setDataFinalCalculo(br.com.intranet.cenopservicoscwb.model.util.Utils.getDataAtualFormatoMysql());
+        }
+
+        if (getCalculo().getMetodologia().getId() == 3) {
+            Indice indice = getCalculoDAO().getEm().find(Indice.class, 3);
+            getCalculo().getListaPeriodoCalculo().get(0).setIndice(indice);
+        }
+       
+        atualizarObjetoComDadosFormulario();
+        atualizaFormularioCalculo();
+    }
+
+    public boolean verificarDataInicioPlano(Date dtInicioPlano) {
+        Calendar dtIniPlano = Calendar.getInstance();
+        dtIniPlano.setTime(dtInicioPlano);
+
+        switch (getCalculo().getPlanoEconomico().getId()) {
+            case 1:
+                if (dtIniPlano.get(Calendar.DAY_OF_MONTH) > 15) {
+                    Utils.alertaGeral(null, null, "No Plano VERÃO o dia base não pode ser superior a 15");
+                    return false;
+                }
+                if (dtIniPlano.get(Calendar.YEAR) != 1989) {
+                    Utils.alertaGeral(null, null, "No Plano VERÃO o mês base não pode ser diferente de 02, 03 ou 04/1989");
+                    return false;
+                }
+                if (dtIniPlano.get(Calendar.MONTH) < 1 || dtIniPlano.get(Calendar.MONTH) > 3) {
+                    Utils.alertaGeral(null, null, "No Plano VERÃO o mês base não pode ser diferente de 02, 03 ou 04/1989");
+                    return false;
+                }
+                break;
+            case 2:
+                if (dtIniPlano.get(Calendar.DAY_OF_MONTH) > 15) {
+                    Utils.alertaGeral(null, null, "No Plano BRESSER o dia base não pode ser superior a 15");
+                    return false;
+                }
+                if (dtIniPlano.get(Calendar.YEAR) != 1987) {
+                    Utils.alertaGeral(null, null, "No Plano BRESSER o mês base não pode ser diferente de 07, 08 ou 09/1987");
+                    return false;
+                }
+                if (dtIniPlano.get(Calendar.MONTH) < 6 || dtIniPlano.get(Calendar.MONTH) > 8) {
+                    Utils.alertaGeral(null, null, "No Plano BRESSER o mês base não pode ser diferente de 07, 08 ou 09/1987");
+                    return false;
+                }
+                break;
+            case 3:
+                if (dtIniPlano.get(Calendar.DAY_OF_MONTH) > 28) {
+                    Utils.alertaGeral(null, null, "No Plano COLLOR I - ABRIL o dia base não pode ser superior a 28");
+                    return false;
+                }
+                if (dtIniPlano.get(Calendar.YEAR) != 1990) {
+                    Utils.alertaGeral(null, null, "No Plano COLLOR I - ABRIL o mês base não pode ser diferente de 05, 06 ou 07/1990");
+                    return false;
+                }
+                if (dtIniPlano.get(Calendar.MONTH) < 4 || dtIniPlano.get(Calendar.MONTH) > 6) {
+                    Utils.alertaGeral(null, null, "No Plano COLLOR I - ABRIL o mês base não pode ser diferente de 05, 06 ou 07/1990");
+                    return false;
+                }
+                break;
+            case 4:
+                if (dtIniPlano.get(Calendar.DAY_OF_MONTH) > 28) {
+                    Utils.alertaGeral(null, null, "No Plano COLLOR I - MAIO o dia base não pode ser superior a 28");
+                    return false;
+                }
+                if (dtIniPlano.get(Calendar.YEAR) != 1990) {
+                    Utils.alertaGeral(null, null, "No Plano COLLOR I - MAIO o mês base não pode ser diferente de 06, 07 ou 08/1990");
+                    return false;
+                }
+                if (dtIniPlano.get(Calendar.MONTH) < 5 || dtIniPlano.get(Calendar.MONTH) > 7) {
+                    Utils.alertaGeral(null, null, "No Plano COLLOR I - MAIO o mês base não pode ser diferente de 06, 07 ou 08/1990");
+                    return false;
+                }
+                break;
+            case 5:
+                if (dtIniPlano.get(Calendar.DAY_OF_MONTH) > 28) {
+                    Utils.alertaGeral(null, null, "No Plano COLLOR II o dia base não pode ser superior a 28");
+                    return false;
+                }
+                if (dtIniPlano.get(Calendar.YEAR) != 1991) {
+                    Utils.alertaGeral(null, null, "No Plano COLLOR II o mês base não pode ser diferente de 03, 04 ou 05/1991");
+                    return false;
+                }
+                if (dtIniPlano.get(Calendar.MONTH) < 2 || dtIniPlano.get(Calendar.MONTH) > 4) {
+                    Utils.alertaGeral(null, null, "No Plano COLLOR II o mês base não pode ser diferente de 03, 04 ou 05/1991");
+                    return false;
+                }
+                break;
+        }
+        return true;
     }
 
     /**
@@ -1592,8 +1846,6 @@ public class EdicaoCalculoController extends AbstractController implements Initi
     public void setSaldoNaDataBase(BigDecimal saldoNaDataBase) {
         this.saldoNaDataBase = saldoNaDataBase;
     }
-
-    
 
     private void atualizarObjetoComDadosFormulario() throws Exception {
 
@@ -1664,7 +1916,5 @@ public class EdicaoCalculoController extends AbstractController implements Initi
         }
 
     }
-
-
 
 }
