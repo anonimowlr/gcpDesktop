@@ -62,8 +62,8 @@ public class MainApp extends Application {
         
         ConsultaSQL sql = new ConsultaSQL();
         usuarioDAO = new UsuarioDAO();
-        //funci = usuarioDAO.getFuncionario(System.getProperty("user.name"));
-        funci = usuarioDAO.getFuncionario("f5078775");
+        funci = usuarioDAO.getFuncionario(System.getProperty("user.name"));
+       // funci = usuarioDAO.getFuncionario("f5078775");
          
         try {
             if (sql.confirmaVersao(codigoFerramenta, versao)) {

@@ -52,6 +52,8 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.ResourceBundle;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.event.Event;
@@ -161,6 +163,11 @@ public class EdicaoCalculoController extends AbstractController implements Initi
     @Override
     public void initialize(URL url, ResourceBundle rb) {
 
+        try {
+            
+        
+        
+        
         setFuncionarioDAO(new FuncionarioDAO<>());
         setNpjDAO(new NpjDAO<>());
         setClienteDAO(new ClienteDAO());
@@ -184,6 +191,14 @@ public class EdicaoCalculoController extends AbstractController implements Initi
         getCmbBanco().getItems().addAll("BB", "BESC", "BNC");
         getCmbIndice().getItems().addAll(getIndiceDAO().getListaIndiceSemTr());
         
+        
+        
+        
+        
+         } catch (Exception e) {
+         Utils.alertaGeral(null, null, "Erro inicialização" + e);
+    
+        }
 
     }
 
@@ -1153,6 +1168,14 @@ public class EdicaoCalculoController extends AbstractController implements Initi
 
     }
 
+    
+    public void mascaraBackend() throws Exception{
+        atualizarObjetoComDadosFormulario();
+        atualizaFormularioCalculo();
+    }
+    
+    
+    
     public void excluirPdfCalculoPcond(Calculo calculo) {
 
         if (calculo.getCalculoPcond() == null) {
@@ -1474,6 +1497,8 @@ public class EdicaoCalculoController extends AbstractController implements Initi
             tff.setTf(getTxtCpfCnpj());
             tff.formatter();
         });
+        
+       
     }
 
     public void alterarClienteCalculo(Calculo calculo) {
@@ -1496,7 +1521,6 @@ public class EdicaoCalculoController extends AbstractController implements Initi
 
             }
 
-            consultaCalculoCpf(calculo.getCliente().getCpf());
 
         } catch (Exception e) {
             Utils.alertaGeral(null, null, "erro metodo alteraCliente, se persistir comunique a equipe responsável" + Utils.getMensagemErro(e));
@@ -1504,17 +1528,36 @@ public class EdicaoCalculoController extends AbstractController implements Initi
 
     }
 
-    public void consultaCalculoCpf(String cpf) {
+    @FXML
+    public void consultaCalculoCpf(KeyEvent event) throws Exception {
+        
+       
+       atualizarObjetoComDadosFormulario();
+        
         List<Calculo> listaCalculo = new ArrayList<>();
-        listaCalculo = getCalculoDAO().consultaCalculoCpf(cpf);
+        listaCalculo = getCalculoDAO().consultaCalculoCpf(getCalculo().getCliente().getCpf());
 
         if (listaCalculo.size() > 0) {
-            Utils.alertaGeralInformacao(null, null, "Há cálculos vinculados a este CPF.");
+            Utils.alertaGeralInformacao(null, null, "Há cálculos vinculados a este CPF/CNPJ.");
         }
+        
+        Cliente cliente = getClienteDAO().localizarCliente(getCalculo().getCliente().getCpf());
+        
+        if(cliente!=null){
+            getCalculo().setCliente(cliente);
+            atualizaFormularioCalculo();
+        }
+        
+        
 
     }
 
-    public boolean validarCampos() {
+    @FXML
+    public boolean validarCampos() throws Exception {
+        
+        atualizarObjetoComDadosFormulario();
+        
+        
         if (!Utils.isCpfCnpj(getCalculo().getCliente().getCpf())) {
 
             Utils.alertaGeral(null, null, "CPF/CNPJ inválidos, não será possível continuar");
@@ -1555,6 +1598,8 @@ public class EdicaoCalculoController extends AbstractController implements Initi
 
         try {
             
+           
+            
             atualizarObjetoComDadosFormulario();
             
            
@@ -1588,6 +1633,11 @@ public class EdicaoCalculoController extends AbstractController implements Initi
          
          
          atualizarObjetoComDadosFormulario();
+         
+         
+         
+         
+         
 
         if ((getCalculo().getPlanoEconomico().getId() == 1 || getCalculo().getPlanoEconomico().getId() == 2) && getCalculo().getDiaBase() > 15) {
             Utils.alertaGeral(null,null,"Nos Planos BRESSER e VERÃO o dia base não pode ser superior a 15");
@@ -1728,8 +1778,11 @@ public class EdicaoCalculoController extends AbstractController implements Initi
 
         }
         
+       
         atualizaFormularioCalculo();
-
+        
+        
+        
     }
     
     
@@ -1737,8 +1790,10 @@ public class EdicaoCalculoController extends AbstractController implements Initi
     
     
     
-    
-    public void configuraLinha() throws Exception {
+   
+   
+    @FXML
+    public void configuraLinha() throws Exception  {
         atualizarObjetoComDadosFormulario();
         if (getCalculo().getMetodologia().getId() == 2) {
             getCalculo().getListaPeriodoCalculo().get(0).setDataInicioCalculo(null);
@@ -1754,9 +1809,15 @@ public class EdicaoCalculoController extends AbstractController implements Initi
         atualizaFormularioCalculo();
     }
 
-    public boolean verificarDataInicioPlano(Date dtInicioPlano) {
+    
+    
+    
+    
+    
+    public boolean verificarDataInicioPlano(Date dtInicioPlano) throws Exception {
         Calendar dtIniPlano = Calendar.getInstance();
         dtIniPlano.setTime(dtInicioPlano);
+        atualizarObjetoComDadosFormulario();
 
         switch (getCalculo().getPlanoEconomico().getId()) {
             case 1:
@@ -1848,6 +1909,10 @@ public class EdicaoCalculoController extends AbstractController implements Initi
     }
 
     private void atualizarObjetoComDadosFormulario() throws Exception {
+        
+        if(getCalculo() == null){
+            return;
+        }
 
         if (getCmbMetodologia().getValue() != null) {
             getCalculo().setMetodologia(getCmbMetodologia().getValue());
@@ -1899,13 +1964,13 @@ public class EdicaoCalculoController extends AbstractController implements Initi
 
         getCalculo().setPcond(getCkbPcond().isSelected());
 
-        if (!getTxtDataInicioCorrecao().getText().equals("")) {
+        //if (!getTxtDataInicioCorrecao().getText().equals("")) {
             getCalculo().getListaPeriodoCalculo().get(0).setDataInicioCalculo(Utils.formataData(getTxtDataInicioCorrecao().getText()));
-        }
+        //}
 
-        if (!getTxtDataFinalCorrecao().getText().equals("")) {
+       // if (!getTxtDataFinalCorrecao().getText().equals("")) {
             getCalculo().getListaPeriodoCalculo().get(0).setDataFinalCalculo(Utils.formataData(getTxtDataFinalCorrecao().getText()));
-        }
+        //}
 
         if (getCmbIndice().getValue() != null) {
             getCalculo().getListaPeriodoCalculo().get(0).setIndice(getCmbIndice().getValue());
@@ -1916,5 +1981,7 @@ public class EdicaoCalculoController extends AbstractController implements Initi
         }
 
     }
+
+    
 
 }

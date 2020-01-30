@@ -146,19 +146,20 @@ public class TelaPrincipalController extends AbstractController implements Initi
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         
-            Image imagem = new Image("/views/imagens/logo.png");
+        Image imagem = new Image("/views/imagens/logo.png");
         getImageView().setImage(imagem);
 
-        CurrencyField cur = new CurrencyField();
-        cur.amountProperty().addListener(new ChangeListener<Number>() {
-
-            @Override
-            public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
-                System.out.println(newValue.doubleValue());
-            }
-        });
+//        CurrencyField cur = new CurrencyField();
+//        cur.amountProperty().addListener(new ChangeListener<Number>() {
+//
+//            @Override
+//            public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
+//                System.out.println(newValue.doubleValue());
+//            }
+//        });
 
         getTvTabelaCalculoEdicao().getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> editaLinha(newValue));
+        
 
         setCalculo(new Calculo());
         setDao(new Dao());
@@ -1044,6 +1045,11 @@ public class TelaPrincipalController extends AbstractController implements Initi
    
 
     private void atualizaComponentes() {
+        
+        
+        if(getCalculo()== null){
+            return;
+        }
         
         
         if(getCalculo().getId()!=null){

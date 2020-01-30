@@ -13,7 +13,7 @@
 
 <AnchorPane maxHeight="877.0" maxWidth="365.0" prefHeight="877.0" prefWidth="365.0" style="-fx-background-color: #5073C3;" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="br.intranet.cenopservicoscwb.controller.EdicaoCalculoController">
    <children>
-      <GridPane fx:id="grdEdicao" layoutX="18.0" layoutY="-7.0" prefHeight="823.0" prefWidth="336.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="17.0" AnchorPane.topAnchor="-7.0">
+      <GridPane fx:id="grdEdicao" layoutX="18.0" layoutY="-7.0" onMouseExited="#configuraLinha" prefHeight="823.0" prefWidth="336.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="17.0" AnchorPane.topAnchor="-7.0">
          <children>
             <Label text="Metodologia:" textFill="WHITE">
                <font>
@@ -96,12 +96,12 @@
             <JFXComboBox fx:id="cmbBanco" focusColor="WHITE" maxWidth="200.0" prefHeight="25.0" prefWidth="200.0" style="-fx-text-fill: WHITE;" styleClass="jfx-combo-box" stylesheets="@ComboBox.css" unFocusColor="#fffbfb" GridPane.columnIndex="1" GridPane.rowIndex="3" />
             <JFXTextField fx:id="txtAgencia" focusColor="WHITE" maxWidth="200.0" prefWidth="200.0" style="-fx-text-fill: WHITE;" unFocusColor="WHITE" GridPane.columnIndex="1" GridPane.rowIndex="4" />
             <JFXTextField fx:id="txtConta" focusColor="WHITE" maxWidth="200.0" prefWidth="200.0" style="-fx-text-fill: WHITE;" unFocusColor="WHITE" GridPane.columnIndex="1" GridPane.rowIndex="5" />
-            <JFXComboBox fx:id="cmbPlanoEconomico" focusColor="WHITE" maxWidth="200.0" prefHeight="25.0" prefWidth="200.0" style="-fx-text-fill: WHITE;" styleClass="jfx-combo-box" stylesheets="@ComboBox.css" unFocusColor="#fffbfb" GridPane.columnIndex="1" GridPane.rowIndex="6" />
+            <JFXComboBox fx:id="cmbPlanoEconomico" focusColor="WHITE" maxWidth="200.0" onKeyTyped="#consultaCalculoCpf" prefHeight="25.0" prefWidth="200.0" style="-fx-text-fill: WHITE;" styleClass="jfx-combo-box" stylesheets="@ComboBox.css" unFocusColor="#fffbfb" GridPane.columnIndex="1" GridPane.rowIndex="6" />
             <JFXTextField fx:id="txtSaldoBase" focusColor="WHITE" maxWidth="200.0" prefWidth="200.0" style="-fx-text-fill: WHITE;" unFocusColor="WHITE" GridPane.columnIndex="1" GridPane.rowIndex="7" />
             <JFXTextField fx:id="txtDiaBase" focusColor="WHITE" maxWidth="200.0" onKeyTyped="#calcularParaConferencia" prefWidth="200.0" style="-fx-text-fill: WHITE;" unFocusColor="WHITE" GridPane.columnIndex="1" GridPane.rowIndex="8" />
             <JFXComboBox fx:id="cmbIndice" focusColor="WHITE" maxWidth="200.0" onKeyTyped="#atribuirDataInicialPlano" prefHeight="25.0" prefWidth="200.0" style="-fx-text-fill: WHITE;" styleClass="jfx-combo-box" stylesheets="@ComboBox.css" unFocusColor="#fffbfb" GridPane.columnIndex="1" GridPane.rowIndex="9" />
             <JFXTextField fx:id="txtDataInicioCorrecao" focusColor="WHITE" maxWidth="200.0" prefWidth="200.0" style="-fx-text-fill: WHITE;" unFocusColor="WHITE" GridPane.columnIndex="1" GridPane.rowIndex="10" />
-            <JFXTextField fx:id="txtDataFinalCorrecao" focusColor="WHITE" maxWidth="200.0" prefWidth="200.0" style="-fx-text-fill: WHITE;" unFocusColor="WHITE" GridPane.columnIndex="1" GridPane.rowIndex="11" />
+            <JFXTextField fx:id="txtDataFinalCorrecao" focusColor="WHITE" maxWidth="200.0" onKeyPressed="#validarCampos" prefWidth="200.0" style="-fx-text-fill: WHITE;" unFocusColor="WHITE" GridPane.columnIndex="1" GridPane.rowIndex="11" />
             <JFXTextField fx:id="txtJurMora" focusColor="WHITE" maxWidth="200.0" prefWidth="200.0" style="-fx-text-fill: WHITE;" unFocusColor="WHITE" GridPane.columnIndex="1" GridPane.rowIndex="12" />
             <JFXTextField fx:id="txtInitJurRem" focusColor="WHITE" maxWidth="200.0" prefWidth="200.0" style="-fx-text-fill: WHITE;" unFocusColor="WHITE" GridPane.columnIndex="1" GridPane.rowIndex="13" />
             <JFXTextField fx:id="txtFimJurRem" focusColor="WHITE" maxWidth="200.0" prefWidth="200.0" style="-fx-text-fill: WHITE;" unFocusColor="WHITE" GridPane.columnIndex="1" GridPane.rowIndex="14" />
