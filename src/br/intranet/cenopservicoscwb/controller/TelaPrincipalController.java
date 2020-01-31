@@ -12,9 +12,12 @@ import br.com.intranet.cenopservicoscwb.model.dao.Dao;
 import br.com.intranet.cenopservicoscwb.model.entidade.Calculo;
 import br.com.intranet.cenopservicoscwb.model.entidade.Cliente;
 import br.com.intranet.cenopservicoscwb.model.entidade.Honorario;
+import br.com.intranet.cenopservicoscwb.model.entidade.Indice;
 import br.com.intranet.cenopservicoscwb.model.entidade.Metodologia;
 import br.com.intranet.cenopservicoscwb.model.entidade.Multa;
 import br.com.intranet.cenopservicoscwb.model.entidade.Npj;
+import br.com.intranet.cenopservicoscwb.model.entidade.PeriodoCalculo;
+import br.com.intranet.cenopservicoscwb.model.entidade.PlanoEconomico;
 import br.com.intranet.cenopservicoscwb.model.entidade.ProtocoloGsv;
 import br.intranet.cenopservicoscwb.dao.CalculoDAO;
 import br.intranet.cenopservicoscwb.dao.NpjDAO;
@@ -29,6 +32,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.ResourceBundle;
+import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
@@ -41,6 +45,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
+import javafx.scene.control.cell.CheckBoxTableCell;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -133,6 +138,13 @@ public class TelaPrincipalController extends AbstractController implements Initi
     private AnchorPane ancorSecaoParametros;
     @FXML
     private ImageView imageView;
+    @FXML
+    private TableColumn<Calculo, PlanoEconomico> colPlano;
+    @FXML
+    private TableColumn<Calculo, String> colSaldoBase;
+    @FXML
+    private TableColumn<Calculo, Boolean> col_selected;
+    
    
 
     public TelaPrincipalController() {
@@ -560,6 +572,23 @@ public class TelaPrincipalController extends AbstractController implements Initi
         getColMetodologia().setCellValueFactory(new PropertyValueFactory<>("metodologia")); // atributo da entidade
         getColValorFinal().setCellValueFactory((new PropertyValueFactory<>("valorFinal"))); // atributo da entidade
         getColCpfCnpj().setCellValueFactory((new PropertyValueFactory<>("cliente"))); // atributo da entidade
+        getColPlano().setCellValueFactory((new PropertyValueFactory<>("planoEconomico"))); // atributo da entidade
+        getColSaldoBase().setCellValueFactory((new PropertyValueFactory<>("saldoBase"))); // atributo da entidade
+        getCol_selected().setCellFactory(CheckBoxTableCell.forTableColumn(getCol_selected()));
+        
+         getCol_selected().setCellValueFactory((TableColumn.CellDataFeatures<Calculo, Boolean> param) -> {
+                    Calculo dados = param.getValue();
+                    SimpleBooleanProperty booleanProp = new SimpleBooleanProperty(dados.isPcond());
+                    booleanProp.addListener((ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) -> {
+                        dados.setPcond(newValue);
+                    });
+                    return booleanProp;
+                });
+                getCol_selected().setCellFactory((TableColumn<Calculo, Boolean> p) -> {
+                    CheckBoxTableCell<Calculo, Boolean> cell = new CheckBoxTableCell<>();
+                    return cell;
+                });
+        
 
         observableListCalculo = FXCollections.observableList(getListaCalculo());
         getTvTabelaCalculoEdicao().setItems(observableListCalculo);
@@ -1117,6 +1146,52 @@ public class TelaPrincipalController extends AbstractController implements Initi
     public void setImageView(ImageView imageView) {
         this.imageView = imageView;
     }
+
+    /**
+     * @return the colPlano
+     */
+    public TableColumn<Calculo, PlanoEconomico> getColPlano() {
+        return colPlano;
+    }
+
+    /**
+     * @param colPlano the colPlano to set
+     */
+    public void setColPlano(TableColumn<Calculo, PlanoEconomico> colPlano) {
+        this.colPlano = colPlano;
+    }
+
+    /**
+     * @return the colSaldoBase
+     */
+    public TableColumn<Calculo, String> getColSaldoBase() {
+        return colSaldoBase;
+    }
+
+    /**
+     * @param colSaldoBase the colSaldoBase to set
+     */
+    public void setColSaldoBase(TableColumn<Calculo, String> colSaldoBase) {
+        this.colSaldoBase = colSaldoBase;
+    }
+
+    /**
+     * @return the col_selected
+     */
+    public TableColumn<Calculo, Boolean> getCol_selected() {
+        return col_selected;
+    }
+
+    /**
+     * @param col_selected the col_selected to set
+     */
+    public void setCol_selected(TableColumn<Calculo, Boolean> col_selected) {
+        this.col_selected = col_selected;
+    }
+
+   
+
+    
 
   
     

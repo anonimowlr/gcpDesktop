@@ -13,7 +13,7 @@
 
 <AnchorPane maxHeight="877.0" maxWidth="365.0" prefHeight="877.0" prefWidth="365.0" style="-fx-background-color: #5073C3;" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="br.intranet.cenopservicoscwb.controller.EdicaoCalculoController">
    <children>
-      <GridPane fx:id="grdEdicao" layoutX="18.0" layoutY="-7.0" onMouseExited="#configuraLinha" prefHeight="823.0" prefWidth="336.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="17.0" AnchorPane.topAnchor="-7.0">
+      <GridPane fx:id="grdEdicao" layoutX="18.0" layoutY="-7.0" prefHeight="823.0" prefWidth="336.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="17.0" AnchorPane.topAnchor="-7.0">
          <children>
             <Label text="Metodologia:" textFill="WHITE">
                <font>

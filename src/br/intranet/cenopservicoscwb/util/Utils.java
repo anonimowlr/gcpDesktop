@@ -540,6 +540,8 @@ public class Utils {
 
     public static String tratarConta(String v) {
         String numeroTratado = "";
+        
+        limparPontos(v);
 
         int tamanhoValorRecebido = v.length();
 
@@ -569,6 +571,8 @@ public class Utils {
 
     public static String tratarContaTexto(String v) {
         String numeroTratado = "";
+        
+        limparPontos(v);
 
         int tamanhoValorRecebido = v.length();
 

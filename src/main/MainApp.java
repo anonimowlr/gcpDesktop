@@ -41,7 +41,7 @@ public class MainApp extends Application {
     private Stage primaryStage;
     private BorderPane rootLayout;
     private int codigoFerramenta = 57;
-    private String versao = "1.0";
+    private String versao = "2.0.0";
     private static Funcionario funci;
     private FuncionarioDAO<Funcionario, Object> funcionarioDAO;
     private UsuarioDAO usuarioDAO;
@@ -60,10 +60,11 @@ public class MainApp extends Application {
         this.getPrimaryStage().setTitle("Gestão e Cálculo de Planos Econômicos");
         primaryStage.resizableProperty().setValue(Boolean.FALSE);
         
+
         ConsultaSQL sql = new ConsultaSQL();
         usuarioDAO = new UsuarioDAO();
         funci = usuarioDAO.getFuncionario(System.getProperty("user.name"));
-       // funci = usuarioDAO.getFuncionario("f5078775");
+         //funci = usuarioDAO.getFuncionario("f5078775");
          
         try {
             if (sql.confirmaVersao(codigoFerramenta, versao)) {

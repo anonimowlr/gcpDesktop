@@ -1000,7 +1000,10 @@ public class EdicaoCalculoController extends AbstractController implements Initi
 
         try {
 
+            
             atualizarObjetoComDadosFormulario();
+           
+            atualizaFormularioCalculo();
 
             alterarClienteCalculo(getCalculo());
 
@@ -1093,6 +1096,7 @@ public class EdicaoCalculoController extends AbstractController implements Initi
                 excluirPdfCalculoPcond(getCalculo());
                 complementarDadosCalculo(getCalculo());
                 atualizarObjetoComDadosFormulario();
+                atualizaFormularioCalculo();
 
                 MotorCalculoPoupanca motorCalculoPoupanca = new MotorCalculoPoupanca();
 
@@ -1168,7 +1172,6 @@ public class EdicaoCalculoController extends AbstractController implements Initi
 
     }
 
-    
     public void mascaraBackend() throws Exception{
         atualizarObjetoComDadosFormulario();
         atualizaFormularioCalculo();
@@ -1207,6 +1210,7 @@ public class EdicaoCalculoController extends AbstractController implements Initi
     }
 
     public void atualizaFormularioCalculo() {
+        
 
         if (getCalculo().getMetodologia() != null) {
             getCmbMetodologia().setValue(getCalculo().getMetodologia());
@@ -1237,7 +1241,7 @@ public class EdicaoCalculoController extends AbstractController implements Initi
         }
 
         if (getCalculo().getSaldoBase() != null) {
-            getTxtSaldoBase().setText(Utils.converterToMoneySaldoBase(getCalculo().getSaldoBase().toString()));
+            getTxtSaldoBase().setText(Utils.converterToMoney(getCalculo().getSaldoBase().toString()));
         }
 
         if (getCalculo().getDiaBase() != null) {
@@ -1546,10 +1550,11 @@ public class EdicaoCalculoController extends AbstractController implements Initi
         if(cliente!=null){
             getCalculo().setCliente(cliente);
             atualizaFormularioCalculo();
+            return;
         }
         
-        
-
+        atualizaFormularioCalculo();
+  
     }
 
     @FXML
@@ -1571,7 +1576,7 @@ public class EdicaoCalculoController extends AbstractController implements Initi
         }
         
         
-
+       
         return true;
     }
 
@@ -1599,10 +1604,13 @@ public class EdicaoCalculoController extends AbstractController implements Initi
         try {
             
            
+           
             
             atualizarObjetoComDadosFormulario();
             
-           
+            if(getCalculo().getSaldoBase()==null){
+                return;
+            }
            
            
             if (getCalculo().getMetodologia().getId() == 2 && getCalculo().getListaPeriodoCalculo().get(0).getDataInicioCalculo() == null) {
@@ -1618,21 +1626,37 @@ public class EdicaoCalculoController extends AbstractController implements Initi
 
             getTp().passarCalculo(this, calculo);
             
+            //atualizaFormularioCalculo();
 
         } catch (Exception e) {
 
             Utils.alertaGeral(null, null, "Erro no método calcularParaConferencia,  caso persista informe à equipe responsável \n" + e);
         }
 
+        
+        
     }
     
     
     
     @FXML
      public void atribuirDataInicialPlano() throws Exception {
-         
-         
          atualizarObjetoComDadosFormulario();
+        
+         DataInicialPlano();
+         atualizaFormularioCalculo();
+         configuraLinha();
+         atualizarObjetoComDadosFormulario();
+         atualizaFormularioCalculo();
+     }
+    
+    
+    
+    
+     public void DataInicialPlano() throws Exception {
+         
+         
+         
          
          
          
@@ -1779,7 +1803,7 @@ public class EdicaoCalculoController extends AbstractController implements Initi
         }
         
        
-        atualizaFormularioCalculo();
+        
         
         
         
@@ -1792,7 +1816,10 @@ public class EdicaoCalculoController extends AbstractController implements Initi
     
    
    
-    @FXML
+
+    
+ 
+    
     public void configuraLinha() throws Exception  {
         atualizarObjetoComDadosFormulario();
         if (getCalculo().getMetodologia().getId() == 2) {
@@ -1805,8 +1832,7 @@ public class EdicaoCalculoController extends AbstractController implements Initi
             getCalculo().getListaPeriodoCalculo().get(0).setIndice(indice);
         }
        
-        atualizarObjetoComDadosFormulario();
-        atualizaFormularioCalculo();
+        
     }
 
     
@@ -1815,6 +1841,14 @@ public class EdicaoCalculoController extends AbstractController implements Initi
     
     
     public boolean verificarDataInicioPlano(Date dtInicioPlano) throws Exception {
+        
+        
+        atualizarObjetoComDadosFormulario();
+        
+        if(dtInicioPlano==null){
+            return false;
+        }
+        
         Calendar dtIniPlano = Calendar.getInstance();
         dtIniPlano.setTime(dtInicioPlano);
         atualizarObjetoComDadosFormulario();
@@ -1923,7 +1957,7 @@ public class EdicaoCalculoController extends AbstractController implements Initi
         }
 
         if (!getTxtNome().getText().equals("")) {
-            getCalculo().getCliente().setNomeCliente(getTxtNome().getText());
+            getCalculo().getCliente().setNomeCliente(getTxtNome().getText().toUpperCase());
         }
 
         if (getCmbBanco().getValue() != null) {
@@ -1931,7 +1965,7 @@ public class EdicaoCalculoController extends AbstractController implements Initi
         }
 
         if (!getTxtConta().getText().equals("")) {
-            getCalculo().setNumeroConta(getTxtConta().getText());
+            getCalculo().setNumeroConta(Utils.tratarContaTexto(Utils.limparPontos(getTxtConta().getText())));
         }
 
         if (!getTxtAgencia().getText().equals("")) {
@@ -1939,7 +1973,7 @@ public class EdicaoCalculoController extends AbstractController implements Initi
         }
 
         if (!getTxtSaldoBase().getText().equals("")) {
-            getCalculo().setSaldoBase(new BigDecimal(Utils.tratarVariavel(getTxtSaldoBase().getText())));
+            getCalculo().setSaldoBase(new BigDecimal(Utils.tratarVariavel((getTxtSaldoBase().getText()))));
         }
 
         if (!getTxtDiaBase().getText().equals("")) {
@@ -1954,7 +1988,7 @@ public class EdicaoCalculoController extends AbstractController implements Initi
             getCalculo().getJuroRemuneratorio().setDataInicio(Utils.formataData(getTxtInitJurRem().getText()));
         }
 
-        if (!getTxtFimJurRem().getText().equals('"')) {
+        if (!getTxtFimJurRem().getText().equals("")) {
             getCalculo().getJuroRemuneratorio().setDataFinal(Utils.formataData(getTxtFimJurRem().getText()));
         }
 

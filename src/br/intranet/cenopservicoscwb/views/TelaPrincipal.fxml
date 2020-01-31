@@ -105,7 +105,10 @@
                                                       <TableColumn fx:id="colIdTbEdicao" prefWidth="75.0" text="ID" />
                                                       <TableColumn fx:id="colMetodologia" prefWidth="75.0" text="Metodologia" />
                                                       <TableColumn fx:id="colCpfCnpj" prefWidth="75.0" text="CPF/CNPJ" />
+                                                      <TableColumn fx:id="colPlano" prefWidth="75.0" text="Plano Econômico" />
+                                                      <TableColumn fx:id="colSaldoBase" prefWidth="75.0" text="Saldo Base" />
                                                       <TableColumn fx:id="colValorFinal" prefWidth="75.0" text="Valor Final" />
+                                                      <TableColumn fx:id="col_selected" prefWidth="75.0" text="PCOND" />
                                                    </columns>
                                                 </TableView>
                                              </children>
@@ -116,7 +119,7 @@
                               </AnchorPane>
                           </items>
                         </SplitPane>
-                        <Label layoutX="1208.0" layoutY="830.0" text="Versão:1.0.0" AnchorPane.bottomAnchor="0.0" AnchorPane.rightAnchor="0.0">
+                        <Label layoutX="1301.0" layoutY="827.0" text="Versão:2.0.0" AnchorPane.bottomAnchor="0.0" AnchorPane.rightAnchor="20.0">
                            <font>
                               <Font name="System Bold" size="12.0" />
                            </font>
